@@ -1,3 +1,6 @@
+#include <atomic>
+#include <chrono>
+#include <future>
 #include <iostream>
 #include <mutex>
 #include <queue>
@@ -15,11 +18,15 @@
 struct locked_queue {
   std::queue<std::vector<double>> q;
   std::mutex m;
-  size_t size;
 
-  locked_queue(size_t n) : size(n) {
+  locked_queue() {
     this->q = std::queue<std::vector<double>>();
   }
+
+  locked_queue(locked_queue&&) = delete;
+  locked_queue& operator=(locked_queue&&) = delete;
+  
+  size_t size() { return this->q.size(); }
 
   /**
    * Adds data @p d to queue @p q
@@ -42,15 +49,24 @@ struct locked_queue {
 };
 
 bool locked_queue::enqueue_data(std::vector<double>& d) {
-  std::lock_guard<std::mutex> log(this->m); 
+  this->m.lock();
+  std::cout << "enqueue_data: lock acquired\n";
   this->q.push(d);
+  std::cout << "data pushed to queue\n";
+  this->m.unlock();
+  std::cout << "enqueue_data: lock released\n";
   return true;
 }
 
 std::vector<double> locked_queue::dequeue_data() {
-  std::lock_guard<std::mutex> lock(this->m);
+  this->m.lock();
+  std::cout << "dequeue_data: lock acquired\n";
   std::vector<double> res = this->q.front();
+  std::cout << "data acquired from queue\n";
   this->q.pop();
+  std::cout << "data popped from queue\n";
+  this->m.unlock();
+  std::cout << "dequeue_data: lock released\n";
   return res;
 }
 
@@ -82,13 +98,75 @@ std::vector<double> create_data(size_t n, int low, int high) {
   return v;
 }
 
+/**
+ * Compute average of elements in @p d
+ *
+ * @param d vector of @p double s
+ *
+ * @return average of elements of @p d
+ */
+double average(const std::vector<double>& d) {
+  double total(static_cast<double>(d.size()));
+  double length(static_cast<double>(d.size()));
+  for (const double& x : d) {
+    total += x;
+  }
+  return total / length;
+}
+
+/**
+ * This function is called by the enqueueing thread and handles the creation of
+ * data and enqueueing it to @p locked_queue q
+ *
+ * @param q @p locked_queue for enqueueing data
+ */
+void enqueue_data_to_queue(locked_queue& q, int num_data,
+    std::atomic<bool>& stop_flag) {
+
+  for (int i = 0; i < num_data; i++) {
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    auto data = create_data(20, 0, 10);
+    q.enqueue_data(data);
+    std::cout << "Added data to queue\n";
+  }
+
+  // Tell threads to stop
+  stop_flag.store(true, std::memory_order_release);
+}
+
+/**
+ * This function is called by the dequeuing thread and handles the processing of
+ * the data from @p locked_queue. The data is average and printed to stdout.
+ *
+ * @param q @p locked_queue for dequeueing data
+ */
+void compute_average_from_queue(locked_queue& q,
+    std::atomic<bool>& stop_flag) {
+
+  std::cout << "watching queue!\n";
+  while(q.size() == 0)
+  while (!stop_flag.load(std::memory_order_release) || q.size() != 0) {
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    std::cout << "Attempting to dequeue data...\n";
+    std::vector<double> data = q.dequeue_data();
+    std::cout << "Average: " << average(data) << std::endl;
+  }
+  std::cout << "queue is empty. Exiting...\n";
+}
 
 // ----------------------------------------------------------------------------
 //  MAIN
 //-----------------------------------------------------------------------------
 int main(int argc, char* argv[]) {
-  locked_queue q(10);
-
+  locked_queue q;
   
+  std::atomic<bool> stop_flag(false);
+
+  // Create two threads, one for enqueuing and one for dequeueing
+  std::thread t1(enqueue_data_to_queue, std::ref(q), 5, std::ref(stop_flag));
+  std::thread t2(compute_average_from_queue, std::ref(q), std::ref(stop_flag));
+ 
+  t1.join();
+  t2.join(); 
   return 0;
 }
