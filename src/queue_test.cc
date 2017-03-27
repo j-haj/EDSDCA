@@ -2,6 +2,7 @@
 #include <mutex>
 #include <queue>
 #include <random>
+#include <thread>
 #include <vector>
 
 
@@ -48,7 +49,9 @@ bool locked_queue::enqueue_data(std::vector<double>& d) {
 
 std::vector<double> locked_queue::dequeue_data() {
   std::lock_guard<std::mutex> lock(this->m);
-  return this->q.pop();
+  std::vector<double> res = this->q.front();
+  this->q.pop();
+  return res;
 }
 
 
@@ -85,5 +88,7 @@ std::vector<double> create_data(size_t n, int low, int high) {
 //-----------------------------------------------------------------------------
 int main(int argc, char* argv[]) {
   locked_queue q(10);
+
+  
   return 0;
 }
