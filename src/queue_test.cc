@@ -1,7 +1,8 @@
 #include <iostream>
+#include <mutex>
 #include <queue>
-#include <vector>
 #include <random>
+#include <vector>
 
 
 /**
@@ -9,6 +10,47 @@
  * threads. The first thread is responsible for putting data onto the queue
  * while the other thread is responsible for taking data off the queue
  */
+
+struct locked_queue {
+  std::queue<std::vector<double>> q;
+  std::mutex m;
+  size_t size;
+
+  locked_queue(size_t n) : size(n) {
+    this->q = std::queue<std::vector<double>>();
+  }
+
+  /**
+   * Adds data @p d to queue @p q
+   *
+   * @param q a @p std::queue<std::vector<double>> that stores data @p d
+   * @param d a @p std::vector<double> of data to be added to queue @p q
+   *
+   * @return @p true if operation was successful, @p false otherwise
+   */
+  bool enqueue_data(std::vector<double>& d);
+
+  /**
+   * Takes data from queue @p q
+   *
+   * @param q @p std::queue<std::vector<double>> type queue containing data
+   *
+   * @return @p std::vector<double> of data popped from queue
+   */
+  std::vector<double> dequeue_data();
+};
+
+bool locked_queue::enqueue_data(std::vector<double>& d) {
+  std::lock_guard<std::mutex> log(this->m); 
+  this->q.push(d);
+  return true;
+}
+
+std::vector<double> locked_queue::dequeue_data() {
+  std::lock_guard<std::mutex> lock(this->m);
+  return this->q.pop();
+}
+
 
 /**
  * Creates a @p vector<double> of @p n data points selected randomly on the
@@ -37,33 +79,11 @@ std::vector<double> create_data(size_t n, int low, int high) {
   return v;
 }
 
-/**
- * Adds data @p d to queue @p q
- *
- * @param q a @p std::queue<std::vector<double>> that stores data @p d
- * @param d a @p std::vector<double> of data to be added to queue @p q
- *
- * @return @p true if operation was successful, @p false otherwise
- */
-bool enqueue_data(std::queue<std::vector<double>>& q, std::vector<double>& d) {
-  return false;
-}
-
-/**
- * Takes data from queue @p q
- *
- * @param q @p std::queue<std::vector<double>> type queue containing data
- *
- * @return @p true if successful, @p false otherwise
- */
-bool dequeue_data(std::queue<std::vector<double>>&q) {
-  return false;
-}
 
 // ----------------------------------------------------------------------------
 //  MAIN
 //-----------------------------------------------------------------------------
 int main(int argc, char* argv[]) {
-  std::cout << "Running async queue tests...\n";
+  locked_queue q(10);
   return 0;
 }
