@@ -13,6 +13,11 @@ ifeq ($(USE_CUDA), 1)
 	$(CFLAGS) += -DGPU=1
 endif
 
+# Test
+.PHONY: test
+test:
+	@echo "Needs to be implemented"
+
 # Clean up 
 .PHONY: clean
 clean:
