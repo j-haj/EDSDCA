@@ -222,12 +222,13 @@
 \maketitle
 
 \begin{abstract}
-  The abstract paragraph should be indented \nicefrac{1}{2}~inch
-  (3~picas) on both the left- and right-hand margins. Use 10~point
-  type, with a vertical spacing (leading) of 11~points.  The word
-  \textbf{Abstract} must be centered, bold, and in point size 12. Two
-  line spaces precede the abstract. The abstract must be limited to
-  one paragraph. This latex file is modified from the NIPS  2016 template. 
+%  The abstract paragraph should be indented \nicefrac{1}{2}~inch
+%  (3~picas) on both the left- and right-hand margins. Use 10~point
+%  type, with a vertical spacing (leading) of 11~points.  The word
+%  \textbf{Abstract} must be centered, bold, and in point size 12. Two
+%  line spaces precede the abstract. The abstract must be limited to
+%  one paragraph. This latex file is modified from the NIPS  2016 template. 
+To be completed after finishing the main contents of the proposal.
 \end{abstract}
 
 \section{Introduction}
@@ -296,7 +297,7 @@ processor or one computer very difficult to handle it properly.
 Then we review several related work of distributed optimization algorithms. In the existing literature, many distributed algorithms were developed on top of stochastic gradient descent (SGD), alternating direction method of multipliers (ADMM), and stochastic dual coordinate ascent (SDCA). The key idea of distributed SGD is calculating the stochastic gradient at the worker nodes according to the local information while performing parameter updates at the master node. On top of this idea, many approaches were proposed\cite{zinkevich2010parallelized,recht2011hogwild,agarwal2011distributed}. ADMM stems from \cite{gabay1976dual}, which was developed to solve equality constrained optimization problem. Recently, two independent work of stochastic ADMM were proposed\cite{ouyang2013stochastic,suzuki2013dual}. A standard reference for distributed ADMM is \cite{boyd2011distributed}. The advances of SDCA algorithms\cite{shalev2013stochastic} and its variant\cite{shalev2013accelerated,shalev2014accelerated,lin2014accelerated} enjoy faster convergence than SGD and ADMM, and the distributed SDCA (DisDCA)\cite{yang2013trading,yang2013analysis} was developed along with novel analysis of tradeoff between computation and communication.
 
 We will build off of work from [CITE YANG 1 \& 2], incorporating work from [CITE
-LI PS]. In [CITE YANG], SDCA is implemented in a distributed, syncrhonized
+LI PS]. In [CITE YANG], SDCA is implemented in a distributed, synchronized
 fashion. While the achieved results were quite promising, they did not take
 advantage of hardware acceleration or asynchronous communication. [CITE LI PS]
 builds an asynchronous communication framework using the concept of parameter
@@ -347,12 +348,14 @@ time that the asynchronous communciation frmaework.
 The second part of the implementation is building the asynchronous communication
 framework. This will be the most complex part of the implementation and require
 the most time and effort.
+\subsection{Comparisions with Other Methods}
+We plan to conduct the same experiments (with same baselines, same datasets) in \cite{yang2013trading} to compare our approach with existing approaches.
 
-\subsubsection*{Acknowledgments}
-
-Use unnumbered third level headings for the acknowledgments. All
-acknowledgments go at the end of the paper. Do not include
-acknowledgments in the anonymized submission, only in the final paper.
+%\subsubsection*{Acknowledgments}
+%
+%Use unnumbered third level headings for the acknowledgments. All
+%acknowledgments go at the end of the paper. Do not include
+%acknowledgments in the anonymized submission, only in the final paper.
 
 %\section*{References}
 
