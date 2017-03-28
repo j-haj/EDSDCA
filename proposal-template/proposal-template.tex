@@ -20,7 +20,158 @@
 \usepackage{amsfonts}       % blackboard math symbols
 \usepackage{nicefrac}       % compact symbols for 1/2, etc.
 \usepackage{microtype}      % microtypography
+\usepackage{amsmath}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{times}
+% For figures
+\usepackage{graphicx} % more modern
+%\usepackage{epsfig} % less modern
+\usepackage{subfigure} 
+%\usepackage{subcaption}
+% For citations
+\usepackage{natbib}
 
+\usepackage{amsmath, amsthm, amssymb, multirow, paralist}
+\newtheorem{thm}{Theorem}
+\newtheorem{prop}{Proposition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{cor}{Corollary}
+\newtheorem{definition}{Definition}
+%\newtheorem{ass}[thm]{Assumption}
+\newtheorem{assumption}{Assumption}
+\newtheorem{obs}{Observation}
+
+\usepackage{enumitem}
+\usepackage{booktabs}     
+\def \S {\mathbf{S}}
+\def \A {\mathcal{A}}
+\def \X {\mathcal{X}}
+\def \Ab {\bar{\A}}
+\def \R {\mathbb{R}}
+\def \Kt {\widetilde{K}}
+\def \k {\mathbf{k}}
+\def \w {\mathbf{w}}
+\def \v {\mathbf{v}}
+\def \t {\mathbf{t}}
+\def \x {\mathbf{x}}
+\def \Se {\mathcal{S}}
+\def \E {\mathrm{E}}
+\def \Rh {\widehat{R}}
+\def \x {\mathbf{x}}
+\def \p {\mathbf{p}}
+\def \a {\mathbf{a}}
+\def \diag {\mbox{diag}}
+\def \b {\mathbf{b}}
+\def \e {\mathbf{e}}
+\def \ba {\boldsymbol{\alpha}}
+\def \c {\mathbf{c}}
+\def \tr {\mbox{tr}}
+\def \d {\mathbf{d}}
+\def \z {\mathbf{z}}
+\def \s {\mathbf{s}}
+\def \bh {\widehat{b}}
+\def \y {\mathbf{y}}
+\def \u {\mathbf{u}}
+%\def \L {\mathcal{L}}
+\def \H {\mathcal{H}}
+\def \g {\mathbf{g}}
+\def \F {\mathcal{F}}
+\def \I {\mathbb{I}}
+\def \P {\mathcal{P}}
+\def \Q {\mathcal{Q}}
+\def \xh {\widehat{\x}}
+\def \wh {\widehat{\w}}
+\def \ah {\widehat{\alpha}}
+\def \Rc {\mathcal R}
+
+\def \Bh {\widehat B}
+\def \Ah {\widehat A}
+\def \Uh {\widehat U}
+\def \Ut {\widetilde U}
+\def \B {\mathbf B}
+\def \C {\mathbf C}
+\def \U {\mathbf U}
+\def \Kh {\widehat K}
+\def \fh {\widehat f}
+\def \yh {\widehat y}
+\def \Xh {\widehat{X}}
+\def \Fh {\widehat{F}}
+
+
+\def \y {\mathbf{y}}
+\def \E {\mathrm{E}}
+\def \x {\mathbf{x}}
+\def \g {\mathbf{g}}
+\def \D {\mathcal{D}}
+\def \z {\mathbf{z}}
+\def \u {\mathbf{u}}
+\def \H {\mathcal{H}}
+\def \Pc {\mathcal{P}}
+\def \w {\mathbf{w}}
+\def \r {\mathbf{r}}
+\def \R {\mathbb{R}}
+\def \S {\mathcal{S}}
+\def \regret {\mbox{regret}}
+\def \Uh {\widehat{U}}
+\def \Q {\mathcal{Q}}
+\def \W {\mathcal{W}}
+\def \N {\mathcal{N}}
+\def \A {\mathcal{A}}
+\def \q {\mathbf{q}}
+\def \v {\mathbf{v}}
+\def \M {\mathcal{M}}
+\def \c {\mathbf{c}}
+\def \ph {\widehat{p}}
+\def \d {\mathbf{d}}
+\def \p {\mathbf{p}}
+\def \q {\mathbf{q}}
+\def \db {\bar{\d}}
+\def \dbb {\bar{d}}
+\def \I {\mathcal{I}}
+\def \xt {\widetilde{\x}}
+\def \f {\mathbf{f}}
+\def \a {\mathbf{a}}
+\def \b {\mathbf{b}}
+\def \ft {\widetilde{\f}}
+\def \bt {\widetilde{\b}}
+\def \h {\mathbf{h}}
+\def \B {\mathbf{B}}
+\def \bts {\widetilde{b}}
+\def \fts {\widetilde{f}}
+\def \Gh {\widehat{G}}
+\def \G {\mathcal {G}}
+\def \bh {\widehat{b}}
+\def \fh {\widehat{f}}
+\def \wh {\widehat{\w}}
+\def \vb {\bar{v}}
+\def \zt {\widetilde{\z}}
+\def \zts {\widetilde{z}}
+\def \s {\mathbf{s}}
+\def \gh {\widehat{\g}}
+\def \vh {\widehat{\v}}
+\def \Sh {\widehat{S}}
+\def \rhoh {\widehat{\rho}}
+\def \hh {\widehat{\h}}
+\def \C {\mathcal{C}}
+\def \V {\mathcal{L}}
+\def \t {\mathbf{t}}
+\def \xh {\widehat{\x}}
+\def \Ut {\widetilde{U}}
+\def \wt {\widetilde{\w}}
+\def \Th {\widehat{T}}
+\def \Ot {\tilde{\mathcal{O}}}
+\def \X {\mathcal{X}}
+\def \nb {\widehat{\nabla}}
+\def \K {\mathcal{K}}
+\def \P {\mathbb{P}}
+\def \T {\mathcal{T}}
+\def \F {\mathcal{F}}
+\def \ft{\widetilde{f}}
+\def \xt {\widetilde{x}}
+\def \Rt {\mathcal{R}}
+\def \Rb {\bar{\Rt}}
+\def \wb {\bar{\w}}
 \title{Efficient Distributed Stochastic Dual Coordinate Ascent}
 
 % The \author macro works with any number of authors. There are two
@@ -80,116 +231,21 @@
 \end{abstract}
 
 \section{Introduction}
-What is the research problem that you are trying to tackle? Describe the background and motivation. 
+%What is the research problem that you are trying to tackle? Describe the background and motivation. 
+In recent years, we come into the big data era. Many large-scale machine learning problems, most of which are essentially optimization problems with huge magnitude of data size, need to be tackled. Two common countermeasures to deal with this are employing stochastic optimization algorithms, and utilizing computational resources in a parallel or distributed manner\cite{Boyd2011}. 
 
+In this paper, we consider a class of convex optimization problems with special structure, whose objective can be expressed as the sum of a finite sum of loss functions and a regularization function:
+\begin{equation}
+\label{RLM}
+	\min_{w\in\R^d}F(w), \text{where }P(w)=\frac{1}{n}\sum_{i=1}^{n}\phi(w^\top x_i,y_i)+\lambda g(w),
+\end{equation}
+where $w\in\R^d$ denotes the weight vector, $(x_i,y_i),x_i\in\R^d,y_i\in\R$, $i=1,\ldots,n$ are training data, $\lambda>0$ is a regularization parameter, $\phi(z,y)$ is a convex function of $z$, and $g(w)$ is a convex function of $w$. We refer to the problem in \ref{RLM} as Regularized Finite Sum Minimization (RFSM) problem. When $g(w)=0$, the problem reduces to the Finite Sum Minimization (FSM) problem.
+
+Both RFSM and FSM problem have been extensively studied in machine learning and optimization literature. When $n$ is large, various stochastic optimization algorithms were proposed\cite{Bottou2010,nemirovski2009robust}.  
 \section{Related Work}
 \label{gen_inst}
 Are there any related work? If yes, review them and discuss their deficiencies and how your proposed work can potentially address their issues.  
 
-\subsection{Citations within the text}
-
-The \verb+natbib+ package will be loaded for you by default.
-Citations may be author/year or numeric, as long as you maintain
-internal consistency.  As to the format of the references themselves,
-any style is acceptable as long as it is used consistently.
-
-The documentation for \verb+natbib+ may be found at
-\begin{center}
-  \url{http://mirrors.ctan.org/macros/latex/contrib/natbib/natnotes.pdf}
-\end{center}
-Of note is the command \verb+\citet+, which produces citations
-appropriate for use in inline text.  For example,
-\begin{verbatim}
-   \citet{hasselmo} investigated\dots
-\end{verbatim}
-produces
-\begin{quote}
-  Hasselmo, et al.\ (1995) investigated\dots
-\end{quote}
-
-If you wish to load the \verb+natbib+ package with options, you may
-add the following before loading the \verb+nips_2016+ package:
-\begin{verbatim}
-   \PassOptionsToPackage{options}{natbib}
-\end{verbatim}
-
-If \verb+natbib+ clashes with another package you load, you can add
-the optional argument \verb+nonatbib+ when loading the style file:
-\begin{verbatim}
-   \usepackage[nonatbib]{nips_2016}
-\end{verbatim}
-
-As submission is double blind, refer to your own published work in the
-third person. That is, use ``In the previous work of Jones et
-al.\ [4],'' not ``In our previous work [4].'' If you cite your other
-papers that are not widely available (e.g., a journal paper under
-review), use anonymous author names in the citation, e.g., an author
-of the form ``A.\ Anonymous.''
-
-\subsection{Footnotes}
-
-Footnotes should be used sparingly.  If you do require a footnote,
-indicate footnotes with a number\footnote{Sample of the first
-  footnote.} in the text. Place the footnotes at the bottom of the
-page on which they appear.  Precede the footnote with a horizontal
-rule of 2~inches (12~picas).
-
-Note that footnotes are properly typeset \emph{after} punctuation
-marks.\footnote{As in this example.}
-
-\subsection{Figures}
-
-All artwork must be neat, clean, and legible. Lines should be dark
-enough for purposes of reproduction. The figure number and caption
-always appear after the figure. Place one line space before the figure
-caption and one line space after the figure. The figure caption should
-be lower case (except for first word and proper nouns); figures are
-numbered consecutively.
-
-You may use color figures.  However, it is best for the figure
-captions and the paper body to be legible if the paper is printed in
-either black/white or in color.
-\begin{figure}[h]
-  \centering
-  \fbox{\rule[-.5cm]{0cm}{4cm} \rule[-.5cm]{4cm}{0cm}}
-  \caption{Sample figure caption.}
-\end{figure}
-
-\subsection{Tables}
-
-All tables must be centered, neat, clean and legible.  The table
-number and title always appear before the table.  See
-Table~\ref{sample-table}.
-
-Place one line space before the table title, one line space after the
-table title, and one line space after the table. The table title must
-be lower case (except for first word and proper nouns); tables are
-numbered consecutively.
-
-Note that publication-quality tables \emph{do not contain vertical
-  rules.} We strongly suggest the use of the \verb+booktabs+ package,
-which allows for typesetting high-quality, professional tables:
-\begin{center}
-  \url{https://www.ctan.org/pkg/booktabs}
-\end{center}
-This package was used to typeset Table~\ref{sample-table}.
-
-\begin{table}[t]
-  \caption{Sample table title}
-  \label{sample-table}
-  \centering
-  \begin{tabular}{lll}
-    \toprule
-    \multicolumn{2}{c}{Part}                   \\
-    \cmidrule{1-2}
-    Name     & Description     & Size ($\mu$m) \\
-    \midrule
-    Dendrite & Input terminal  & $\sim$100     \\
-    Axon     & Output terminal & $\sim$10      \\
-    Soma     & Cell body       & up to $10^6$  \\
-    \bottomrule
-  \end{tabular}
-\end{table}
 
 \section{The Proposed Work}
 Describe your proposed work in this section. 
@@ -206,7 +262,7 @@ Use unnumbered third level headings for the acknowledgments. All
 acknowledgments go at the end of the paper. Do not include
 acknowledgments in the anonymized submission, only in the final paper.
 
-\section*{References}
+%\section*{References}
 
 %References follow the acknowledgments. Use unnumbered first-level
 %heading for the references. Any choice of citation style is acceptable
@@ -231,7 +287,7 @@ acknowledgments in the anonymized submission, only in the final paper.
 %modulation in rat hippocampal region CA3. {\it Journal of
 %  Neuroscience} {\bf 15}(7):5249-5262.
 %123~\cite{Bolte:2006:LIN:1328019.1328299},\cite{banerjee2007generalized}\cite{zhangcs14}\cite{shalev2016sdca}\cite{yang2013trading}
-123~\cite{Shalev-Shwartz2016a} is a good approach
+%123~\cite{Shalev-Shwartz2016a} is a good approach
 \bibliography{courseProject}
 \bibliographystyle{abbrv}
 \end{document}

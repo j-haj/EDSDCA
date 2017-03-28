@@ -1,9 +1,19 @@
 \begin{thebibliography}{1}
 
-\bibitem{Shalev-Shwartz2016a}
-S.~Shalev-Shwartz.
-\newblock {SDCA without Duality, Regularization, and Individual Convexity}.
-\newblock {\em Proceedings of The 33rd International Conference on Machine
-  Learning}, 48:747--754, 2016.
+\bibitem{Bottou2010}
+L.~Bottou.
+\newblock {Large-Scale Machine Learning with Stochastic Gradient Descent}.
+\newblock {\em Proceedings of COMPSTAT'2010}, pages 177--186, 2010.
+
+\bibitem{Boyd2011}
+S.~P. Boyd.
+\newblock {Distributed optimization and statistical learning via the
+  alternating direction method of multipliers}.
+\newblock page 126 p., 2011.
+
+\bibitem{nemirovski2009robust}
+A.~Nemirovski, A.~Juditsky, G.~Lan, and A.~Shapiro.
+\newblock Robust stochastic approximation approach to stochastic programming.
+\newblock {\em SIAM Journal on optimization}, 19(4):1574--1609, 2009.
 
 \end{thebibliography}
