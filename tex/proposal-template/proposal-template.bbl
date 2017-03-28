@@ -31,6 +31,12 @@ A.~Defazio, F.~Bach, and S.~Lacoste-Julien.
 \newblock In {\em Advances in Neural Information Processing Systems}, pages
   1646--1654, 2014.
 
+\bibitem{Defazio2014}
+A.~Defazio, F.~Bach, and S.~Lacoste-Julien.
+\newblock {SAGA: A Fast Incremental Gradient Method With Support for
+  Non-Strongly Convex Composite Objectives}.
+\newblock {\em Nips}, pages 1--12, 2014.
+
 \bibitem{johnson2013accelerating}
 R.~Johnson and T.~Zhang.
 \newblock Accelerating stochastic gradient descent using predictive variance
