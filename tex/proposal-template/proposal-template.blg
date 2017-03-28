@@ -3,44 +3,53 @@ Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: proposal-template.aux
 The style file: abbrv.bst
 Database file #1: courseProject.bib
-You've used 22 entries,
+Repeated entry---line 479 of file courseProject.bib
+ : @inproceedings{zinkevich2010parallelized
+ :                                         ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 486 of file courseProject.bib
+ : @inproceedings{recht2011hogwild
+ :                                ,
+I'm skipping whatever remains of this entry
+You've used 25 entries,
             2118 wiz_defined-function locations,
-            611 strings with 7201 characters,
-and the built_in function-call counts, 9328 in all, are:
-= -- 960
-> -- 337
-< -- 15
-+ -- 137
-- -- 110
-* -- 570
-:= -- 1368
-add.period$ -- 67
-call.type$ -- 22
-change.case$ -- 120
+            626 strings with 7680 characters,
+and the built_in function-call counts, 10398 in all, are:
+= -- 1067
+> -- 386
+< -- 16
++ -- 157
+- -- 126
+* -- 639
+:= -- 1539
+add.period$ -- 76
+call.type$ -- 25
+change.case$ -- 137
 chr.to.int$ -- 0
-cite$ -- 22
-duplicate$ -- 422
-empty$ -- 782
-format.name$ -- 110
-if$ -- 2091
+cite$ -- 25
+duplicate$ -- 466
+empty$ -- 865
+format.name$ -- 126
+if$ -- 2319
 int.to.chr$ -- 0
-int.to.str$ -- 22
-missing$ -- 22
-newline$ -- 113
-num.names$ -- 44
-pop$ -- 152
+int.to.str$ -- 25
+missing$ -- 25
+newline$ -- 128
+num.names$ -- 50
+pop$ -- 170
 preamble$ -- 1
-purify$ -- 98
+purify$ -- 112
 quote$ -- 0
-skip$ -- 361
+skip$ -- 397
 stack$ -- 0
-substring$ -- 739
-swap$ -- 174
-text.length$ -- 15
+substring$ -- 806
+swap$ -- 187
+text.length$ -- 16
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 88
+type$ -- 100
 warning$ -- 0
-while$ -- 99
-width$ -- 24
-write$ -- 243
+while$ -- 110
+width$ -- 27
+write$ -- 275
+(There were 2 error messages)

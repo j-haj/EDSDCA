@@ -1,5 +1,11 @@
 \begin{thebibliography}{10}
 
+\bibitem{agarwal2011distributed}
+A.~Agarwal and J.~C. Duchi.
+\newblock Distributed delayed stochastic optimization.
+\newblock In {\em Advances in Neural Information Processing Systems}, pages
+  873--881, 2011.
+
 \bibitem{allen2016katyusha}
 Z.~Allen-Zhu.
 \newblock Katyusha: Accelerated variance reduction for faster sgd.
@@ -36,6 +42,12 @@ A.~Defazio, F.~Bach, and S.~Lacoste-Julien.
 \newblock {SAGA: A Fast Incremental Gradient Method With Support for
   Non-Strongly Convex Composite Objectives}.
 \newblock {\em Nips}, pages 1--12, 2014.
+
+\bibitem{gabay1976dual}
+D.~Gabay and B.~Mercier.
+\newblock A dual algorithm for the solution of nonlinear variational problems
+  via finite element approximation.
+\newblock {\em Computers \& Mathematics with Applications}, 2(1):17--40, 1976.
 
 \bibitem{johnson2013accelerating}
 R.~Johnson and T.~Zhang.
@@ -115,6 +127,11 @@ T.~Yang.
   coordinate ascent.
 \newblock In {\em Advances in Neural Information Processing Systems}, pages
   629--637, 2013.
+
+\bibitem{yang2013analysis}
+T.~Yang, S.~Zhu, R.~Jin, and Y.~Lin.
+\newblock Analysis of distributed stochastic dual coordinate ascent.
+\newblock {\em arXiv preprint arXiv:1312.1031}, 2013.
 
 \bibitem{zhang2014asynchronous}
 R.~Zhang and J.~T. Kwok.
