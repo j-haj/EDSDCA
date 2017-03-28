@@ -294,9 +294,24 @@ nowadays the size of data increases at a rapid speed, which makes one-core
 processor or one computer very difficult to handle it properly. 
 
 
-Then we review several related work of distributed optimization algorithms. In the existing literature, many distributed algorithms were developed on top of stochastic gradient descent (SGD), alternating direction method of multipliers (ADMM), and stochastic dual coordinate ascent (SDCA). The key idea of distributed SGD is calculating the stochastic gradient at the worker nodes according to the local information while performing parameter updates at the master node. On top of this idea, many approaches were proposed\cite{zinkevich2010parallelized,recht2011hogwild,agarwal2011distributed}. ADMM stems from \cite{gabay1976dual}, which was developed to solve equality constrained optimization problem. Recently, two independent work of stochastic ADMM were proposed\cite{ouyang2013stochastic,suzuki2013dual}. A standard reference for distributed ADMM is \cite{boyd2011distributed}. The advances of SDCA algorithms\cite{shalev2013stochastic} and its variant\cite{shalev2013accelerated,shalev2014accelerated,lin2014accelerated} enjoy faster convergence than SGD and ADMM, and the distributed SDCA (DisDCA)\cite{yang2013trading,yang2013analysis} was developed along with novel analysis of tradeoff between computation and communication.
+Then we review several related work of distributed optimization algorithms. In
+the existing literature, many distributed algorithms were developed on top of
+stochastic gradient descent (SGD), alternating direction method of multipliers
+(ADMM), and stochastic dual coordinate ascent (SDCA). The key idea of
+distributed SGD is calculating the stochastic gradient at the worker nodes
+according to the local information while performing parameter updates at the
+master node. On top of this idea, many approaches were
+proposed\cite{zinkevich2010parallelized,recht2011hogwild,agarwal2011distributed}.
+ADMM stems from \cite{gabay1976dual}, which was developed to solve equality
+constrained optimization problem. Recently, two independent work of stochastic
+ADMM were proposed\cite{ouyang2013stochastic,suzuki2013dual}. A standard
+reference for distributed ADMM is \cite{boyd2011distributed}. The advances of
+SDCA algorithms\cite{shalev2013stochastic} and its
+variant\cite{shalev2013accelerated,shalev2014accelerated,lin2014accelerated}
+enjoy faster convergence than SGD and ADMM, and the distributed SDCA
+(DisDCA)\cite{yang2013trading,yang2013analysis} was developed along with novel
+analysis of tradeoff between computation and communication.
 
-<<<<<<< HEAD
 We will build off of work from\cite{yang2013trading}, incorporating work
 from\cite{li2014scaling}. In\cite{yang2013trading}, SDCA is implemented in a
 distributed, synchronized fashion. While the achieved results were quite
