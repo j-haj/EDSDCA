@@ -231,6 +231,7 @@
 \end{abstract}
 
 \section{Introduction}
+
 %What is the research problem that you are trying to tackle? Describe the background and motivation. 
 In recent years, we come into the big data era. Many large-scale machine learning problems, most of which are essentially optimization problems with huge magnitude of data size, need to be tackled. Two common countermeasures to deal with this are employing stochastic optimization algorithms, and utilizing computational resources in a parallel or distributed manner\cite{boyd2011distributed}. 
 
@@ -248,13 +249,53 @@ Are there any related work? If yes, review them and discuss their deficiencies a
 
 
 \section{The Proposed Work}
-Describe your proposed work in this section. 
+We propose approaching this problem from two angles: a theory perspective
+and an engineering perspective. On the theory side we can make guarantees on the
+theoretical convergence of our proposed approach, while on the engineering side
+we build a system that can scale to large data, is robust to failure, and takes
+advantage of hardware to accelerators.
 
+\subsection{Theory}
+We leave it to the reader to complete the remaining theory as an exercise.
 
+\subsection{Implementation}
+The implemtnation takes advantage of a distributed computing environment where
+there are copmuters connected via network and each node has access to a GPU that
+is CUDA-compatible. Network communication is handled via MPI while CUDA is used
+to handle accelerating math operations via the GPU.
+
+\subsubsection{GPU}
+Where possible, GPU accelaration is used.  We will attempt to make the math
+operations of SDCA as efficient as possible via CUDA programming and being
+selective with the amount of data transfers we perform to and from the GPU. This
+will involve leaving some data on the GPU that will be reused, rather than
+offloading the data to RAM and then reloading back to the GPU for the next set
+of operations.
+
+\subsubsection{Asynchronous Communication}
+In addition to taking advantage of GPUs, we will implement an asynchronous
+communication framework via MPI and C++ threads. The network architecture will
+take advantage of a parameter server to handle parameter updates, while the
+worker nodes will run asynchronously, communicating to the parameter server at
+various intervals determined by their progress in their calculations. Threading
+and queues will be used to implement the asynchronous communication, preventing
+any blocking calls to the parameter server. The ansyncrhonous nature of the
+updates is important as the size of the system scales, and network contention
+increases.
 
 \section{Plan}
-Describe your plan for the project. What data you are going to use to evaluate your methods? What are the baselines that you want to compare? How will you develop your methods?   A timeline with important milestones is always perferred. 
+We are going to work in parallel on the theory and implementation aspects of the
+project.
+\subsection{Theory}
 
+\subsection{Implementation}
+The first part of the implementation will be developing the CUDA kernels for
+core computations performed during SDCA. These will be mostly unoptimized, as
+the focus will be first on correctness.
+
+After the CUDA kernels are written, work on the asyncrhonous communication
+framework will begin. This is the more complex portion of the implementation and
+will require quite a bit of time to implement.
 
 \subsubsection*{Acknowledgments}
 
