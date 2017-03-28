@@ -3,44 +3,44 @@ Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: proposal-template.aux
 The style file: abbrv.bst
 Database file #1: courseProject.bib
-You've used 13 entries,
+You've used 21 entries,
             2118 wiz_defined-function locations,
-            568 strings with 5803 characters,
-and the built_in function-call counts, 5213 in all, are:
-= -- 535
-> -- 192
-< -- 7
-+ -- 78
-- -- 62
-* -- 327
-:= -- 787
-add.period$ -- 40
-call.type$ -- 13
-change.case$ -- 70
+            605 strings with 7016 characters,
+and the built_in function-call counts, 8940 in all, are:
+= -- 920
+> -- 319
+< -- 14
++ -- 130
+- -- 104
+* -- 545
+:= -- 1306
+add.period$ -- 64
+call.type$ -- 21
+change.case$ -- 114
 chr.to.int$ -- 0
-cite$ -- 13
-duplicate$ -- 228
-empty$ -- 435
-format.name$ -- 62
-if$ -- 1151
+cite$ -- 21
+duplicate$ -- 406
+empty$ -- 755
+format.name$ -- 104
+if$ -- 2007
 int.to.chr$ -- 0
-int.to.str$ -- 13
-missing$ -- 13
-newline$ -- 68
-num.names$ -- 26
-pop$ -- 83
+int.to.str$ -- 21
+missing$ -- 21
+newline$ -- 108
+num.names$ -- 42
+pop$ -- 146
 preamble$ -- 1
-purify$ -- 57
+purify$ -- 93
 quote$ -- 0
-skip$ -- 189
+skip$ -- 348
 stack$ -- 0
-substring$ -- 406
-swap$ -- 84
-text.length$ -- 7
+substring$ -- 715
+swap$ -- 168
+text.length$ -- 14
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 52
+type$ -- 84
 warning$ -- 0
-while$ -- 55
-width$ -- 15
-write$ -- 144
+while$ -- 94
+width$ -- 23
+write$ -- 232

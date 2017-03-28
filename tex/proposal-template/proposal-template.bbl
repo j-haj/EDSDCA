@@ -18,6 +18,12 @@ S.~Boyd, N.~Parikh, E.~Chu, B.~Peleato, and J.~Eckstein.
 \newblock {\em Foundations and Trends{\textregistered} in Machine Learning},
   3(1):1--122, 2011.
 
+\bibitem{defazio2016simple}
+A.~Defazio.
+\newblock A simple practical accelerated method for finite sums.
+\newblock In {\em Advances In Neural Information Processing Systems}, pages
+  676--684, 2016.
+
 \bibitem{defazio2014saga}
 A.~Defazio, F.~Bach, and S.~Lacoste-Julien.
 \newblock Saga: A fast incremental gradient method with support for
@@ -48,6 +54,25 @@ A.~Nemirovski, A.~Juditsky, G.~Lan, and A.~Shapiro.
 \newblock Robust stochastic approximation approach to stochastic programming.
 \newblock {\em SIAM Journal on optimization}, 19(4):1574--1609, 2009.
 
+\bibitem{ouyang2013stochastic}
+H.~Ouyang, N.~He, L.~Tran, and A.~G. Gray.
+\newblock Stochastic alternating direction method of multipliers.
+\newblock {\em ICML (1)}, 28:80--88, 2013.
+
+\bibitem{recht2011hogwild}
+B.~Recht, C.~Re, S.~Wright, and F.~Niu.
+\newblock Hogwild: A lock-free approach to parallelizing stochastic gradient
+  descent.
+\newblock In {\em Advances in Neural Information Processing Systems}, pages
+  693--701, 2011.
+
+\bibitem{roux2012stochastic}
+N.~L. Roux, M.~Schmidt, and F.~R. Bach.
+\newblock A stochastic gradient method with an exponential convergence \_rate
+  for finite training sets.
+\newblock In {\em Advances in Neural Information Processing Systems}, pages
+  2663--2671, 2012.
+
 \bibitem{shalev2013accelerated}
 S.~Shalev-Shwartz and T.~Zhang.
 \newblock Accelerated mini-batch stochastic dual coordinate ascent.
@@ -66,16 +91,40 @@ S.~Shalev-Shwartz and T.~Zhang.
   regularized loss minimization.
 \newblock In {\em ICML}, pages 64--72, 2014.
 
+\bibitem{suzuki2013dual}
+T.~Suzuki et~al.
+\newblock Dual averaging and proximal gradient descent for online alternating
+  direction multiplier method.
+\newblock In {\em ICML (1)}, pages 392--400, 2013.
+
 \bibitem{xiao2014proximal}
 L.~Xiao and T.~Zhang.
 \newblock A proximal stochastic gradient method with progressive variance
   reduction.
 \newblock {\em SIAM Journal on Optimization}, 24(4):2057--2075, 2014.
 
+\bibitem{yang2013trading}
+T.~Yang.
+\newblock Trading computation for communication: Distributed stochastic dual
+  coordinate ascent.
+\newblock In {\em Advances in Neural Information Processing Systems}, pages
+  629--637, 2013.
+
+\bibitem{zhang2014asynchronous}
+R.~Zhang and J.~T. Kwok.
+\newblock Asynchronous distributed admm for consensus optimization.
+\newblock In {\em ICML}, pages 1701--1709, 2014.
+
 \bibitem{zhang2015stochastic}
 Y.~Zhang and X.~Lin.
 \newblock Stochastic primal-dual coordinate method for regularized empirical
   risk minimization.
 \newblock In {\em ICML}, pages 353--361, 2015.
+
+\bibitem{zinkevich2010parallelized}
+M.~Zinkevich, M.~Weimer, L.~Li, and A.~J. Smola.
+\newblock Parallelized stochastic gradient descent.
+\newblock In {\em Advances in neural information processing systems}, pages
+  2595--2603, 2010.
 
 \end{thebibliography}
