@@ -232,20 +232,65 @@
 
 \section{Introduction}
 %What is the research problem that you are trying to tackle? Describe the background and motivation. 
-In recent years, we come into the big data era. Many large-scale machine learning problems, most of which are essentially optimization problems with huge magnitude of data size, need to be tackled. Two common countermeasures to deal with this are employing stochastic optimization algorithms, and utilizing computational resources in a parallel or distributed manner\cite{boyd2011distributed}. 
+In recent years, we come into the big data era. Many large-scale machine
+learning problems, most of which are essentially optimization problems with huge
+magnitude of data size, need to be tackled. Two common countermeasures to deal
+with this are employing stochastic optimization algorithms, and utilizing
+computational resources in a parallel or distributed
+manner\cite{boyd2011distributed}. 
 
-In this paper, we consider a class of convex optimization problems with special structure, whose objective can be expressed as the sum of a finite sum of loss functions and a regularization function:
-\begin{equation}
+In this paper, we consider a class of convex optimization problems with special
+structure, whose objective can be expressed as the sum of a finite sum of loss
+functions and a regularization function: \begin{equation}
 \label{RLM}
 	\min_{w\in\R^d}F(w), \text{where }P(w)=\frac{1}{n}\sum_{i=1}^{n}\phi(w^\top x_i,y_i)+\lambda g(w),
 \end{equation}
-where $w\in\R^d$ denotes the weight vector, $(x_i,y_i),x_i\in\R^d,y_i\in\R$, $i=1,\ldots,n$ are training data, $\lambda>0$ is a regularization parameter, $\phi(z,y)$ is a convex function of $z$, and $g(w)$ is a convex function of $w$. We refer to the problem in (\ref{RLM}) as Regularized Finite Sum Minimization (RFSM) problem. When $g(w)=0$, the problem reduces to the Finite Sum Minimization (FSM) problem.
+where $w\in\R^d$ denotes the weight vector, $(x_i,y_i),x_i\in\R^d,y_i\in\R$,
+$i=1,\ldots,n$ are training data, $\lambda>0$ is a regularization parameter,
+$\phi(z,y)$ is a convex function of $z$, and $g(w)$ is a convex function of $w$.
+We refer to the problem in (\ref{RLM}) as Regularized Finite Sum Minimization
+(RFSM) problem. When $g(w)=0$, the problem reduces to the Finite Sum
+Minimization (FSM) problem.
 
-Both RFSM and FSM problems have been extensively studied in machine learning and optimization literature. When $n$ is large, numerous sequential stochastic optimization algorithms were proposed\cite{bottou2010large,roux2012stochastic,nemirovski2009robust,shalev2013stochastic,shalev2013accelerated,johnson2013accelerating,ouyang2013stochastic, suzuki2013dual,shalev2014accelerated,xiao2014proximal,defazio2014saga,zhang2015stochastic,lin2014accelerated,defazio2016simple,allen2016katyusha,lan2015optimal}, and there also exist several parallel or distributed stochastic algorithms\cite{boyd2011distributed,recht2011hogwild,zinkevich2010parallelized,yang2013trading,zhang2014asynchronous}. Specifically, S. Shalv-Shwartz and T. Zhang \cite{shalev2013stochastic} proposed an Stochastic Dual Coordinate Ascent (SDCA) which provided strongly theoretical guarantee regarding the duality gap. T. Yang \cite{yang2013trading} developed a Distributed Stochastic Dual Coordinate Ascent (DisDCA) algorithm and its practical variant, and analyzed the tradeoff between communication and computation. However, to get a more efficient distributed SDCA is a open problem. In this paper, we first provide a GPU implementation of the vanilla distributed SDCA\cite{yang2013trading}, and then give an asynchronous distributed SDCA to make full use of computational resources. 
+Both RFSM and FSM problems have been extensively studied in machine learning and
+optimization literature. When $n$ is large, numerous sequential stochastic
+optimization algorithms were
+proposed\cite{bottou2010large,roux2012stochastic,nemirovski2009robust,shalev2013stochastic,shalev2013accelerated,johnson2013accelerating,ouyang2013stochastic,
+suzuki2013dual,shalev2014accelerated,xiao2014proximal,defazio2014saga,zhang2015stochastic,lin2014accelerated,defazio2016simple,allen2016katyusha,lan2015optimal},
+and there also exist several parallel or distributed stochastic
+algorithms\cite{boyd2011distributed,recht2011hogwild,zinkevich2010parallelized,yang2013trading,zhang2014asynchronous}.
+Specifically, S. Shalv-Shwartz and T. Zhang \cite{shalev2013stochastic} proposed
+an Stochastic Dual Coordinate Ascent (SDCA) which provided strongly theoretical
+guarantee regarding the duality gap. T. Yang \cite{yang2013trading} developed a
+Distributed Stochastic Dual Coordinate Ascent (DisDCA) algorithm and its
+practical variant, and analyzed the tradeoff between communication and
+computation. However, to get a more efficient distributed SDCA is a open
+problem. In this paper, we first provide a GPU implementation of the vanilla
+distributed SDCA\cite{yang2013trading}, and then give an asynchronous
+distributed SDCA to make full use of computational resources. 
+
 \section{Related Work}
 \label{gen_inst}
-%Are there any related work? If yes, review them and discuss their deficiencies and how your proposed work can potentially address their issues.  
-First we review the related work of sequential stochastic convex optimization for solving FSM and RFSM problems. The first numerical scheme of stochastic optimization stems from stochastic gradient descent (SGD)\cite{bottou2010large,nemirovski2009robust}, which was designed to avoid the calculation of full gradient and gets faster convergence than gradient descent (GD). To improve the converge rate of SGD, many new algorithms were proposed by exploiting the finite sum structure, including the Stochastic Average Gradient (SAG)\cite{roux2012stochastic}, Stochastic Dual Coordinate Ascent (SDCA)\cite{shalev2013stochastic}, Stochastic Variance Reduced Gradient (SVRG)\cite{johnson2013accelerating}, Accelerated Proximal Coordinate method (APCG)\cite{lin2014accelerated},  SAGA\cite{Defazio2014}, Prox-SDCA\cite{shalev2014accelerated}, Prox-SVRG\cite{xiao2014proximal}, and Stochastic Primal-dual Coordinate method (SPDC)\cite{zhang2015stochastic}. Recently, the optimal first-order stochastic optimization method were developed\cite{allen2016katyusha,lan2015optimal}. Although there exist rich literature studying sequential stochastic optimization with strong theoretical guarantee, less efforts have been devoted to considering them in a parallel or distributed manner. It constitutes a huge gap between theory and practice, since nowadays the size of data increases at a rapid speed, which makes one-core processor very difficult to handle it properly.
+First we review the related work of sequential stochastic convex optimization
+for solving FSM and RFSM problems. The first numerical scheme of stochastic
+optimization stems from stochastic gradient descent
+(SGD)\cite{bottou2010large,nemirovski2009robust}, which was designed to avoid
+the calculation of full gradient and gets faster convergence than gradient
+descent (GD). To improve the converge rate of SGD, many new algorithms were
+proposed by exploiting the finite sum structure, including the Stochastic
+Average Gradient (SAG)\cite{roux2012stochastic}, Stochastic Dual Coordinate
+Ascent (SDCA)\cite{shalev2013stochastic}, Stochastic Variance Reduced Gradient
+(SVRG)\cite{johnson2013accelerating}, Accelerated Proximal Coordinate method
+(APCG)\cite{lin2014accelerated},  SAGA\cite{Defazio2014},
+Prox-SDCA\cite{shalev2014accelerated}, Prox-SVRG\cite{xiao2014proximal}, and
+Stochastic Primal-dual Coordinate method (SPDC)\cite{zhang2015stochastic}.
+Recently, the optimal first-order stochastic optimization method were
+developed\cite{allen2016katyusha,lan2015optimal}. Although there exist rich
+literature studying sequential stochastic optimization with strong theoretical
+guarantee, less efforts have been devoted to considering them in a parallel or
+distributed manner. It constitutes a huge gap between theory and practice, since
+nowadays the size of data increases at a rapid speed, which makes one-core
+processor very difficult to handle it properly.
 
 Now we focus on some related work of distributed optimization.
 
@@ -255,7 +300,10 @@ Describe your proposed work in this section.
 
 
 \section{Plan}
-Describe your plan for the project. What data you are going to use to evaluate your methods? What are the baselines that you want to compare? How will you develop your methods?   A timeline with important milestones is always perferred. 
+Describe your plan for the project. What data you are going to use to evaluate
+your methods? What are the baselines that you want to compare? How will you
+develop your methods?   A timeline with important milestones is always
+perferred. 
 
 
 \subsubsection*{Acknowledgments}
