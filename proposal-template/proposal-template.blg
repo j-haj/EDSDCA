@@ -3,46 +3,44 @@ Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: proposal-template.aux
 The style file: abbrv.bst
 Database file #1: courseProject.bib
-Warning--empty journal in Boyd2011
-You've used 3 entries,
+You've used 13 entries,
             2118 wiz_defined-function locations,
-            518 strings with 4236 characters,
-and the built_in function-call counts, 1169 in all, are:
-= -- 123
-> -- 37
-< -- 2
-+ -- 15
-- -- 12
-* -- 69
-:= -- 180
-add.period$ -- 9
-call.type$ -- 3
-change.case$ -- 15
+            568 strings with 5803 characters,
+and the built_in function-call counts, 5213 in all, are:
+= -- 535
+> -- 192
+< -- 7
++ -- 78
+- -- 62
+* -- 327
+:= -- 787
+add.period$ -- 40
+call.type$ -- 13
+change.case$ -- 70
 chr.to.int$ -- 0
-cite$ -- 4
-duplicate$ -- 55
-empty$ -- 88
-format.name$ -- 12
-if$ -- 257
+cite$ -- 13
+duplicate$ -- 228
+empty$ -- 435
+format.name$ -- 62
+if$ -- 1151
 int.to.chr$ -- 0
-int.to.str$ -- 3
-missing$ -- 3
-newline$ -- 18
-num.names$ -- 6
-pop$ -- 16
+int.to.str$ -- 13
+missing$ -- 13
+newline$ -- 68
+num.names$ -- 26
+pop$ -- 83
 preamble$ -- 1
-purify$ -- 12
+purify$ -- 57
 quote$ -- 0
-skip$ -- 50
+skip$ -- 189
 stack$ -- 0
-substring$ -- 90
-swap$ -- 24
-text.length$ -- 2
+substring$ -- 406
+swap$ -- 84
+text.length$ -- 7
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 12
-warning$ -- 1
-while$ -- 12
-width$ -- 4
-write$ -- 34
-(There was 1 warning)
+type$ -- 52
+warning$ -- 0
+while$ -- 55
+width$ -- 15
+write$ -- 144

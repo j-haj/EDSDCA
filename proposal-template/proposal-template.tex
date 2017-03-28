@@ -232,16 +232,16 @@
 
 \section{Introduction}
 %What is the research problem that you are trying to tackle? Describe the background and motivation. 
-In recent years, we come into the big data era. Many large-scale machine learning problems, most of which are essentially optimization problems with huge magnitude of data size, need to be tackled. Two common countermeasures to deal with this are employing stochastic optimization algorithms, and utilizing computational resources in a parallel or distributed manner\cite{Boyd2011}. 
+In recent years, we come into the big data era. Many large-scale machine learning problems, most of which are essentially optimization problems with huge magnitude of data size, need to be tackled. Two common countermeasures to deal with this are employing stochastic optimization algorithms, and utilizing computational resources in a parallel or distributed manner\cite{boyd2011distributed}. 
 
 In this paper, we consider a class of convex optimization problems with special structure, whose objective can be expressed as the sum of a finite sum of loss functions and a regularization function:
 \begin{equation}
 \label{RLM}
 	\min_{w\in\R^d}F(w), \text{where }P(w)=\frac{1}{n}\sum_{i=1}^{n}\phi(w^\top x_i,y_i)+\lambda g(w),
 \end{equation}
-where $w\in\R^d$ denotes the weight vector, $(x_i,y_i),x_i\in\R^d,y_i\in\R$, $i=1,\ldots,n$ are training data, $\lambda>0$ is a regularization parameter, $\phi(z,y)$ is a convex function of $z$, and $g(w)$ is a convex function of $w$. We refer to the problem in \ref{RLM} as Regularized Finite Sum Minimization (RFSM) problem. When $g(w)=0$, the problem reduces to the Finite Sum Minimization (FSM) problem.
+where $w\in\R^d$ denotes the weight vector, $(x_i,y_i),x_i\in\R^d,y_i\in\R$, $i=1,\ldots,n$ are training data, $\lambda>0$ is a regularization parameter, $\phi(z,y)$ is a convex function of $z$, and $g(w)$ is a convex function of $w$. We refer to the problem in (\ref{RLM}) as Regularized Finite Sum Minimization (RFSM) problem. When $g(w)=0$, the problem reduces to the Finite Sum Minimization (FSM) problem.
 
-Both RFSM and FSM problem have been extensively studied in machine learning and optimization literature. When $n$ is large, various stochastic optimization algorithms were proposed\cite{Bottou2010,nemirovski2009robust}.  
+Both RFSM and FSM problems have been extensively studied in machine learning and optimization literature. When $n$ is large, numerous stochastic optimization algorithms were proposed\cite{bottou2010large,nemirovski2009robust,shalev2013stochastic,shalev2013accelerated,johnson2013accelerating,shalev2014accelerated,xiao2014proximal,defazio2014saga,zhang2015stochastic,lin2014accelerated,allen2016katyusha,lan2015optimal}.  
 \section{Related Work}
 \label{gen_inst}
 Are there any related work? If yes, review them and discuss their deficiencies and how your proposed work can potentially address their issues.  
