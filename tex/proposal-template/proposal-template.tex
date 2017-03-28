@@ -222,12 +222,13 @@
 \maketitle
 
 \begin{abstract}
-  The abstract paragraph should be indented \nicefrac{1}{2}~inch
-  (3~picas) on both the left- and right-hand margins. Use 10~point
-  type, with a vertical spacing (leading) of 11~points.  The word
-  \textbf{Abstract} must be centered, bold, and in point size 12. Two
-  line spaces precede the abstract. The abstract must be limited to
-  one paragraph. This latex file is modified from the NIPS  2016 template. 
+%  The abstract paragraph should be indented \nicefrac{1}{2}~inch
+%  (3~picas) on both the left- and right-hand margins. Use 10~point
+%  type, with a vertical spacing (leading) of 11~points.  The word
+%  \textbf{Abstract} must be centered, bold, and in point size 12. Two
+%  line spaces precede the abstract. The abstract must be limited to
+%  one paragraph. This latex file is modified from the NIPS  2016 template. 
+To be completed after finishing the main contents of the proposal.
 \end{abstract}
 
 \section{Introduction}
@@ -243,7 +244,7 @@ In this paper, we consider a class of convex optimization problems with special
 structure, whose objective can be expressed as the sum of a finite sum of loss
 functions and a regularization function: \begin{equation}
 \label{RLM}
-	\min_{w\in\R^d}F(w), \text{where }P(w)=\frac{1}{n}\sum_{i=1}^{n}\phi(w^\top x_i,y_i)+\lambda g(w),
+	\min_{w\in\R^d}P(w), \text{where }P(w)=\frac{1}{n}\sum_{i=1}^{n}\phi(w^\top x_i,y_i)+\lambda g(w),
 \end{equation}
 where $w\in\R^d$ denotes the weight vector, $(x_i,y_i),x_i\in\R^d,y_i\in\R$,
 $i=1,\ldots,n$ are training data, $\lambda>0$ is a regularization parameter,
@@ -255,13 +256,13 @@ Minimization (FSM) problem.
 Both RFSM and FSM problems have been extensively studied in machine learning and
 optimization literature. When $n$ is large, numerous sequential stochastic
 optimization algorithms were
-proposed\cite{bottou2010large,roux2012stochastic,nemirovski2009robust,shalev2013stochastic,shalev2013accelerated,johnson2013accelerating,ouyang2013stochastic,
+proposed\cite{bottou2010large,nemirovski2009robust,roux2012stochastic,shalev2013stochastic,shalev2013accelerated,johnson2013accelerating,ouyang2013stochastic,
 suzuki2013dual,shalev2014accelerated,xiao2014proximal,defazio2014saga,zhang2015stochastic,lin2014accelerated,defazio2016simple,allen2016katyusha,lan2015optimal},
 and there also exist several parallel or distributed stochastic
-algorithms\cite{boyd2011distributed,recht2011hogwild,zinkevich2010parallelized,yang2013trading,zhang2014asynchronous}.
+algorithms\cite{boyd2011distributed,recht2011hogwild,zinkevich2010parallelized,yang2013trading,zhang2014asynchronous,zinkevich2010parallelized,agarwal2011distributed}.
 Specifically, S. Shalv-Shwartz and T. Zhang \cite{shalev2013stochastic} proposed
-an Stochastic Dual Coordinate Ascent (SDCA) which provided strongly theoretical
-guarantee regarding the duality gap. T. Yang \cite{yang2013trading} developed a
+an Stochastic Dual Coordinate Ascent (SDCA) which provided new analysis with strongly theoretical
+guarantee regarding the duality gap. T. Yang \cite{yang2013trading,yang2013analysis} developed a
 Distributed Stochastic Dual Coordinate Ascent (DisDCA) algorithm and its
 practical variant, and analyzed the tradeoff between communication and
 computation. However, to get a more efficient distributed SDCA is a open
@@ -275,8 +276,8 @@ First we review the related work of sequential stochastic convex optimization
 for solving FSM and RFSM problems. The first numerical scheme of stochastic
 optimization stems from stochastic gradient descent
 (SGD)\cite{bottou2010large,nemirovski2009robust}, which was designed to avoid
-the calculation of full gradient and gets faster convergence than gradient
-descent (GD). To improve the converge rate of SGD, many new algorithms were
+the calculation of full gradient and gets faster convergence than full gradient
+descent (FGD). To improve the converge rate of SGD, many new algorithms were
 proposed by exploiting the finite sum structure, including the Stochastic
 Average Gradient (SAG)\cite{roux2012stochastic}, Stochastic Dual Coordinate
 Ascent (SDCA)\cite{shalev2013stochastic}, Stochastic Variance Reduced Gradient
@@ -290,8 +291,12 @@ literature studying sequential stochastic optimization with strong theoretical
 guarantee, less efforts have been devoted to considering them in a parallel or
 distributed manner. It constitutes a huge gap between theory and practice, since
 nowadays the size of data increases at a rapid speed, which makes one-core
-processor very difficult to handle it properly.
+processor or one computer very difficult to handle it properly. 
 
+
+Then we review several related work of distributed optimization algorithms. In the existing literature, many distributed algorithms were developed on top of stochastic gradient descent (SGD), alternating direction method of multipliers (ADMM), and stochastic dual coordinate ascent (SDCA). The key idea of distributed SGD is calculating the stochastic gradient at the worker nodes according to the local information while performing parameter updates at the master node. On top of this idea, many approaches were proposed\cite{zinkevich2010parallelized,recht2011hogwild,agarwal2011distributed}. ADMM stems from \cite{gabay1976dual}, which was developed to solve equality constrained optimization problem. Recently, two independent work of stochastic ADMM were proposed\cite{ouyang2013stochastic,suzuki2013dual}. A standard reference for distributed ADMM is \cite{boyd2011distributed}. The advances of SDCA algorithms\cite{shalev2013stochastic} and its variant\cite{shalev2013accelerated,shalev2014accelerated,lin2014accelerated} enjoy faster convergence than SGD and ADMM, and the distributed SDCA (DisDCA)\cite{yang2013trading,yang2013analysis} was developed along with novel analysis of tradeoff between computation and communication.
+
+<<<<<<< HEAD
 We will build off of work from\cite{yang2013trading}, incorporating work
 from\cite{li2014scaling}. In\cite{yang2013trading}, SDCA is implemented in a
 distributed, synchronized fashion. While the achieved results were quite
@@ -304,13 +309,15 @@ combining the work of\cite{yang2013trading}\cite{li2014scaling}, we hope to
 develop a robust, distributed SDCA solution.
 
 \section{The Proposed Work}
-We will approach this problem from both theoreticl and implementation
+We will approach this problem from both theoretical and implementation
 perspectives. On the theoretical side we hope to make guarantees on convergence
 of our proposed approach, while on the implementation side we hope to build a
 scalable system that can take advantage of its hardware.
 
 \subsection{Theory}
-
+In the theory part we will try to establish the convergence result of the
+proposed asynchronous distributed SDCA and analyze the tradeoff between
+computation and asynchronous communication.
 \subsection{Implementation}
 There are two key aspects to the implementation: taking advantage of the GPU and
 working in a distributed setting.
@@ -318,7 +325,7 @@ working in a distributed setting.
 \subsubsection{GPU}
 When available, GPU acceleration will be used via CUDA. We will start by using
 CUDA libraries such as \texttt{cuBLAS} for efficient math operations. We will
-also add CUDA kernals for portions of our algorithms that are easily
+also add CUDA kernels for portions of our algorithms that are easily
 parallelized in a SIMD fashion.
 
 \subsubsection{Asynchronous Communication}
@@ -335,6 +342,10 @@ We will work in parallel, making progress on both the theory and implementation
 aspects of the project.
 
 \subsection{Theory}
+We will first study the theories and analysis techniques in the existing
+literature and then try to prove the correctness of naive asynchronous approach.
+If it works, we will try to establish the convergence rate and analyze the
+computation and communication cost respectively.  
 
 \subsection{Implementation}
 The first part of the implementation approach will be adding CUDA support for
@@ -345,12 +356,15 @@ time that the asynchronous communciation frmaework.
 The second part of the implementation is building the asynchronous communication
 framework. This will be the most complex part of the implementation and require
 the most time and effort.
+\subsection{Comparisions with Other Methods}
+We plan to conduct the same experiments (with same baselines, same datasets) in
+\cite{yang2013trading} to compare our approach with existing approaches.
 
-\subsubsection*{Acknowledgments}
-
-Use unnumbered third level headings for the acknowledgments. All
-acknowledgments go at the end of the paper. Do not include
-acknowledgments in the anonymized submission, only in the final paper.
+%\subsubsection*{Acknowledgments}
+%
+%Use unnumbered third level headings for the acknowledgments. All
+%acknowledgments go at the end of the paper. Do not include
+%acknowledgments in the anonymized submission, only in the final paper.
 
 %\section*{References}
 
