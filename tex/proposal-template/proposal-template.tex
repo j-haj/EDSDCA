@@ -292,19 +292,57 @@ distributed manner. It constitutes a huge gap between theory and practice, since
 nowadays the size of data increases at a rapid speed, which makes one-core
 processor very difficult to handle it properly.
 
-Now we focus on some related work of distributed optimization.
+We will build off of work from [CITE YANG 1 \& 2], incorporating work from [CITE
+LI PS]. In [CITE YANG], SDCA is implemented in a distributed, syncrhonized
+fashion. While the achieved results were quite promising, they did not take
+advantage of hardware acceleration or asynchronous communication. [CITE LI PS]
+builds an asynchronous communication framework using the concept of parameter
+servers, which are central data stores for model parameters, and distributed
+workers working in an asynchronous fashion (i.e., communication and parameter
+updates are non-blocking operations).
 
 \section{The Proposed Work}
-Describe your proposed work in this section. 
+We will approach this problem from both theoreticl and implementation
+perspectives. On the theoretical side we hope to make guarantees on convergence
+of our proposed approach, while on the implementation side we hope to build a
+scalable system that can take advantage of its hardware.
 
+\subsection{Theory}
 
+\subsection{Implementation}
+There are two key aspects to the implementation: taking advantage of the GPU and
+working in a distributed setting.
+
+\subsubsection{GPU}
+When available, GPU acceleration will be used via CUDA. We will start by using
+CUDA libraries such as \texttt{cuBLAS} for efficient math operations. We will
+also add CUDA kernals for portions of our algorithms that are easily
+parallelized in a SIMD fashion.
+
+\subsubsection{Asynchronous Communication}
+In addition to using GPUs for math operations, we will distribute the workload
+over a cluster of computers. Each comptuer will work on a small subproblem used
+in the parameter update and send this result to a parameter server, which will
+handle parameter updates and synchronoization across workers. The architecture
+used will be similar to that of [CITE PS], using a central parameter server that
+communicates asynchronously with distributed workers. This asyncrhonous
+communication framework will be built using MPI and C++ threading facilities.
 
 \section{Plan}
-Describe your plan for the project. What data you are going to use to evaluate
-your methods? What are the baselines that you want to compare? How will you
-develop your methods?   A timeline with important milestones is always
-perferred. 
+We will work in parallel, making progress on both the theory and implementation
+aspects of the project.
 
+\subsection{Theory}
+
+\subsection{Implementation}
+The first part of the implementation approach will be adding CUDA support for
+the core math operations. The focus is on correctness, rather than optimizing
+runtime. This is also the simpler portion of the project and will require less
+time that the asynchronous communciation frmaework.
+
+The second part of the implementation is building the asynchronous communication
+framework. This will be the most complex part of the implementation and require
+the most time and effort.
 
 \subsubsection*{Acknowledgments}
 
