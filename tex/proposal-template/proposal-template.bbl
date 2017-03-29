@@ -61,6 +61,18 @@ G.~Lan and Y.~Zhou.
 \newblock An optimal randomized incremental gradient method.
 \newblock {\em arXiv preprint arXiv:1507.02000}, 2015.
 
+\bibitem{li2014scaling}
+M.~Li, D.~G. Andersen, J.~W. Park, A.~J. Smola, A.~Ahmed, V.~Josifovski,
+  J.~Long, E.~J. Shekita, and B.-Y. Su.
+\newblock Scaling distributed machine learning with the parameter server.
+\newblock In {\em OSDI}, volume~14, pages 583--598, 2014.
+
+\bibitem{lian2015asynchronous}
+X.~Lian, Y.~Huang, Y.~Li, and J.~Liu.
+\newblock Asynchronous parallel stochastic gradient for nonconvex optimization.
+\newblock In {\em Advances in Neural Information Processing Systems}, pages
+  2737--2745, 2015.
+
 \bibitem{lin2014accelerated}
 Q.~Lin, Z.~Lu, and L.~Xiao.
 \newblock An accelerated proximal coordinate gradient method.

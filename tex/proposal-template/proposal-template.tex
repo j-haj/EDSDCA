@@ -271,7 +271,7 @@ distributed SDCA\cite{yang2013trading}, and then give an asynchronous
 distributed SDCA to make full use of computational resources. 
 
 \section{Related Work}
-\label{gen_inst}
+%\label{gen_inst}
 First we review the related work of sequential stochastic convex optimization
 for solving FSM and RFSM problems. The first numerical scheme of stochastic
 optimization stems from stochastic gradient descent
@@ -293,15 +293,17 @@ distributed manner. It constitutes a huge gap between theory and practice, since
 nowadays the size of data increases at a rapid speed, which makes one-core
 processor or one computer very difficult to handle it properly. 
 
-
 Then we review several related work of distributed optimization algorithms. In
 the existing literature, many distributed algorithms were developed on top of
 stochastic gradient descent (SGD), alternating direction method of multipliers
-(ADMM), and stochastic dual coordinate ascent (SDCA). The key idea of
-distributed SGD is calculating the stochastic gradient at the worker nodes
-according to the local information while performing parameter updates at the
-master node. On top of this idea, many approaches were
-proposed\cite{zinkevich2010parallelized,recht2011hogwild,agarwal2011distributed}.
+(ADMM), and stochastic dual coordinate ascent (SDCA). The two main approaches
+used in developing parallel algorithsm for SGD are based on shared memory and
+distributed memory architectures Some work \cite{lian2015asynchronous}
+looks at both settings, in addition to removing the syncrhonization requirement.
+A number of approaches \cite{zinkevich2010parallelized,recht2011hogwild,agarwal2011distributed}
+consider the asynchronous or lock-free setting, making use of parameter servers
+\cite{li2014scaling}, sparsity \cite{recht2011hogwild}, as well as unique
+data-flow architectures for parameter updates \cite{agarwal2011distributed}.
 ADMM stems from \cite{gabay1976dual}, which was developed to solve equality
 constrained optimization problem. Recently, two independent work of stochastic
 ADMM were proposed\cite{ouyang2013stochastic,suzuki2013dual}. A standard
@@ -311,15 +313,20 @@ variant\cite{shalev2013accelerated,shalev2014accelerated,lin2014accelerated}
 enjoy faster convergence than SGD and ADMM, and the distributed SDCA
 (DisDCA)\cite{yang2013trading,yang2013analysis} was developed along with novel
 analysis of tradeoff between computation and communication.
+\cite{yang2013trading} servers as the starting point for our work.
 
-We will build off of work from\cite{yang2013trading}, incorporating work
-from\cite{li2014scaling}. In\cite{yang2013trading}, SDCA is implemented in a
-distributed, synchronized fashion. While the achieved results were quite
-promising, they did not take advantage of hardware acceleration or asynchronous
-communication.  \cite{li2014scaling} builds an asynchronous communication
-framework using the concept of parameter servers, which are central data stores
-for model parameters, and distributed workers working in an asynchronous fashion
-(i.e., communication and parameter updates are non-blocking operations). By
+We will build off of work from T. Yang's work on distributed SDCA
+\cite{yang2013trading}, incorporating M. Li's work on parameter
+servers\cite{li2014scaling} to handle communication updates in the distributed
+setting.  In\cite{yang2013trading}, SDCA is implemented in a distributed,
+synchronized fashion. While the achieved results were quite promising, they did
+not take advantage of hardware acceleration or asynchronous communication.
+\cite{li2014scaling} builds an asynchronous communication framework using the
+concept of parameter servers, which are central data stores for model
+parameters, and distributed workers working in an asynchronous fashion (i.e.,
+communication and parameter updates are non-blocking operations).  Additionally,
+\cite{agarwal2011distributed} explores the theoretical ramifications of delayed
+parameter updates in general distributed stochastic optimization setting. By
 combining the work of\cite{yang2013trading}\cite{li2014scaling}, we hope to
 develop a robust, distributed SDCA solution.
 
@@ -327,30 +334,34 @@ develop a robust, distributed SDCA solution.
 We will approach this problem from both theoretical and implementation
 perspectives. On the theoretical side we hope to make guarantees on convergence
 of our proposed approach, while on the implementation side we hope to build a
-scalable system that can take advantage of its hardware.
+scalable system that can take advantage of its hardware as well as work in a
+distributed setting.
 
 \subsection{Theory}
-In the theory part we will try to establish the convergence result of the
+We will try to establish the convergence result of the
 proposed asynchronous distributed SDCA and analyze the tradeoff between
 computation and asynchronous communication.
+
 \subsection{Implementation}
 There are two key aspects to the implementation: taking advantage of the GPU and
-working in a distributed setting.
+handling the asynchronous communication.
 
 \subsubsection{GPU}
 When available, GPU acceleration will be used via CUDA. We will start by using
-CUDA libraries such as \texttt{cuBLAS} for efficient math operations. We will
-also add CUDA kernels for portions of our algorithms that are easily
-parallelized in a SIMD fashion.
+CUDA libraries such as \texttt{cuBLAS} for efficient math operations.
+Additionally, we will also add CUDA kernels for portions of our algorithms that
+are easily parallelized in a SIMD fashion.
 
 \subsubsection{Asynchronous Communication}
-In addition to using GPUs for math operations, we will distribute the workload
-over a cluster of computers. Each comptuer will work on a small subproblem used
-in the parameter update and send this result to a parameter server, which will
-handle parameter updates and synchronoization across workers. The architecture
-used will be similar to that of\cite{li2014scaling}, using a central parameter server that
+Once the hardware acceleration is established, we will turn our focus to
+building a distributed, asynchronous communication framework. Each comptuer 
+in the cluster will work on a small subproblem whose solution will be used
+in the parameter update. This result will be sent to a parameter server, which will
+handle parameter updates and synchronoization across workers. The planned architecture
+will be similar to that of\cite{li2014scaling}, using a central parameter server that
 communicates asynchronously with distributed workers. This asyncrhonous
 communication framework will be built using MPI and C++ threading facilities.
+Additional libraries may be used such as Eigen for linear algebra.
 
 \section{Plan}
 We will work in parallel, making progress on both the theory and implementation
