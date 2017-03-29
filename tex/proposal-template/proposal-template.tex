@@ -246,7 +246,7 @@ incredible rate. As the size of the data grows, the challenge of applying
 standard machine learning algorithms to the data has become increasingly
 complex. Two common countermeasures used to deal with this are employing
 stochastic optimization algorithms, and utilizing computational resources in a
-parallel or distributed manner\cite{boyd2011distributed}. 
+parallel or distributed manner~\cite{boyd2011distributed}. 
 
 In this paper, we consider a class of convex optimization problems with special
 structure, whose objective can be expressed as the sum of a finite sum of loss
@@ -264,39 +264,38 @@ Minimization (FSM) problem.
 Both RFSM and FSM problems have been extensively studied in machine learning and
 optimization literature. When $n$ is large, numerous sequential stochastic
 optimization algorithms have been
-proposed\cite{bottou2010large,nemirovski2009robust,roux2012stochastic,shalev2013stochastic,shalev2013accelerated,johnson2013accelerating,ouyang2013stochastic,
+proposed~\cite{bottou2010large,nemirovski2009robust,roux2012stochastic,shalev2013stochastic,shalev2013accelerated,johnson2013accelerating,ouyang2013stochastic,
 suzuki2013dual,shalev2014accelerated,xiao2014proximal,defazio2014saga,zhang2015stochastic,lin2014accelerated,defazio2016simple,allen2016katyusha,lan2015optimal},
 and there also exist several parallel or distributed stochastic
-algorithms\cite{boyd2011distributed,recht2011hogwild,zinkevich2010parallelized,yang2013trading,zhang2014asynchronous,zinkevich2010parallelized,agarwal2011distributed}.
-Specifically, S. Shalv-Shwartz and T. Zhang \cite{shalev2013stochastic} proposed
+algorithms~\cite{boyd2011distributed,recht2011hogwild,zinkevich2010parallelized,yang2013trading,zhang2014asynchronous,zinkevich2010parallelized,agarwal2011distributed}.
+Specifically, S. Shalv-Shwartz and T. Zhang~\cite{shalev2013stochastic} proposed
 the Stochastic Dual Coordinate Ascent (SDCA) which provided new analysis with strong theoretical
-guarantees regarding the duality gap. T. Yang
-\cite{yang2013trading,yang2013analysis} developed two 
+guarantees regarding the duality gap. T. Yang~\cite{yang2013trading,yang2013analysis} developed two 
 Distributed Stochastic Dual Coordinate Ascent (DisDCA) algorithms and analyzed
 the tradeoff between network communication between nodes and the difficulty of
 the performed computation (task). However, the problem of developing a more
 efficient distributed SDCA algorithm is still open. In this paper, we first
 provide a GPU implementation of the vanilla distributed
-SDCA\cite{yang2013trading}, and then give an asynchronous distributed approach
-to SDCA to make full use of computational resources that scales well. 
+SDCA~\cite{yang2013trading}, and then give an asynchronous distributed approach
+to SDCA to make full use of computational resources that scale well. 
 
 \section{Related Work}
 %\label{gen_inst}
 First we review the related work of sequential stochastic convex optimization
 for solving FSM and RFSM problems. The first numerical scheme of stochastic
 optimization stems from stochastic gradient descent
-(SGD)\cite{bottou2010large,nemirovski2009robust}, which was designed to avoid
+(SGD)~\cite{bottou2010large,nemirovski2009robust}, which was designed to avoid
 the calculation of full gradient and gets faster convergence than full gradient
 descent (FGD). To improve the converge rate of SGD, many new algorithms were
 proposed by exploiting the finite sum structure, including the Stochastic
-average gradient (SAG)\cite{roux2012stochastic}, stochastic dual coordinate
-ascent (SDCA)\cite{shalev2013stochastic}, stochastic variance reduced gradient
-(SVRG)\cite{johnson2013accelerating}, accelerated proximal coordinate gradient method
-(APCG)\cite{lin2014accelerated},  SAGA\cite{Defazio2014},
-Prox-SDCA\cite{shalev2014accelerated}, Prox-SVRG\cite{xiao2014proximal}, and
-stochastic primal-dual coordinate method (SPDC)\cite{zhang2015stochastic}.
+average gradient (SAG)~\cite{roux2012stochastic}, stochastic dual coordinate
+ascent (SDCA)~\cite{shalev2013stochastic}, stochastic variance reduced gradient
+(SVRG)~\cite{johnson2013accelerating}, accelerated proximal coordinate gradient method
+(APCG)~\cite{lin2014accelerated},  SAGA~\cite{Defazio2014},
+Prox-SDCA~\cite{shalev2014accelerated}, Prox-SVRG~\cite{xiao2014proximal}, and
+stochastic primal-dual coordinate method (SPDC)~\cite{zhang2015stochastic}.
 Recently, the optimal first-order stochastic optimization method were
-developed\cite{allen2016katyusha,lan2015optimal}. Although there exist rich
+developed~\cite{allen2016katyusha,lan2015optimal}. Although there exist rich
 literature studying sequential stochastic optimization with strong theoretical
 guarantee, less efforts have been devoted to considering them in a parallel or
 distributed manner. It constitutes a huge gap between theory and practice, since
@@ -308,35 +307,34 @@ the existing literature, many distributed algorithms have been developed on top 
 stochastic gradient descent (SGD), alternating direction method of multipliers
 (ADMM), and stochastic dual coordinate ascent (SDCA). The two main approaches
 used in developing parallel algorithsm for SGD are based on shared memory and
-distributed memory architectures. Some work \cite{lian2015asynchronous}
+distributed memory architectures. Some work~\cite{lian2015asynchronous}
 looks at both settings, in addition to removing the syncrhonization requirement
 in the distributed memory setting.
-A number of approaches \cite{zinkevich2010parallelized,recht2011hogwild,agarwal2011distributed}
+A number of approaches~\cite{zinkevich2010parallelized,recht2011hogwild,agarwal2011distributed}
 consider the asynchronous or lock-free setting, making use of parameter servers
 \cite{li2014scaling}, sparsity \cite{recht2011hogwild}, as well as unique
 data-flow architectures for parameter updates \cite{agarwal2011distributed}.
 ADMM stems from \cite{gabay1976dual}, which was developed to solve the equality
 constrained optimization problem. Recently, two independent works of stochastic
-ADMM were proposed\cite{ouyang2013stochastic,suzuki2013dual}. A standard
-reference for distributed ADMM is \cite{boyd2011distributed}. The advances of
-SDCA algorithms\cite{shalev2013stochastic} and its
-variant\cite{shalev2013accelerated,shalev2014accelerated,lin2014accelerated}
+ADMM were proposed~\cite{ouyang2013stochastic,suzuki2013dual}. A standard
+reference for distributed ADMM is~\cite{boyd2011distributed}. The advances of
+SDCA algorithms~\cite{shalev2013stochastic} and its
+variant~\cite{shalev2013accelerated,shalev2014accelerated,lin2014accelerated}
 enjoy faster convergence than SGD and ADMM, and the distributed SDCA
-(DisDCA)\cite{yang2013trading,yang2013analysis} was developed along with novel
-analysis of tradeoff between computation and communication.
-\cite{yang2013trading} serves as the starting point for our work.
+(DisDCA)~\cite{yang2013trading,yang2013analysis} was developed along with novel
+analysis of tradeoff between computation and communication. \cite{yang2013trading} serves as the starting point for our work.
 
-We will build off of work from T. Yang's work on distributed SDCA
-\cite{yang2013trading}, first add GPU capabilities and then incorporating M.
-Li's work on parameter servers\cite{li2014scaling} to handle communication
-updates in the distributed setting.  In\cite{yang2013trading}, SDCA is
+We will build off of work from T. Yang's work on distributed SDCA~\cite{yang2013trading}, first add GPU capabilities and then incorporating M.
+Li's work on parameter servers~\cite{li2014scaling} to handle communication
+updates in the distributed setting.  In~\cite{yang2013trading}, SDCA is
 implemented in a distributed, synchronized fashion. While the achieved results
 were quite promising, they did not take advantage of hardware acceleration or
 asynchronous communication.  \cite{li2014scaling} builds an asynchronous
 communication framework using the concept of parameter servers, which are
 central data stores for model parameters, and distributed workers working in an
 asynchronous fashion (i.e., communication and parameter updates are non-blocking
-operations).  Additionally, \cite{agarwal2011distributed} explores the
+operations).  Additionally,
+\cite{agarwal2011distributed} explores the
 theoretical ramifications of delayed parameter updates in general distributed
 stochastic optimization setting. By combining the work
 of T. Yang, M. Li, and A. Agarwal, we hope to develop a robust,
@@ -370,7 +368,7 @@ building a distributed, asynchronous communication framework. Each comptuer
 in the cluster will work on a small subproblem whose solution will be used
 in the parameter update. This result will be sent to a parameter server, which will
 handle parameter updates and synchronoization across workers. The planned architecture
-will be similar to that of\cite{li2014scaling}, using a central parameter server that
+will be similar to that of~\cite{li2014scaling}, using a central parameter server that
 communicates asynchronously with distributed workers. This asyncrhonous
 communication framework will be built using MPI and C++ threading facilities.
 Additional libraries may be used such as Eigen for linear algebra.
@@ -395,8 +393,7 @@ The second part of the implementation is building the asynchronous communication
 framework. This will be the most complex part of the implementation and require
 the most time and effort.
 \subsection{Comparisions with Other Methods}
-We plan to conduct the same experiments (with same baselines, same datasets) in
-\cite{yang2013trading} to compare our approach with existing approaches.
+We plan to conduct the same experiments (with same baselines, same datasets) in~\cite{yang2013trading} to compare our approach with existing approaches.
 
 %\subsubsection*{Acknowledgments}
 %
