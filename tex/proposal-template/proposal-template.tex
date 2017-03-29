@@ -228,17 +228,25 @@
 %  \textbf{Abstract} must be centered, bold, and in point size 12. Two
 %  line spaces precede the abstract. The abstract must be limited to
 %  one paragraph. This latex file is modified from the NIPS  2016 template. 
-To be completed after finishing the main contents of the proposal.
+We propose the design and analysis of an efficient, distributed, 
+SDCA algorithm that uses GPUs to improve compute efficiency an asynchronous
+communication for model updates. This work builds off the previous work of T.
+Yang \cite{yang2013trading}, M. Li \cite{li2014scaling}, and A. Agarwal
+\cite{agarwal2011distributed} creating a more scalable and efficient SDCA
+algorithm. Specifically, we propose to use CUDA to improve the runtime
+efficiency of the gradient and parameter update calculations along with the use
+of MPI for network communication. The asynchronous nature of the communication
+will be handled using standard MPI facilities combined with threading in C++.
 \end{abstract}
 
 \section{Introduction}
 %What is the research problem that you are trying to tackle? Describe the background and motivation. 
-In recent years, we come into the big data era. Many large-scale machine
-learning problems, most of which are essentially optimization problems with huge
-magnitude of data size, need to be tackled. Two common countermeasures to deal
-with this are employing stochastic optimization algorithms, and utilizing
-computational resources in a parallel or distributed
-manner\cite{boyd2011distributed}. 
+In recent years, the amount and size of available data has grown at an
+incredible rate. As the size of the data grows, the challenge of applying
+standard machine learning algorithms to the data has become increasingly
+complex. Two common countermeasures used to deal with this are employing
+stochastic optimization algorithms, and utilizing computational resources in a
+parallel or distributed manner\cite{boyd2011distributed}. 
 
 In this paper, we consider a class of convex optimization problems with special
 structure, whose objective can be expressed as the sum of a finite sum of loss
@@ -255,20 +263,22 @@ Minimization (FSM) problem.
 
 Both RFSM and FSM problems have been extensively studied in machine learning and
 optimization literature. When $n$ is large, numerous sequential stochastic
-optimization algorithms were
+optimization algorithms have been
 proposed\cite{bottou2010large,nemirovski2009robust,roux2012stochastic,shalev2013stochastic,shalev2013accelerated,johnson2013accelerating,ouyang2013stochastic,
 suzuki2013dual,shalev2014accelerated,xiao2014proximal,defazio2014saga,zhang2015stochastic,lin2014accelerated,defazio2016simple,allen2016katyusha,lan2015optimal},
 and there also exist several parallel or distributed stochastic
 algorithms\cite{boyd2011distributed,recht2011hogwild,zinkevich2010parallelized,yang2013trading,zhang2014asynchronous,zinkevich2010parallelized,agarwal2011distributed}.
 Specifically, S. Shalv-Shwartz and T. Zhang \cite{shalev2013stochastic} proposed
-an Stochastic Dual Coordinate Ascent (SDCA) which provided new analysis with strongly theoretical
-guarantee regarding the duality gap. T. Yang \cite{yang2013trading,yang2013analysis} developed a
-Distributed Stochastic Dual Coordinate Ascent (DisDCA) algorithm and its
-practical variant, and analyzed the tradeoff between communication and
-computation. However, to get a more efficient distributed SDCA is a open
-problem. In this paper, we first provide a GPU implementation of the vanilla
-distributed SDCA\cite{yang2013trading}, and then give an asynchronous
-distributed SDCA to make full use of computational resources. 
+the Stochastic Dual Coordinate Ascent (SDCA) which provided new analysis with strong theoretical
+guarantees regarding the duality gap. T. Yang
+\cite{yang2013trading,yang2013analysis} developed two 
+Distributed Stochastic Dual Coordinate Ascent (DisDCA) algorithms and analyzed
+the tradeoff between network communication between nodes and the difficulty of
+the performed computation (task). However, the problem of developing a more
+efficient distributed SDCA algorithm is still open. In this paper, we first
+provide a GPU implementation of the vanilla distributed
+SDCA\cite{yang2013trading}, and then give an asynchronous distributed approach
+to SDCA to make full use of computational resources that scales well. 
 
 \section{Related Work}
 %\label{gen_inst}
@@ -294,18 +304,19 @@ nowadays the size of data increases at a rapid speed, which makes one-core
 processor or one computer very difficult to handle it properly. 
 
 Then we review several related work of distributed optimization algorithms. In
-the existing literature, many distributed algorithms were developed on top of
+the existing literature, many distributed algorithms have been developed on top of
 stochastic gradient descent (SGD), alternating direction method of multipliers
 (ADMM), and stochastic dual coordinate ascent (SDCA). The two main approaches
 used in developing parallel algorithsm for SGD are based on shared memory and
 distributed memory architectures Some work \cite{lian2015asynchronous}
-looks at both settings, in addition to removing the syncrhonization requirement.
+looks at both settings, in addition to removing the syncrhonization requirement
+in the distributed memory setting.
 A number of approaches \cite{zinkevich2010parallelized,recht2011hogwild,agarwal2011distributed}
 consider the asynchronous or lock-free setting, making use of parameter servers
 \cite{li2014scaling}, sparsity \cite{recht2011hogwild}, as well as unique
 data-flow architectures for parameter updates \cite{agarwal2011distributed}.
-ADMM stems from \cite{gabay1976dual}, which was developed to solve equality
-constrained optimization problem. Recently, two independent work of stochastic
+ADMM stems from \cite{gabay1976dual}, which was developed to solve the equality
+constrained optimization problem. Recently, two independent works of stochastic
 ADMM were proposed\cite{ouyang2013stochastic,suzuki2013dual}. A standard
 reference for distributed ADMM is \cite{boyd2011distributed}. The advances of
 SDCA algorithms\cite{shalev2013stochastic} and its
@@ -313,22 +324,23 @@ variant\cite{shalev2013accelerated,shalev2014accelerated,lin2014accelerated}
 enjoy faster convergence than SGD and ADMM, and the distributed SDCA
 (DisDCA)\cite{yang2013trading,yang2013analysis} was developed along with novel
 analysis of tradeoff between computation and communication.
-\cite{yang2013trading} servers as the starting point for our work.
+\cite{yang2013trading} serves as the starting point for our work.
 
 We will build off of work from T. Yang's work on distributed SDCA
-\cite{yang2013trading}, incorporating M. Li's work on parameter
-servers\cite{li2014scaling} to handle communication updates in the distributed
-setting.  In\cite{yang2013trading}, SDCA is implemented in a distributed,
-synchronized fashion. While the achieved results were quite promising, they did
-not take advantage of hardware acceleration or asynchronous communication.
-\cite{li2014scaling} builds an asynchronous communication framework using the
-concept of parameter servers, which are central data stores for model
-parameters, and distributed workers working in an asynchronous fashion (i.e.,
-communication and parameter updates are non-blocking operations).  Additionally,
-\cite{agarwal2011distributed} explores the theoretical ramifications of delayed
-parameter updates in general distributed stochastic optimization setting. By
-combining the work of\cite{yang2013trading}\cite{li2014scaling}, we hope to
-develop a robust, distributed SDCA solution.
+\cite{yang2013trading}, first add GPU capabilities and then incorporating M.
+Li's work on parameter servers\cite{li2014scaling} to handle communication
+updates in the distributed setting.  In\cite{yang2013trading}, SDCA is
+implemented in a distributed, synchronized fashion. While the achieved results
+were quite promising, they did not take advantage of hardware acceleration or
+asynchronous communication.  \cite{li2014scaling} builds an asynchronous
+communication framework using the concept of parameter servers, which are
+central data stores for model parameters, and distributed workers working in an
+asynchronous fashion (i.e., communication and parameter updates are non-blocking
+operations).  Additionally, \cite{agarwal2011distributed} explores the
+theoretical ramifications of delayed parameter updates in general distributed
+stochastic optimization setting. By combining the work
+of T. Yang, M. Li, and A. Agarwal, we hope to develop a robust,
+distributed SDCA solution.
 
 \section{The Proposed Work}
 We will approach this problem from both theoretical and implementation
