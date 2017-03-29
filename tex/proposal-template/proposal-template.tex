@@ -289,12 +289,12 @@ optimization stems from stochastic gradient descent
 the calculation of full gradient and gets faster convergence than full gradient
 descent (FGD). To improve the converge rate of SGD, many new algorithms were
 proposed by exploiting the finite sum structure, including the Stochastic
-Average Gradient (SAG)\cite{roux2012stochastic}, Stochastic Dual Coordinate
-Ascent (SDCA)\cite{shalev2013stochastic}, Stochastic Variance Reduced Gradient
-(SVRG)\cite{johnson2013accelerating}, Accelerated Proximal Coordinate method
+average gradient (SAG)\cite{roux2012stochastic}, stochastic dual coordinate
+ascent (SDCA)\cite{shalev2013stochastic}, stochastic variance reduced gradient
+(SVRG)\cite{johnson2013accelerating}, accelerated proximal coordinate gradient method
 (APCG)\cite{lin2014accelerated},  SAGA\cite{Defazio2014},
 Prox-SDCA\cite{shalev2014accelerated}, Prox-SVRG\cite{xiao2014proximal}, and
-Stochastic Primal-dual Coordinate method (SPDC)\cite{zhang2015stochastic}.
+stochastic primal-dual coordinate method (SPDC)\cite{zhang2015stochastic}.
 Recently, the optimal first-order stochastic optimization method were
 developed\cite{allen2016katyusha,lan2015optimal}. Although there exist rich
 literature studying sequential stochastic optimization with strong theoretical
@@ -308,7 +308,7 @@ the existing literature, many distributed algorithms have been developed on top 
 stochastic gradient descent (SGD), alternating direction method of multipliers
 (ADMM), and stochastic dual coordinate ascent (SDCA). The two main approaches
 used in developing parallel algorithsm for SGD are based on shared memory and
-distributed memory architectures Some work \cite{lian2015asynchronous}
+distributed memory architectures. Some work \cite{lian2015asynchronous}
 looks at both settings, in addition to removing the syncrhonization requirement
 in the distributed memory setting.
 A number of approaches \cite{zinkevich2010parallelized,recht2011hogwild,agarwal2011distributed}
