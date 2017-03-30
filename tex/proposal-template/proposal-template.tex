@@ -393,7 +393,13 @@ The second part of the implementation is building the asynchronous communication
 framework. This will be the most complex part of the implementation and require
 the most time and effort.
 \subsection{Comparisions with Other Methods}
-We plan to conduct the same experiments (with same baselines, same datasets) in~\cite{yang2013trading} to compare our approach with existing approaches.
+We plan to test our implementation using two suites of tests: a GPU test suite
+and a communication test suite. The GPU test suite will compare a CPU-only build
+with a GPU based build. The communication test suite will compare a single
+machine model (with GPU acceleration) against a distributed, asynchronous model
+on a large data set. While it would be ideal to compare the asynchronous
+framework against a synchronous framework, the technical requirements of adding
+a synchronous communication framework are beyond the scope of this work.
 
 %\subsubsection*{Acknowledgments}
 %
