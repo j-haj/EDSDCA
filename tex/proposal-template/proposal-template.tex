@@ -408,14 +408,14 @@ RAM). The asynchronous communication test data should be very large -- finding
 this type of data is a bit more challenging than for the GPU data. We plan to
 test a few datasets for the GPU tests, for example \texttt{covtype.binary} and
 \texttt{kdd2010-raw}. These datasets range from 500,000 data points to
-~19M data points, respectively, and from ~50 features to nearly 1.1M
+about 19M data points, respectively, and from about 50 features to nearly 1.1M
 features, respectively. This gives a good spectrum of types of data. The
 asynchronous communication test will only use a single data set. Currently, we
 are considering two data sets -- the \textit{Common Crawl} corpus, which is
 hosted on AWS and consists of a month's worth of web crawling across two billion
 web pages, or possibly the YouTube 8M dataset, which contains frame-level
 features and is roughly 1.7TB in size (which is still small enough to fit on a
-single machine).At this point we do not feel comfortable specifying the dataset
+single machine). At this point we do not feel comfortable specifying the dataset
 for the asynchronous communication tests with any certainty.
 
 
