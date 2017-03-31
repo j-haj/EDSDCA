@@ -1,4 +1,4 @@
-#ifndef __EDSDCS_LOGGING_H
+#ifndef __EDSDCA_LOGGING_H
 #define __EDSDCA_LOGGING_H
 
 /**
