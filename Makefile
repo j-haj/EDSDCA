@@ -1,7 +1,11 @@
 # Compiler
 CC := g++-6
 
-CFLAGS := -Wall -pedantic
+# Compiler flags
+CFLAGS := -Wall -Wextra -pedantic
+STD := -std=c++14
+
+# Directories
 ROOT_DIR := $(shell pwd)
 SRC := $(ROOT_DIR)/src
 INCLUDE := $(ROOT_DIR)/include
@@ -13,6 +17,8 @@ ifeq ($(USE_CUDA), 1)
 	$(CFLAGS) += -DGPU=1
 endif
 
+
+# Make actions
 all:
     $(CC)
 
