@@ -13,6 +13,9 @@ ifeq ($(USE_CUDA), 1)
 	$(CFLAGS) += -DGPU=1
 endif
 
+all:
+    $(CC)
+
 # Test
 .PHONY: test
 test:
