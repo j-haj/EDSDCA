@@ -17,8 +17,6 @@
 
 namespace ptags {
 
-std::mutex ptag_global_mutex;
-
 class DateTime {
 public:
   static std::string formatted_time_now(std::string fmt="%d-%m-%Y_%H_%M_%S") {
@@ -40,6 +38,7 @@ class Ptag {
     using hi_res_clock = std::chrono::high_resolution_clock;
     using hi_res_time_point = std::chrono::time_point<hi_res_clock>;
 
+    static std::mutex ptag_global_mutex;
     static std::ofstream log_file;
     static std::map<std::string, std::queue<long>> tag_table;
    
@@ -63,7 +62,7 @@ class Ptag {
       auto t = std::chrono::duration_cast<ms>(hi_res_clock::now().time_since_epoch()).count();
       tag_table[fn].push(t); 
     
-      std::lock_guard<std::mutex> lock(ptags::ptag_global_mutex);
+      std::lock_guard<std::mutex> lock(ptags::Ptag::ptag_global_mutex);
       log_file << format_output(fn, t, t, "start");
     }
 
@@ -79,7 +78,7 @@ class Ptag {
       long t0 = tag_table[fn].front();
       tag_table[fn].pop();
      
-      std::lock_guard<std::mutex> lock(ptags::ptag_global_mutex); 
+      std::lock_guard<std::mutex> lock(ptags::Ptag::ptag_global_mutex); 
       log_file << format_output(fn, t0, t, "end");
     }
 
@@ -110,8 +109,9 @@ class Ptag {
 }; // class Ptag
 
 // Instantiate static member vars
-std::ofstream Ptag::log_file;
-std::map<std::string, std::queue<long>> Ptag::tag_table;
+std::ofstream ptags::Ptag::log_file;
+std::map<std::string, std::queue<long>> ptags::Ptag::tag_table;
+std::mutex ptags::Ptag::ptag_global_mutex;
 
 }// namespace ptags
 #endif // __PTAGS_H

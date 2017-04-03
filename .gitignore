@@ -4,6 +4,12 @@
 # VIM
 *.swp
 
+# VSCode
+*.vscode
+
+# Cmake
+/build/*
+
 # Compiled Object files
 *.slo
 *.lo
