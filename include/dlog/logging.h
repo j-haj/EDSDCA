@@ -31,7 +31,6 @@ class DebugLogger {
 
 
   public:
-    static std::ofstream log_file;
    
     // TODO: Add elapsed time to output
     
@@ -48,7 +47,7 @@ class DebugLogger {
                                  const std::string extension=".log") {
       std::string timestamp = util::date_time::FormattedTime::now();
       std::string filename = log_file_name + "_" + timestamp + extension;
-      log_file.open(filename, std::ios::out);
+      log_file().open(filename, std::ios::out);
       DLOG("Dlog initialization complete!");
     }
 
@@ -61,15 +60,23 @@ class DebugLogger {
              << std::setw(15) << std::setfill(' ') << std::left 
              << function_name << "\t" << msg << "\n";
       std::cout << output.str();
-      log_file << output.str();
+      log_file() << output.str();
 #endif
+    }
+
+    /**
+     * Returns a reference to a @p std::ofstream file stream
+     *
+     * @return returns a reference to the log file
+     */
+    static std::ofstream& log_file() {
+      static std::ofstream log_file_stream;
+      return log_file_stream;
     }
 
   private:
     DebugLogger() {}
 };
-
-std::ofstream dlog::DebugLogger::log_file;
 
 }
 

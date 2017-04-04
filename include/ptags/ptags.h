@@ -38,10 +38,6 @@ class Ptag {
     using hi_res_clock = std::chrono::high_resolution_clock;
     using hi_res_time_point = std::chrono::time_point<hi_res_clock>;
 
-    static std::mutex ptag_global_mutex;
-    static std::ofstream log_file;
-    static std::map<std::string, std::queue<long>> tag_table;
-   
     /**
      * @p PTag initializer
      *
@@ -49,7 +45,8 @@ class Ptag {
      */ 
     static void InitPTags(const std::string log="ptag_logs") {
       std::string filename = log + ptags::DateTime::formatted_time_now() + ".out";
-      log_file.open(filename, std::ios::out);
+      //auto log_file = log_file();
+      log_file().open(filename, std::ios::out);
     }
 
     /**
@@ -60,10 +57,14 @@ class Ptag {
     static void start(const char* fn_name) {
       std::string fn = std::string(fn_name);
       auto t = std::chrono::duration_cast<ms>(hi_res_clock::now().time_since_epoch()).count();
-      tag_table[fn].push(t); 
-    
-      std::lock_guard<std::mutex> lock(ptags::Ptag::ptag_global_mutex);
-      log_file << format_output(fn, t, t, "start");
+      auto ttable = tag_table();
+      ttable[fn].push(t); 
+
+      //auto mutex_ref = ptag_mutex();
+      std::lock_guard<std::mutex> lock(ptag_mutex());
+
+      //auto log_file = log_file();
+      log_file() << format_output(fn, t, t, "start");
     }
 
     /**
@@ -75,11 +76,44 @@ class Ptag {
       std::string fn = std::string(fn_name);
       auto t = std::chrono::duration_cast<ms>(hi_res_clock::now().time_since_epoch()).count();
       
-      long t0 = tag_table[fn].front();
-      tag_table[fn].pop();
+      long t0 = tag_table()[fn].front();
+      tag_table()[fn].pop();
      
-      std::lock_guard<std::mutex> lock(ptags::Ptag::ptag_global_mutex); 
-      log_file << format_output(fn, t0, t, "end");
+      //auto mutex_ref = ptag_mutex();
+      std::lock_guard<std::mutex> lock(ptag_mutex());
+
+      //auto log_file = log_file();
+      log_file() << format_output(fn, t0, t, "end");
+    }
+
+    /**
+     *  Returns a reference to a @p std::mutex
+     *
+     * @return reference to @p std::mutex
+     */
+    static std::mutex& ptag_mutex() {
+      static std::mutex ptag_global_mutex;
+      return ptag_global_mutex;
+    }
+
+    /**
+     * Returns reference to a @p std::map of ptags
+     *
+     * @return returns reference to @p tag_table 
+     */
+    static std::map<std::string, std::queue<long>>& tag_table() {
+      static std::map<std::string, std::queue<long>> tag_table;
+      return tag_table;
+    }
+
+    /**
+     * Returns reference to static file stream
+     *
+     * @return @p log_file reference of type @p std::ofstream
+     */
+    static std::ofstream& log_file() {
+      static std::ofstream log_file;
+      return log_file;
     }
 
   private:
@@ -107,11 +141,6 @@ class Ptag {
       return ss.str();
     }
 }; // class Ptag
-
-// Instantiate static member vars
-std::ofstream ptags::Ptag::log_file;
-std::map<std::string, std::queue<long>> ptags::Ptag::tag_table;
-std::mutex ptags::Ptag::ptag_global_mutex;
 
 }// namespace ptags
 #endif // __PTAGS_H
