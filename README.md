@@ -5,8 +5,18 @@ Efficient Distributed SDCA
 * Mingrui Liu
 
 ## Quickstart
+
+### Dependencies
+The project requires the following to build:
+
+* cmake
+* C++ 14
+
+Optionally, you may use the Ninja build system if you have it installed.
+
+### Building and Running
 To run the project, first move into the ``build`` directory (e.g., ``cd build``
- from project ``root`). From within the build directory, run the command
+ from project ``root``). From within the build directory, run the command
 
  ```
  cmake ..
