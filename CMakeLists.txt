@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 2.8.9)
 project(edsdca)
 
+# If CUDA compiler found, ``CUDA_FOUND`` will be set to ``true``
+find_package(CUDA)
+
 message("\n===== PROJECT INFO ====\nCS5430 Project\nAuthors: Jeff Hajewski and Mingrui Liu\n===== END INFO =====\n\n")
 
 # Add headers
