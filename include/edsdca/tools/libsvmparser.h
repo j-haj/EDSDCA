@@ -45,17 +45,17 @@ class LibSvmParser {
     num_features_ = LibSvmParser::GetNumberFeatures(data_set);
   }
 
-  void parse() {
+  std::pair<Eigen::VectorXd, Eigen::MatrixXd> Parse() {
     // First grab new lines and initialize @p labels_ and @p features_
-    auto lines = edsdca::tools::String::split(this->data_, "\n");
+    auto lines = String::split(this->data_, "\n");
     long num_data = lines.size();
-    this->labels_= Eigen::VectorXf(num_data);
-    this->features_ = Eigen::MatrixXd::Zero(this->num_features_, num_data);
+    labels= Eigen::VectorXf(num_data);
+    features = Eigen::MatrixXd::Zero(this->num_features_, num_data);
 
     // For each line, split line on white space
     long row_num = 0;
     for (auto& line : lines) {
-      std::vector<std::string> split_row = edsdca::tools::String::split(line, " ");
+      std::vector<std::string> split_row = String::split(line, " ");
       
       bool is_label = true;
       // Iterate over each element of the line, where the first element is the
@@ -63,22 +63,23 @@ class LibSvmParser {
       for (auto& element : split_row) {
         if (is_label) {
           // Cast and add the label
-          this->labels_ << edsdca::tools::String::cast_to_type<float>(element);
+          labels << String::cast_to_type<float>(element);
           is_label = false;
         } else {
           // Parse the feature data -- first element is index+1, second element
           // is feature value
           std::vector<std::string> split_element = 
-            edsdca::tools::String::splitline(element, ":");
-          long f_idx = edsdca::tools::String::cast_to_type<long>(split_element[0]) - 1;
-          auto feature = edsdca::tools::String::cast_to_type<double>(split_element[1]);
-          this->features_(row_num, f_idx) = feature;
+            String::splitline(element, ":");
+          long f_idx = String::cast_to_type<long>(split_element[0]) - 1;
+          auto feature = String::cast_to_type<double>(split_element[1]);
+          features(row_num, f_idx) = feature;
         } 
       }
 
       // Increment row index as we move to the next row
       ++row_num;
     }
+    return std::pair<Eigen::VectorXd, Eigen::MatrixXd>(labels, features);
   }
 
   private:
@@ -97,16 +98,6 @@ class LibSvmParser {
    * Unparsed data
    */
   Container unparsed_data_;
-
-  /**
-   * Label data
-   */
-  Eigen::VectorXf labels_;
-
-  /**
-   * Feature data
-   */
-  Eigen::MatrixXd features_;
 
   /**
    * Gets the number of features for the selected data set
