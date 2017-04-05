@@ -6,10 +6,11 @@ find_package(CUDA)
 
 message("\n===== PROJECT INFO ====\nCS5430 Project\nAuthors: Jeff Hajewski and Mingrui Liu\n===== END INFO =====\n\n")
 
+set(SRC_DIR "${PROJECT_SOURCE_DIR}/src")
+
 # Add headers
 include_directories("${PROJECT_SOURCE_DIR}/include")
-
-set(SRC_DIR "${PROJECT_SOURCE_DIR}/src")
+include_directories(SYSTEM "${SRC_DIR}/eigen/")
 
 # Add source files
 set(SOURCES 
@@ -19,6 +20,7 @@ set(HEADERS
             include/dlog/logging.h
             include/edsdca/tools/filereader.h
             include/edsdca/tools/string.h
+            include/edsdca/tools/libsvmparser.h
             include/edsdca/util/datetime.h)
 
 add_executable(edsdca_main ${SRC_DIR}/edsdca/run_model.cc ${SOURCES} ${HEADERS})
