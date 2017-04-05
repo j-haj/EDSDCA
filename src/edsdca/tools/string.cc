@@ -12,4 +12,3 @@ std::vector<std::string> edsdca::tools::String::split(const std::string& s,
   }
   return result;                                                  
 }
-

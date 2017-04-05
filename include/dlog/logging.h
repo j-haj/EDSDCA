@@ -45,10 +45,12 @@ class DebugLogger {
      */
     static void InitDebugLogging(const std::string log_file_name="debug_log",
                                  const std::string extension=".log") {
+#ifdef DEBUG
       std::string timestamp = util::date_time::FormattedTime::now();
       std::string filename = log_file_name + "_" + timestamp + extension;
       log_file().open(filename, std::ios::out);
       DLOG("Dlog initialization complete!");
+#endif
     }
 
     static void log(const char* f, const std::string msg) {
@@ -76,6 +78,7 @@ class DebugLogger {
 
   private:
     DebugLogger() {}
+
 };
 
 }

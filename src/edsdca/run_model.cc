@@ -6,6 +6,7 @@
 #include "edsdca/edsdca.h"
 
 int main(int argc, char* argv[]) {
+  dlog::DebugLogger::InitDebugLogging();
   ptags::Ptag::InitPTags();
   DLOG("Running models...");
 
