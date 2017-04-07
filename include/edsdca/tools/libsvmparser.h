@@ -7,6 +7,7 @@
 
 #include <Eigen/Dense>
 
+#include "edsdca/edsdca.h"
 #include "edsdca/tools/string.h"
 
 namespace edsdca {
@@ -38,7 +39,7 @@ template <typename Container = std::string,
           // typename Dtype = float,
           typename Ltype = int>
 class LibSvmParser {
-
+// TODO: Class is not yet complete!
   public:
   LibSvmParser(LibSvmDataSet data_set, Container& data) :
     data_set_(data_set), unparsed_data_(data) {

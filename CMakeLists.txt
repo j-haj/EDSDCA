@@ -4,6 +4,10 @@ project(edsdca)
 # If CUDA compiler found, ``CUDA_FOUND`` will be set to ``true``
 find_package(CUDA)
 
+# Try to find OpenMP. Similarly to CUDA, if found, ``OPENMP_FOUND`` will be set
+# to ``true``
+find_package(OpenMP)
+
 message("\n===== PROJECT INFO ====\nCS5430 Project\nAuthors: Jeff Hajewski and Mingrui Liu\n===== END INFO =====\n\n")
 
 set(SRC_DIR "${PROJECT_SOURCE_DIR}/src")
@@ -21,6 +25,7 @@ set(HEADERS
             include/edsdca/tools/filereader.h
             include/edsdca/tools/string.h
             include/edsdca/tools/libsvmparser.h
+            include/edsdca/tools/csvparser.h
             include/edsdca/util/datetime.h)
 
 add_executable(edsdca_main ${SRC_DIR}/edsdca/run_model.cc ${SOURCES} ${HEADERS})
