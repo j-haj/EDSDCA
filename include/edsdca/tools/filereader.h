@@ -2,6 +2,7 @@
 #define __EDSDCA_FILEREADER_H
 
 #include <fstream>
+#include <ios>
 #include <iostream>
 #include <limits>
 #include <string>
@@ -23,7 +24,7 @@ class FileReader {
     template <typename Container = std::string,
            typename CharT = char,
            typename Traits = std::char_traits<char>>
-    static auto read_stream_into_container(std::basic_istream<CharT, Traits>& in,
+    static auto ReadStreamIntoContainer(std::basic_istream<CharT, Traits>& in,
         typename Container::allocator_type alloc = {}) -> Container {
 
       // Compile time checks on Container type
@@ -39,17 +40,17 @@ class FileReader {
           typename Container::allocator_type>>::value ||
 
           std::is_same<Container, std::vector<std::make_signed<CharT>,
-          typename Container::allocator_type>>::value);
+          typename Container::allocator_type>>::value, "Static assertion failed -- bad allocator type");
 
       // Get size of file
       // ----------------------------------------------------------------------
       auto const start_pos = in.tellg();
       if (std::streamsize(-1) == start_pos) {
         DLOG("Issue with start position");
-        throw std::io_base::failure{"start position error"};
+        throw std::ios_base::failure{"start position error"};
       }
 
-      if (!in.ignore(std::numeric_limis<std::streamsize>::max())) {
+      if (!in.ignore(std::numeric_limits<std::streamsize>::max())) {
         DLOG("error encountered when reading to end of file");
         throw std::ios_base::failure{"error encountered while reading to EOF"};
       }
@@ -64,7 +65,7 @@ class FileReader {
 
       // Allocate memory for the data and read in the file
       // ----------------------------------------------------------------------
-      auto container Container(std::move(alloc));
+      auto container = Container(std::move(alloc));
       container.resize(char_count);
 
       if (container.size() != 0) {
@@ -77,6 +78,7 @@ class FileReader {
 
       return container;
     }
-} // class FileReader
-
+}; // class FileReader
+} // namespace tools
+} // namespace edsdca
 #endif // __EDSDCA_FILEREADER_H

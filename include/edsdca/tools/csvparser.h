@@ -1,9 +1,10 @@
 #ifndef __EDSDCA_CSVPARSER_H
 #define __EDSDCA_CSVPARSER_H
 
-#include <pair>
 #include <vector>
 #include <string>
+#include <tuple>
+#include <utility>
 
 #include <Eigen/Dense>
 
@@ -17,8 +18,17 @@ class CsvParser {
   public:
 
     /**
-     * Parses the given data
+     * Parses the given data, returning a @p std::pair that contains the labels
+     * and features @p (labels, features)
      *
+     * @param data data to be parsed
+     * @param label_pos @p long representing the index of the label within the
+     *                  data
+     * @param num_features @p long representing the number of expected features
+     *
+     * @return @p std::pair of label data and feature data, where the label data
+     *          is the first element of the pair and the feature data is the
+     *          second
      */
     static std::pair<Eigen::VectorXd, Eigen::MatrixXd> Parse(const std::string& data,
         const long label_pos, const long num_features);

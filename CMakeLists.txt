@@ -18,7 +18,10 @@ include_directories(SYSTEM "${SRC_DIR}/eigen/")
 
 # Add source files
 set(SOURCES 
-            ${SRC_DIR}/edsdca/tools/string.cc)
+            ${SRC_DIR}/edsdca/tools/string.cc
+            ${SRC_DIR}/edsdca/tools/csvparser.cc
+            ${SRC_DIR}/edsdca/tools/csvloader.cc
+            ${SRC_DIR}/edsdca/tools/filereader.cc)
 set(HEADERS 
             include/ptags/ptags.h
             include/dlog/logging.h
@@ -26,6 +29,7 @@ set(HEADERS
             include/edsdca/tools/string.h
             include/edsdca/tools/libsvmparser.h
             include/edsdca/tools/csvparser.h
+            include/edsdca/tools/csvloader.h
             include/edsdca/util/datetime.h)
 
 add_executable(edsdca_main ${SRC_DIR}/edsdca/run_model.cc ${SOURCES} ${HEADERS})
