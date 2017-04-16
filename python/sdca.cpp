@@ -5,4 +5,3 @@ double SdcaSolver::GetDeltaAlpha(const std::vector<double>& x, const int y) {
   return a;
 }
 
-
