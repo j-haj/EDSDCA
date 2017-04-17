@@ -11,5 +11,8 @@ bool MemSync::PushToGpu(const std::vector<double>& x) {
 }
 
 bool MemSync::PullToGpu(std::vector<double>& x) {
+  cudaMemcpy(&x[0], d_x, cudaMemcpyDeviceToHost);
 
+  // TODO: Check CUDA error status
+  return true;
 }
