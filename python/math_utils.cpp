@@ -49,3 +49,18 @@ double VectorProd_cpu(const std::vector<double>& x,
     return res;
 }
 
+void VectorInPlaceSum(std::vector<double>& x, std::vector<double>& y) {
+#ifndef GPU
+  VectorInPlaceSum_cpu(x, y);
+#else
+  VectorInPlaceSum_gpu(x, y);
+#endif
+}
+
+void VectorInPlaceSum_cpu(std::vector<double>& x, std::vector<double>& y) {
+  static_assert(x.size() == y.size(), "Vectors must be same length");
+  long n = x.size();
+  for (long i = 0; i < n; ++i) {
+    x[i] += y[i];
+  }
+}

@@ -45,8 +45,8 @@ public:
    */
   inline void ApplyWeightUpdate(const double delta_alpha, long i, double x_i);
   
-  std::vector<double>& ComputeAlphaBar(SdcaUpdateType update_type = SdcaUpdateType::Average);
-  std::vector<double>& ComputeWBar(SdcaUpdateType update_type = SdcaUpdateType::Average);
+  void ComputeAlphaBar(SdcaUpdateType update_type = SdcaUpdateType::Average);
+  void ComputeWBar(SdcaUpdateType update_type = SdcaUpdateType::Average);
 
 private:
   /// @brief number of data points 
@@ -56,8 +56,14 @@ private:
   /// @brief Dual vector, alpha
   std::vector<double> a_;
 
+  /// @brief accumulates the @p a_ updates
+  std::vector<std::vector<double>> accumulated_a_;
+
   /// @brief Primal vector, omega
   std::vector<double> w_;
+  
+  /// @brief accumulates the @p w_ updates
+  std::vector<std::vector<double>> accumulated_w_;
 
   /// @brief regularization term
   double lambda_;
