@@ -2,6 +2,7 @@
 #define __SYNCMEM_HPP
 
 #include "cuda.h"
+#include "cuda_utils.h"
 
 class MemSync {
 

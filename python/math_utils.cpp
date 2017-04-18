@@ -1,11 +1,8 @@
 #include "math_utils.hpp"
 
 double NormSquared_cpu(const std::vector<double>& x) {
-  double res = 0;
-  for (const double& x_i : x) {
-    res += x_i * x_i;
-  }
-  return x_i;
+  const double res = VectorProd_cpu(x, x);
+  return res;
 }
 
 double NormSquared_gpu(const std::vector<double>& x) {
@@ -14,14 +11,23 @@ double NormSquared_gpu(const std::vector<double>& x) {
   return res;  
 }
 
+double NormSquared(const std::vector<double>& x) {
+#ifndef GPU
+  const double res = NormSquared_cpu(x);
+#else
+  const double res = NormSquared_gpu(x);
+#endif
+  return res;
+}
+
 double VectorProd(const std::vector<double>& x,
   const std::vector<double>& y) {
 #ifndef GPU
-    long n = x.size();
-    double res = 0.0;
-    for (long i = 0; i < n; ++i) {
-      res += x[i]*y[i];
-    }
+  const double res = VectorProd_cpu(x, y);
+#else
+  const double res = VectorProd_gpu(x, y);
+#endif
+    return res;
 }
 
 double VectorProd_cpu(const std::vector<double>& x,
@@ -37,6 +43,8 @@ double VectorProd_cpu(const std::vector<double>& x,
 double VectorProd_cpu(const std::vector<double>& x,
   const std::vector<double>& y) {
     // Call gpu prod
+
+    // Reduce result
     double res = 0;
     return res;
 }
