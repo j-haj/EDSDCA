@@ -58,9 +58,34 @@ void VectorInPlaceSum(std::vector<double>& x, std::vector<double>& y) {
 }
 
 void VectorInPlaceSum_cpu(std::vector<double>& x, std::vector<double>& y) {
-  static_assert(x.size() == y.size(), "Vectors must be same length");
   long n = x.size();
   for (long i = 0; i < n; ++i) {
     x[i] += y[i];
   }
+}
+
+void VectorInPlaceSum_gpu(std::vector<double>& x, std::vector<double>& y) {
+  // GPU implementation
+}
+
+std::vector<double> VectorReduce(const std::vector<std::vector<double>>& v) {
+#ifndef GPU
+  return VectorReduce_cpu(const std::vector<std::vector<double>>& v);
+#else
+  return VectorReduce_gpu(const std::vector<std::vector<double>>& v);
+#endif
+}
+
+std::vector<double> VectorReduce_cpu(const std::vector<std::vector<double>>& v) {
+  std::vector<double> accumulator(v.first().size());
+  for (const auto& x : v) {
+    VectorInPlaceSum_cpu(accumulator, x);
+  }
+  return accumulator;
+}
+
+std::vector<double> VectorReduce_gpu(const std::vector<std::vector<double>>& v) {
+  // implement GPU version
+  std::vector<double> accumulator(v.first().size());
+  return accumulator;
 }

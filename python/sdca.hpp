@@ -3,9 +3,9 @@
 
 #include "math_utils.hpp"
 
+#include <algorithm>
 #include <random>
 #include <vector>
-#include <cmath>
 
 enum SdcaUpdateType {
   Average,
