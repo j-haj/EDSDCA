@@ -32,7 +32,7 @@ static void HandleError(cudaError_t err, const char* file, int line) {
     exit(EXIT_FAILURE);
   }
 }
-#define HANDLE_ERROR(err) (HandleError(err, __FILE__, __LINE__))
+#define CUDA_CHECK(err) (HandleError(err, __FILE__, __LINE__))
 
 #endif // GPU
 #endif // CUDUA_UTIL_H_

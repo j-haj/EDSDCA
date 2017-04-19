@@ -1,8 +1,8 @@
 #ifndef __SYNCMEM_HPP
 #define __SYNCMEM_HPP
 
-#include "cuda.h"
-#include "cuda_utils.h"
+#include <cuda.h>
+#include "cuda_util.h"
 
 class MemSync {
 
