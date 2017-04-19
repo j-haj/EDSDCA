@@ -12,6 +12,8 @@ message("\n===== PROJECT INFO ====\nCS5430 Project\nAuthors: Jeff Hajewski and M
 
 set(SRC_DIR "${PROJECT_SOURCE_DIR}/src")
 
+set(CMAKE_CXX_STANDARD 14)
+
 # Add headers
 include_directories("${PROJECT_SOURCE_DIR}/include")
 include_directories(SYSTEM "${SRC_DIR}/eigen/")
@@ -33,4 +35,5 @@ set(HEADERS
             include/edsdca/util/datetime.h)
 
 add_executable(edsdca_main ${SRC_DIR}/edsdca/run_model.cc ${SOURCES} ${HEADERS})
+add_executable(edsdca_read ${SRC_DIR}/read_test.cc ${SOURCES} ${HEADERS})
 set_property(TARGET edsdca_main PROPERTY CXX_STANDARD 14)
