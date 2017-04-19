@@ -4,6 +4,9 @@
 #include <cuda.h>
 #include "cuda_util.h"
 
+namespace edsdca {
+namespace memory {
+
 class MemSync {
 
 public:
@@ -11,6 +14,9 @@ public:
   static bool PushToGpu(const std::vector<double>& x);
   static bool PullFromGpu(const std::vector<double>& x);
 
-};
+}; // class MemSync
 
+
+} // memory
+} // edsdca
 #endif // __SYNCMEM_HPP
