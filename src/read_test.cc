@@ -4,7 +4,7 @@
 
 int main() {
   std::cout << "Opening file...\n";
-  auto loader = edsdca::tools::CsvLoader("../data/australian_scale");
+  auto loader = edsdca::tools::CsvLoader("../data/australian_scale.csv");
   loader.LoadData(14l, 0l);
   std::cout << "File open. Reading file into container...\n";
   std::cout << "File loaded. Printing file...\n";
