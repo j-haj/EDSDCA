@@ -9,6 +9,12 @@ set(CMAKE_CXX_STANDARD 11)
 # If CUDA compiler found, ``CUDA_FOUND`` will be set to ``true``
 find_package(CUDA)
 
+if (${CUDA_FOUND})
+  add_definitions(-DGPU)
+else()
+  add_definitions(-DCPU)
+endif()
+
 # Try to find OpenMP. Similarly to CUDA, if found, ``OPENMP_FOUND`` will be set
 # to ``true``
 find_package(OpenMP)
@@ -17,7 +23,6 @@ find_package(OpenMP)
 enable_testing()
 find_package(GTest REQUIRED)
 
-message("\n===== PROJECT INFO ====\nCS5430 Project\nAuthors: Jeff Hajewski and Mingrui Liu\n===== END INFO =====\n\n")
 
 
 # Add headers
@@ -52,3 +57,8 @@ target_link_libraries(test_math ${GTEST_BOTH_LIBRARIES})
 
 add_executable(edsdca_read ${SRC_DIR}/read_test.cc ${SOURCES} ${HEADERS})
 
+
+# -----------------------------------------------------------------------------
+# Final Options
+# -----------------------------------------------------------------------------
+message("\n===== PROJECT INFO ====\nCS5430 Project\nAuthors: Jeff Hajewski and Mingrui Liu\n===== END INFO =====\n\n")
