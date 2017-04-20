@@ -1,4 +1,4 @@
-#include "memsync.hpp"
+#include "edsdca/memory/memsync.h"
 
 bool MemSync::PushToGpu(const std::vector<double>& x) {
   int n = x.size();
