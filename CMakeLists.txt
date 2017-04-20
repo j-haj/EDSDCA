@@ -35,7 +35,8 @@ set(SOURCES
             ${SRC_DIR}/edsdca/tools/string.cc
             ${SRC_DIR}/edsdca/tools/csvparser.cc
             ${SRC_DIR}/edsdca/tools/csvloader.cc
-            ${SRC_DIR}/edsdca/tools/filereader.cc)
+            ${SRC_DIR}/edsdca/tools/filereader.cc
+            ${SRC_DIR}/edsdca/util/math_utils.cc)
 set(HEADERS 
             include/ptags/ptags.h
             include/dlog/logging.h
@@ -47,15 +48,17 @@ set(HEADERS
             include/edsdca/util/datetime.h
             include/edsdca/util/math_utils.h)
 
+set(TEST_HEADERS
+            test/math_util_test.h)
+
 add_executable(edsdca_main ${SRC_DIR}/edsdca/run_model.cc ${SOURCES} ${HEADERS})
 
 # -----------------------------------------------------------------------------
 # Tests
 # -----------------------------------------------------------------------------
-add_executable(test_math ${TEST_DIR}/math_util_test.cc ${SOURCES} ${HEADERS})
-target_link_libraries(test_math ${GTEST_BOTH_LIBRARIES})
+add_executable(test_all ${TEST_DIR}/all_tests.cc ${SOURCES} ${HEADERS} ${TEST_HEADERS})
+target_link_libraries(test_all ${GTEST_BOTH_LIBRARIES})
 
-add_executable(edsdca_read ${SRC_DIR}/read_test.cc ${SOURCES} ${HEADERS})
 
 
 # -----------------------------------------------------------------------------

@@ -34,11 +34,11 @@ double VectorDotProd_gpu(const Eigen::VectorXd& x,
     const Eigen::VectorXd& y);
 
 void VectorInPlaceSum(std::vector<double>& x,
-    std::vector<double>& y);
+    const std::vector<double>& y);
 void VectorInPlaceSum_cpu(std::vector<double>& x,
-    std::vector<double>& y);
+    const std::vector<double>& y);
 void VectorInPlaceSum_gpu(std::vector<double>& x,
-    std::vector<double>& y);
+    const std::vector<double>& y);
 
 std::vector<double> VectorReduce(const std::vector<std::vector<double>>& v);
 std::vector<double> VectorReduce_cpu(const std::vector<std::vector<double>>& v);
