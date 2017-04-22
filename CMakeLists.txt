@@ -49,7 +49,9 @@ set(HEADERS
             include/edsdca/util/math_utils.h)
 
 set(TEST_HEADERS
-            test/math_util_test.h)
+            test/math_util_test.h
+            test/csv_load_test.h
+            test/sdca_test.h)
 
 add_executable(edsdca_main ${SRC_DIR}/edsdca/run_model.cc ${SOURCES} ${HEADERS})
 

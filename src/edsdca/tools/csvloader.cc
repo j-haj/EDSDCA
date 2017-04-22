@@ -12,8 +12,8 @@ void edsdca::tools::CsvLoader::LoadData(const long num_features,
 
   // Once the file is read, parse it
   std::tie(this->labels_, this->features_) = edsdca::tools::CsvParser::Parse(unparsed_data,
-      label_pos, num_features); 
-  
+      label_pos, num_features);
+  ifile.close();
 }
 
 void edsdca::tools::CsvLoader::LoadDataToArray(const long num_features,
