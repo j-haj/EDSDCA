@@ -22,11 +22,4 @@ void edsdca::tools::CsvLoader::LoadDataToArray(const long num_features,
     std::ifstream ifile;
     ifile.open(this->path_, std::ios::in);
     std::string unparsed_data = edsdca::tools::FileReader::ReadStreamIntoContainer(ifile);
-
-    /*
-    // File is loaded, parse
-    std::tie(this->feature_arr_, this->label_arr_) = 
-        edsdca::tools::CsvParser::ParseToStdArr(unparsed_data, label_pos, num_features);
-        
-    */
   }

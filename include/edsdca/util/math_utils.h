@@ -44,8 +44,8 @@ std::vector<double> VectorReduce(const std::vector<std::vector<double>>& v);
 std::vector<double> VectorReduce_cpu(const std::vector<std::vector<double>>& v);
 std::vector<double> VectorReduce_gpu(const std::vector<std::vector<double>>& v);
 
-Eigen::VectorXd VectorReduce(const Eigen::MatrixXd& m);
-Eigen::VectorXd VectorReduce_cpu(const Eigen::MatrixXd& m);
-Eigen::VectorXd VecotrReduce_gpu(const Eigen::MatrixXd& m);
+Eigen::VectorXd VectorReduce(const std::vector<Eigen::VectorXd>& v);
+Eigen::VectorXd VectorReduce_cpu(const std::vector<Eigen::VectorXd>& v);
+Eigen::VectorXd VecotrReduce_gpu(const std::vector<Eigen::VectorXd>& v);
 
 #endif // __MATH_UTILS_HPP

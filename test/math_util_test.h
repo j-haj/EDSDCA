@@ -1,11 +1,10 @@
-
+#ifndef __TEST_MATH_UTIL_TEST_H
+#define __TEST_MATH_UTIL_TEST_H
 
 #include <Eigen/Dense>
 #include <gtest/gtest.h>
 
 #include "edsdca/util/math_utils.h"
-
-namespace math_utils_tests {
 
 TEST(NormSquared, Cpu) {
   auto eigen_x = Eigen::VectorXd(5);
@@ -53,4 +52,4 @@ TEST(VectorDotProd, CpuOrGpu) {
 
 }
 
-} // namespace math_utils_tests
+#endif

@@ -36,7 +36,8 @@ set(SOURCES
             ${SRC_DIR}/edsdca/tools/csvparser.cc
             ${SRC_DIR}/edsdca/tools/csvloader.cc
             ${SRC_DIR}/edsdca/tools/filereader.cc
-            ${SRC_DIR}/edsdca/util/math_utils.cc)
+            ${SRC_DIR}/edsdca/util/math_utils.cc
+            ${SRC_DIR}/edsdca/models/sdca.cc)
 set(HEADERS 
             include/ptags/ptags.h
             include/dlog/logging.h
@@ -46,7 +47,8 @@ set(HEADERS
             include/edsdca/tools/csvparser.h
             include/edsdca/tools/csvloader.h
             include/edsdca/util/datetime.h
-            include/edsdca/util/math_utils.h)
+            include/edsdca/util/math_utils.h
+            include/edsdca/models/sdca.h)
 
 set(TEST_HEADERS
             test/math_util_test.h

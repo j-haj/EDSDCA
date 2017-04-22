@@ -135,16 +135,25 @@ std::vector<double> VectorReduce_gpu(const std::vector<std::vector<double>>& v) 
   return accumulator;
 }
 
-Eigen::VectorXd VectorReduce(const Eigen::MatrixXd& m) {
-
+Eigen::VectorXd VectorReduce(const std::vector<Eigen::VectorXd>& v) {
+#ifndef GPU
+  return VectorReduce_cpu(v);
+#else
+  return VectorReduce_gpu(v);
+#endif
 }
 
-Eigen::VectorXd VectorReduce_cpu(const Eigen::MatrixXd& m) {
-
+Eigen::VectorXd VectorReduce_cpu(const std::vector<Eigen::VectorXd>& v) {
+  Eigen::VectorXd accumulator = Eigen::VectorXd::Zero(v.front().size());
+  for (const Eigen::VectorXd& x : v) {
+    accumulator += x;
+  }
+  return accumulator;
 }
 
-Eigen::VectorXd VectorReduce_gpu(const Eigen::MatrixXd& m) {
-
+Eigen::VectorXd VectorReduce_gpu(const std::vector<Eigen::VectorXd>& v) {
+  Eigen::VectorXd accumulator = Eigen::VectorXd::Zero(v.front().size());
+  return accumulator;
 }
 
 

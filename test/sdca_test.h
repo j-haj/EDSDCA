@@ -1,41 +1,37 @@
+#ifndef __TEST_SDCA_TEST_H
+#define __TEST_SDCA_TEST_H
 
 #include <Eigen/Dense>
 #include <gtest/gtest.h>
 
+#include "edsdca/tools/csvloader.h"
 #include "edsdca/models/sdca.h"
-
-namespace edsdca_tests {
 
 class SdcaTest : public ::testing::Test {
   
   protected:
-    virtual void SetUp() {
+    SdcaTest() : sdca_(edsdca::models::Sdca(0)) {}
+
+    void SetUp() {
       // Load data
-      auto loader = edsdca::tools::CsvLoader("data/test_data_3d.csv");
+      auto loader = edsdca::tools::CsvLoader("../test/data/test_data_3d.csv");
 
       loader.LoadData(3, 0);
-      Eigen::MatrxXd features = loader.features();
+      Eigen::MatrixXd features = loader.features();
       Eigen::VectorXd labels = loader.labels();
 
-      // Create Sdca instance
-      sdca = edsdca::models::Sdcas(0);
+      // Fit the model
+      sdca_.Fit(features, labels);      
+
     }
 
-    edsdca::model::Sdca sdca;
+    edsdca::models::Sdca sdca_;
 
 };
 
-TEST_F(SdcaTest, LoadData) {
-
+TEST_F(SdcaTest, CheckLambda) {
+  ASSERT_EQ(sdca_.lambda(), 0);
 }
 
-TEST(EDSDCASolverTest, 1DTest) {
-  // Create a toy problem where the feature space is one-dimensional such that
-  // all data to the left or -1 is negatively labeled and all data to the
-  // right of -1 is positively labeled
 
-  Eigen::MatrixXd X = 
-  
-}
-
-} // namespace edsdca_tests
+#endif

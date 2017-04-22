@@ -3,19 +3,25 @@
 
 #include <algorithm>
 #include <vector>
+#include <random>
 
 #include <Eigen/Dense>
 
 #include "edsdca/edsdca.h"
+#include "edsdca/util/math_utils.h"
 
 namespace edsdca {
 namespace models {
+
+enum SdcaUpdateType {
+  Average
+};
 
 class Sdca {
 
   public:
 
-    Sdca(double lamba) : lambda_(lambda) {}
+    Sdca(double l) : lambda_(l) {}
 
     /**
      * Computes delta alpha for index i
@@ -26,7 +32,7 @@ class Sdca {
      *
      * @return delta alpha for the ith index
      */
-    double DeltaAlpha(const Eigen::VectorXd& x, const int y, long i);
+    double DeltaAlpha(const Eigen::VectorXd& x, const double y, long i);
 
     /**
      * Handles the weight updates
@@ -35,8 +41,8 @@ class Sdca {
      * @param i index of the direction being optimized
      * @param x the current data point
      */
-     inline void ApplyWeightUpdates(const double delta_alpha, long i, Eigen::VectorXd* x) {
-       w_(i) += lambda_ / n_ * delta_alpha * x(i); // TODO: Verify this!
+     inline void ApplyWeightUpdates(const double delta_alpha, Eigen::VectorXd& x) {
+       w_ +=  lambda_ / (double)n_ * delta_alpha * x; 
        accumulated_w_.push_back(w_);
      }
 
@@ -64,9 +70,23 @@ class Sdca {
       */
      void Fit(const Eigen::MatrixXd& X, const Eigen::VectorXd& y);
 
+
+     /**
+      * Given a feature vector, computes the predicted class and return the result
+      *
+      * @param feature vector
+      *
+      * @return @p double representing the estimate of the predicted class
+      */
+     double Predict(const Eigen::VectorXd* x);
+
      // ------------------------------------------------------------------------
      // Getters
      // ------------------------------------------------------------------------
+     inline double lambda() {
+       return lambda_;
+     }
+
      inline long n() {
        return n_;
      }
@@ -79,7 +99,7 @@ class Sdca {
        return w_;
      }
 
-     inline VectorXd a() {
+     inline Eigen::VectorXd a() {
        return a_;
      }
 
@@ -114,11 +134,35 @@ class Sdca {
     double lambda_;
 
     // Default number of epochs is 20
-    long num_epochs_ = 20;
+    long max_epochs_ = 20;
 
     /// @brief default mini-batch size of 1
     long batch_size_ = 1;
-     
+
+    /**
+     * Runs the updates for $\alpha$ and $\omega$
+     *
+     * @param X mini-batch feature data
+     * @param y mini-batch label data
+     */
+    void RunUpdateOnMiniBatch(std::vector<Eigen::VectorXd>& X, std::vector<double>& y);
+
+    /**
+     * Runs the updates for $\alpha$ and $\omega$ on the CPU
+     *
+     * @param X mini-batch feature data
+     * @param y mini-batch label data
+     */
+    void RunUpdateOnMiniBatch_cpu(std::vector<Eigen::VectorXd>& X, std::vector<double>& y);
+    
+    /**
+     * Runs the updates for $\alpha$ and $\omega$ on the GPU
+     *
+     * @param X mini-batch feature data
+     * @param y mini-batch label data
+     */
+    void RunUpdateOnMiniBatch_gpu(std::vector<Eigen::VectorXd>& X, std::vector<double>& y);
+
 }; // class Sdca
 
 } // namespace model

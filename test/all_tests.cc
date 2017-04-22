@@ -2,6 +2,7 @@
 #include <gtest/gtest.h>
 
 // Include all test suites here
+#include "sdca_test.h"
 #include "math_util_test.h"
 #include "csv_load_test.h"
 
