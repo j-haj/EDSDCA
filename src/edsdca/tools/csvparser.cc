@@ -8,7 +8,7 @@ std::pair<Eigen::VectorXd, Eigen::MatrixXd> edsdca::tools::CsvParser::Parse(
     const long num_features) {
   // Split data based on newlines
   auto lines = tools::String::split(data, '\n');
-  const long num_data = lines.size() - 1;
+  const long num_data = lines.size();
   Eigen::VectorXd labels = Eigen::VectorXd(num_data);
   Eigen::MatrixXd features = Eigen::MatrixXd::Zero(num_data, num_features);
 
@@ -20,13 +20,12 @@ std::pair<Eigen::VectorXd, Eigen::MatrixXd> edsdca::tools::CsvParser::Parse(
     }
     std::vector<std::string> split_row = tools::String::split(line, ',');
 
-    for (long i = 0; i < split_row.size() - 1; ++i) {
-      //std::cout << "row: " << row_num << " col: " << i << std::endl;
+    for (long i = 0; i < split_row.size(); ++i) {
       double val = tools::String::cast_to_type<double>(split_row[i]);
       if (i == label_pos) {
         labels(row_num) = val;
       } else {
-        features(row_num, i) = val;
+        features(row_num, i - 1) = val;
       }
     }
     ++row_num;
