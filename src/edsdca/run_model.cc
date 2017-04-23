@@ -5,6 +5,7 @@
 
 #include "edsdca/edsdca.h"
 #include "edsdca/tools/csvloader.h"
+#include "edsdca/models/sdca.h"
 
 int main(int argc, char* argv[]) {
   dlog::DebugLogger::InitDebugLogging();
@@ -12,11 +13,11 @@ int main(int argc, char* argv[]) {
   DLOG("Running models...");
 
   DLOG("Attempting to instantiate an instance of CsvLoader...");
-  auto loader = edsdca::tools::CsvLoader("/Users/jhaj/Documents/university-of-iowa/classes/s2017/machine-learning/EDSDCA/src/edsdca/testdata.csv");
+  auto loader = edsdca::tools::CsvLoader("../test/data/large_test.csv");
   DLOG("CsvLoader instantiated! Attempting to load data....");
-  loader.LoadData(10, 0);
+  loader.LoadData(3, 0);
   DLOG("Data loaded! Attempting to print to std::cout...");
-  std::cout << loader.features() << std::endl;
-
+  edsdca::models::Sdca sdca = edsdca::models::Sdca(1);
+  sdca.Fit(loader.features(), loader.labels());
   return 0;
 }

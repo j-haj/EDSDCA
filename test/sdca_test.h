@@ -10,11 +10,11 @@
 class SdcaTest : public ::testing::Test {
   
   protected:
-    SdcaTest() : sdca_(edsdca::models::Sdca(0)) {}
+    SdcaTest() : sdca_(edsdca::models::Sdca(10)) {}
 
     void SetUp() {
       // Load data
-      auto loader = edsdca::tools::CsvLoader("../test/data/test_data_3d.csv");
+      auto loader = edsdca::tools::CsvLoader("../test/data/large_test.csv");
 
       loader.LoadData(3, 0);
       Eigen::MatrixXd features = loader.features();
@@ -30,7 +30,7 @@ class SdcaTest : public ::testing::Test {
 };
 
 TEST_F(SdcaTest, CheckLambda) {
-  ASSERT_EQ(sdca_.lambda(), 0);
+  ASSERT_EQ(sdca_.lambda(), 10);
 }
 
 TEST_F(SdcaTest, CheckAlpha) {

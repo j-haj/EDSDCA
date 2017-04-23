@@ -47,7 +47,7 @@ class Sdca {
      }
 
      inline void ApplyAlphaUpdate(const double delta_alpha, const long i) {
-       a_[i] += delta_alpha;
+       a_(i) += delta_alpha;
        accumulated_a_.push_back(a_);
      }
 

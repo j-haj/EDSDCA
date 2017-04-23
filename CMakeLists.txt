@@ -15,6 +15,9 @@ else()
   add_definitions(-DCPU)
 endif()
 
+# Add debug flag
+add_definitions(-DDEBUG)
+
 # Try to find OpenMP. Similarly to CUDA, if found, ``OPENMP_FOUND`` will be set
 # to ``true``
 find_package(OpenMP)

@@ -4,18 +4,19 @@ namespace edsdca {
 namespace models {
 
 double Sdca::DeltaAlpha(const Eigen::VectorXd& x, const double y, long i) {
-  const double a = (1.0 - VectorDotProd(x, w_) * y) / (NormSquared(x) / (lambda_ * n_));
-  return y * std::max(0.0, std::min(1.0, a));
+  const double a = (1.0 - VectorDotProd(x, w_) * y) / (NormSquared(x) / (lambda_ * n_)) +
+                      a_(i) * y;
+  return y * std::max(0.0, std::min(1.0, a)) - a_(i);
 }
 
 
 void Sdca::ComputeAlphaBar(SdcaUpdateType update_type) {
   switch (update_type) {
     case SdcaUpdateType::Average:
-      double accumulated_scale_factor = accumulated_a_.size() * lambda_;
       Eigen::VectorXd reduced_accumulated_a = VectorReduce(accumulated_a_);
-      // TODO: Not complete
+      reduced_accumulated_a *= 1.0/accumulated_a_.size();
       accumulated_a_.clear();
+      std::cout << "accumulated_a_ cleared!\n";
   }
 }
 
@@ -23,10 +24,10 @@ void Sdca::ComputeWBar(SdcaUpdateType update_type) {
   switch (update_type) {
     case SdcaUpdateType::Average:
       Eigen::VectorXd reduced_accumulated_w = VectorReduce(accumulated_w_);
-      reduced_accumulated_w /= accumulated_w_.size();
+      reduced_accumulated_w *= 1.0/accumulated_w_.size();
 
       accumulated_w_.clear();
-      // TODO: Not complete
+      std::cout << "accumulated_w_ cleared!\n";
   }
 }
 
@@ -61,10 +62,17 @@ void Sdca::Fit(const Eigen::MatrixXd& X, const Eigen::VectorXd& y) {
         mb_X[i] = X.row(i);
         mb_y[i] = y(i);
       }
-
+      DLOG("Before minibatch update\n");
       RunUpdateOnMiniBatch(mb_X, mb_y);
+      DLOG("After minibatch update\n");
       ComputeAlphaBar();
       ComputeWBar();
+      std::cout << "---\n";
+      std::cout << "a:\n";
+      std::cout << a() << std::endl;
+      std::cout << "w:\n";
+      std::cout << w() << std::endl;
+      std::cout << "---\n";
     }
   }
 }
@@ -90,6 +98,7 @@ void Sdca::RunUpdateOnMiniBatch_cpu(const std::vector<Eigen::VectorXd>& X,
     const Eigen::VectorXd x_i = X[i];
     const double y_i = y[i];
     const double delta_a = DeltaAlpha(x_i, y_i, current_dim);
+    std::cout << "delta_a: " << delta_a << std::endl;
     ApplyAlphaUpdate(delta_a, current_dim);
     ApplyWeightUpdates(delta_a, x_i);
   } 
