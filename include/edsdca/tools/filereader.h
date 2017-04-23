@@ -74,8 +74,6 @@ class FileReader {
         }
       }
 
-      DLOG("File buffer successfully read into file");
-
       return container;
     }
 }; // class FileReader

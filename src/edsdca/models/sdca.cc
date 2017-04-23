@@ -16,7 +16,6 @@ void Sdca::ComputeAlphaBar(SdcaUpdateType update_type) {
       Eigen::VectorXd reduced_accumulated_a = VectorReduce(accumulated_a_);
       reduced_accumulated_a *= 1.0/accumulated_a_.size();
       accumulated_a_.clear();
-      std::cout << "accumulated_a_ cleared!\n";
   }
 }
 
@@ -25,28 +24,18 @@ void Sdca::ComputeWBar(SdcaUpdateType update_type) {
     case SdcaUpdateType::Average:
       Eigen::VectorXd reduced_accumulated_w = VectorReduce(accumulated_w_);
       reduced_accumulated_w *= 1.0/accumulated_w_.size();
-
       accumulated_w_.clear();
-      std::cout << "accumulated_w_ cleared!\n";
   }
 }
 
 void Sdca::Fit(const Eigen::MatrixXd& X, const Eigen::VectorXd& y) {
-  // Set model probertiem
+  // Set model proberties
   n_ = X.rows();
   d_ = X.cols();
 
   // Initialize w_ and a_
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  std::normal_distribution<> norm_dist(0, 1);
-
-  w_ = Eigen::VectorXd(d_);
-  a_ = Eigen::VectorXd(d_);
-  for (long i = 0; i < d_; ++i) {
-    w_(i) = norm_dist(gen);
-    a_(i) = norm_dist(gen);
-  }
+  InitializeAlpha();
+  InitializeWeights(); 
 
   for (long cur_epoch = 0; cur_epoch < max_epochs_; ++cur_epoch) {
     auto remaining_batch_indices = std::vector<long>(n_);
@@ -62,18 +51,19 @@ void Sdca::Fit(const Eigen::MatrixXd& X, const Eigen::VectorXd& y) {
         mb_X[i] = X.row(i);
         mb_y[i] = y(i);
       }
-      DLOG("Before minibatch update\n");
       RunUpdateOnMiniBatch(mb_X, mb_y);
-      DLOG("After minibatch update\n");
       ComputeAlphaBar();
       ComputeWBar();
-      std::cout << "---\n";
-      std::cout << "a:\n";
-      std::cout << a() << std::endl;
-      std::cout << "w:\n";
-      std::cout << w() << std::endl;
-      std::cout << "---\n";
     }
+  }
+}
+
+double Sdca::Predict(const Eigen::VectorXd& x) {
+  double res = VectorDotProd(w_, x);
+  if (res > 0) {
+    return 1.0;
+  } else {
+    return 0.0;
   }
 }
 
@@ -98,7 +88,6 @@ void Sdca::RunUpdateOnMiniBatch_cpu(const std::vector<Eigen::VectorXd>& X,
     const Eigen::VectorXd x_i = X[i];
     const double y_i = y[i];
     const double delta_a = DeltaAlpha(x_i, y_i, current_dim);
-    std::cout << "delta_a: " << delta_a << std::endl;
     ApplyAlphaUpdate(delta_a, current_dim);
     ApplyWeightUpdates(delta_a, x_i);
   } 
@@ -116,10 +105,31 @@ std::vector<long> Sdca::GenerateMiniBatchIndexVector(const long size, const long
   std::mt19937 gen(rd());
   std::uniform_int_distribution<> dist(low, high - 1);
   std::vector<long> res(size);
-  for (long i = low; i < high; ++i) {
+  for (long i = 0; i < size; ++i) {
     res[i] = dist(gen);
   }
   return res;
 }
+
+void Sdca::InitializeAlpha() {
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::normal_distribution<> norm_dist(0, 1);
+  a_ = Eigen::VectorXd(d_);
+  for (long i = 0; i < d_; ++i) {
+    a_(i) = norm_dist(gen);
+  }
+}
+
+void Sdca::InitializeWeights() {
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::normal_distribution<> norm_dist(0, 1);
+  w_ = Eigen::VectorXd(d_);
+  for (long i = 0; i < d_; ++i) {
+    w_(i) = norm_dist(gen);
+  }
+}
+
 } // namespace model
 } // namespace edsdca

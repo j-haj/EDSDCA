@@ -10,6 +10,5 @@
 
 int main(int argc, char* argv[]) {
   ::testing::InitGoogleTest(&argc, argv);
-  dlog::DebugLogger::InitDebugLogging();  
   return RUN_ALL_TESTS();
 }

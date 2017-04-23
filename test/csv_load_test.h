@@ -36,19 +36,19 @@ TEST_F(LoaderTest, TestFeatures) {
   ASSERT_EQ(expected_X.cols(), 3);
   ASSERT_EQ(actual_X.rows(), 6);
   ASSERT_EQ(actual_X.cols(), 3);
-  ASSERT_LE((actual_X - expected_X).norm(), EDSDCA_LOAD_TEST_LE_THRESHOLD);
+  ASSERT_DOUBLE_EQ((actual_X - expected_X).norm(), 0);
 }
 
 TEST_F(LoaderTest, TestLabels) {
   Eigen::VectorXd expected_y(6);
-  expected_y << 1, -1, 1, 1, -1, -1;
+  expected_y << 1, 0, 1, 1, 0, 0;
    
   Eigen::VectorXd actual_y = loader_.labels();
 
   // Check for equality
   ASSERT_EQ(expected_y.size(), 6);
   ASSERT_EQ(actual_y.size(), 6);
-  ASSERT_LE((actual_y - expected_y).norm(), EDSDCA_LOAD_TEST_LE_THRESHOLD);
+  ASSERT_DOUBLE_EQ((actual_y - expected_y).norm(), 0);
 }
 
 #endif // __CSV_LOAD_TEST_H
