@@ -35,20 +35,42 @@ void Sdca::Fit(const Eigen::MatrixXd& X, const Eigen::VectorXd& y) {
   n_ = X.rows();
   d_ = X.cols();
 
-  // Get mini_batch
+  // Initialize w_ and a_
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::normal_distribution<> norm_dist(0, 1);
+
+  w_ = Eigen::VectorXd(d_);
+  a_ = Eigen::VectorXd(d_);
+  for (long i = 0; i < d_; ++i) {
+    w_(i) = norm_dist(gen);
+    a_(i) = norm_dist(gen);
+  }
 
   for (long cur_epoch = 0; cur_epoch < max_epochs_; ++cur_epoch) {
-    auto remaining_batch_indices = std::vector<long>(n_)
+    auto remaining_batch_indices = std::vector<long>(n_);
 
     // Calculate number of mini-batches
-    long num_batches = (long) n_ / batch_size_;
-    std::cout << "num_batches: " << num_batches
-              << "\nbatch_size_: " << batch_size_ << "\nn_: " << n_ << std::endl;
+    const long num_batches = (long) n_ / batch_size_;
+    for (long batch_num = 0; batch_num < num_batches; ++batch_num) {
+      // Get mini-batch
+      const std::vector<long> mb_indices = GenerateMiniBatchIndexVector(batch_size_, 0, d_);
+      std::vector<Eigen::VectorXd> mb_X(batch_size_);
+      std::vector<double> mb_y(batch_size_);
+      for (long i = 0; i < batch_size_; ++i) {
+        mb_X[i] = X.row(i);
+        mb_y[i] = y(i);
+      }
+
+      RunUpdateOnMiniBatch(mb_X, mb_y);
+      ComputeAlphaBar();
+      ComputeWBar();
+    }
   }
 }
 
-void Sdca::RunUpdateOnMiniBatch(std::vector<Eigen::VectorXd>& X,
-    std::vector<double>& y) {
+void Sdca::RunUpdateOnMiniBatch(const std::vector<Eigen::VectorXd>& X,
+    const std::vector<double>& y) {
 #ifndef GPU
   Sdca::RunUpdateOnMiniBatch_cpu(X, y);
 #else
@@ -56,16 +78,39 @@ void Sdca::RunUpdateOnMiniBatch(std::vector<Eigen::VectorXd>& X,
 #endif
 }
 
-void Sdca::RunUpdateOnMiniBatch_cpu(std::vector<Eigen::VectorXd>& X,
-    std::vector<double>& y) {
-  // 
+void Sdca::RunUpdateOnMiniBatch_cpu(const std::vector<Eigen::VectorXd>& X,
+    const std::vector<double>& y) {
+  const long batch_size = y.size();
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<> dist(0, d_ - 1);
+
+  for (long i = 0; i < batch_size; ++i) {
+    const long current_dim = dist(gen);
+    const Eigen::VectorXd x_i = X[i];
+    const double y_i = y[i];
+    const double delta_a = DeltaAlpha(x_i, y_i, current_dim);
+    ApplyAlphaUpdate(delta_a, current_dim);
+    ApplyWeightUpdates(delta_a, x_i);
+  } 
 }
 
 // TODO: complete the gpu mini-batch update
-void Sdca::RunUpdateOnMiniBatch_gpu(std::vector<Eigen::VectorXd>& X,
-    std::vector<double>& y) {
+void Sdca::RunUpdateOnMiniBatch_gpu(const std::vector<Eigen::VectorXd>& X,
+    const std::vector<double>& y) {
   std::cout << "NEED TO IMPLEMENT\n";
 }
 
+std::vector<long> Sdca::GenerateMiniBatchIndexVector(const long size, const long low, 
+    const long high) const {
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<> dist(low, high - 1);
+  std::vector<long> res(size);
+  for (long i = low; i < high; ++i) {
+    res[i] = dist(gen);
+  }
+  return res;
+}
 } // namespace model
 } // namespace edsdca

@@ -41,12 +41,12 @@ class Sdca {
      * @param i index of the direction being optimized
      * @param x the current data point
      */
-     inline void ApplyWeightUpdates(const double delta_alpha, Eigen::VectorXd& x) {
+     inline void ApplyWeightUpdates(const double delta_alpha, const Eigen::VectorXd& x) {
        w_ +=  lambda_ / (double)n_ * delta_alpha * x; 
        accumulated_w_.push_back(w_);
      }
 
-     inline void ApplyAlphaUpdate(const double delta_alpha, long i) {
+     inline void ApplyAlphaUpdate(const double delta_alpha, const long i) {
        a_[i] += delta_alpha;
        accumulated_a_.push_back(a_);
      }
@@ -145,7 +145,8 @@ class Sdca {
      * @param X mini-batch feature data
      * @param y mini-batch label data
      */
-    void RunUpdateOnMiniBatch(std::vector<Eigen::VectorXd>& X, std::vector<double>& y);
+    void RunUpdateOnMiniBatch(const std::vector<Eigen::VectorXd>& X,
+            const std::vector<double>& y);
 
     /**
      * Runs the updates for $\alpha$ and $\omega$ on the CPU
@@ -153,7 +154,8 @@ class Sdca {
      * @param X mini-batch feature data
      * @param y mini-batch label data
      */
-    void RunUpdateOnMiniBatch_cpu(std::vector<Eigen::VectorXd>& X, std::vector<double>& y);
+    void RunUpdateOnMiniBatch_cpu(const std::vector<Eigen::VectorXd>& X,
+            const std::vector<double>& y);
     
     /**
      * Runs the updates for $\alpha$ and $\omega$ on the GPU
@@ -161,10 +163,24 @@ class Sdca {
      * @param X mini-batch feature data
      * @param y mini-batch label data
      */
-    void RunUpdateOnMiniBatch_gpu(std::vector<Eigen::VectorXd>& X, std::vector<double>& y);
+    void RunUpdateOnMiniBatch_gpu(const std::vector<Eigen::VectorXd>& X,
+            const std::vector<double>& y);
 
+    /**
+     * Creates a @p std::vector of indices from 0 to max - 1 to be used in
+     * creating a mini-batch sample. The indices are randomly selected from a
+     * uniform distribution
+     *
+     * @param size the number of indices to generate
+     * @param low the lower bound on the value of indicies
+     * @param high the upper bound on the value of indices
+     *
+     * @return a @p std::vector of the indices
+     */
+    std::vector<long> GenerateMiniBatchIndexVector(const long size, 
+            const long low, const long high) const;
 }; // class Sdca
 
-} // namespace model
+} // namespace models
 } // namespace edsdca
 #endif // __EDSDCA_SDCA_H

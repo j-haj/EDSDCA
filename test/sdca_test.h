@@ -33,5 +33,12 @@ TEST_F(SdcaTest, CheckLambda) {
   ASSERT_EQ(sdca_.lambda(), 0);
 }
 
+TEST_F(SdcaTest, CheckAlpha) {
+  Eigen::VectorXd a = sdca_.a();
+  std::cout << a << std::endl;
+  std::cout << "\n";
+  ASSERT_LE(0, 2);
+}
+
 
 #endif
