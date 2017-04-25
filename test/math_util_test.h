@@ -36,7 +36,6 @@ TEST(VectorDotProd, Cpu) {
   std::vector<double> std_x{1, 2, 3, 4, 5};
   std::vector<double> std_y{2, 3, 4, 5, 6};
   EXPECT_DOUBLE_EQ(VectorDotProd_cpu(std_x, std_y), 70);
-
 }
 
 TEST(VectorDotProd, CpuOrGpu) {
@@ -49,7 +48,23 @@ TEST(VectorDotProd, CpuOrGpu) {
   std::vector<double> std_x{1, 2, 3, 4, 5};
   std::vector<double> std_y{2, 3, 4, 5, 6};
   EXPECT_DOUBLE_EQ(VectorDotProd(std_x, std_y), 70);
-
 }
 
-#endif
+#ifdef GPU
+TEST(VectorDotProd, Gpu) {
+  auto eigen_x = Eigen::VectorXd(5);
+  auto eigen_y = Eigen::VectorXd(5);
+  eigen_x << 1, 2, 3, 4, 5;
+  eigen_y << 2, 3, 4, 5, 6;
+  EXPECT_DOUBLE_EQ(VectorDotProd_gpu(eigen_x, eigen_y), 70)
+}
+
+TEST(NormSquared, Gpu) {
+  auto eigen_x = Eigen::VectorXd(5);
+  eigen_x << 1, 2, 3, 4, 5;
+  // Norm squared should be 55
+  EXPECT_DOUBLE_EQ(NormSquared_gpu(eigen_x), 55);
+}
+
+#endif // GPU
+#endif // __TEST_MATH_UTIL_TEST_H

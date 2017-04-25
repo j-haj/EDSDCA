@@ -20,7 +20,7 @@ namespace memory {
  *
  * @return C pointer to array of doubles in column-major order
  */
-double* ConvertEigenMatrixToPtr(Eigen::MatrixXd& m);
+double *ConvertEigenMatrixToPtr(Eigen::MatrixXd &m);
 
 /**
  * Returns a pointer to a C array of doubles
@@ -29,7 +29,7 @@ double* ConvertEigenMatrixToPtr(Eigen::MatrixXd& m);
  *
  * @return C array of doubles containing the data of @p v
  */
-double* ConvertEigenVectorToPtr(Eigen::VectorXd& v);
+double *ConvertEigenVectorToPtr(Eigen::VectorXd &v);
 
 /**
  * Returns an Eigen::MatrixXd object with the given data
@@ -40,7 +40,7 @@ double* ConvertEigenVectorToPtr(Eigen::VectorXd& v);
  *
  * @return @p Eigen::MatrixXd array
  */
-Eigen::MatrixXd ConvertPtrToEigenMatrix(double* c, long row, long col);
+Eigen::MatrixXd ConvertPtrToEigenMatrix(double *c, long row, long col);
 
 /**
  * Returns an @p Eigen::VectorXd for the given data @p c
@@ -50,7 +50,7 @@ Eigen::MatrixXd ConvertPtrToEigenMatrix(double* c, long row, long col);
  *
  * @return @p Eigen::VectorXd of the given data @p c
  */
-Eigen::VectorXd ConvertPtrToEigenVector(double* c, long row);
+Eigen::VectorXd ConvertPtrToEigenVector(double *c, long row);
 
 } // namespace memory
 } // namespace edsdca

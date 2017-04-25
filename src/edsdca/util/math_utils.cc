@@ -1,98 +1,64 @@
 #include "edsdca/util/math_utils.h"
 
-double NormSquared_cpu(const std::vector<double>& x) {
+double NormSquared_cpu(const std::vector<double> &x) {
   const double res = VectorDotProd_cpu(x, x);
   return res;
 }
 
-double NormSquared_cpu(const Eigen::VectorXd& x) {
-  return x.squaredNorm();
+double NormSquared_cpu(const Eigen::VectorXd &x) { return x.squaredNorm(); }
+
+double NormSquared(const std::vector<double> &x) {
+#ifndef GPU
+  const double res = NormSquared_cpu(x);
+#else
+  const double res = NormSquared_gpu(x);
+#endif
+  return res;
 }
 
-// TODO: add cuda call
-double NormSquared_gpu(const std::vector<double>& x) {
-  // Call CUDA kernel for NormSquared here
+double NormSquared(const Eigen::VectorXd &x) {
+#ifndef GPU
+  const double res = NormSquared_cpu(x);
+#else
+  const double res = NormSquared_gpu(x);
+#endif
+  return res;
+}
+
+double VectorDotProd(const std::vector<double> &x,
+                     const std::vector<double> &y) {
+#ifndef GPU
+  const double res = VectorDotProd_cpu(x, y);
+#else
+  const double res = VectorDotProd_gpu(x, y);
+#endif
+  return res;
+}
+
+double VectorDotProd(const Eigen::VectorXd &x, const Eigen::VectorXd &y) {
+#ifndef GPU
+  const double res = VectorDotProd_cpu(x, y);
+#else
+  const double res = VectorDotProd_gpu(x, y);
+#endif
+  return res;
+}
+
+double VectorDotProd_cpu(const std::vector<double> &x,
+                         const std::vector<double> &y) {
+  long n = x.size();
   double res = 0;
-  return res;  
-}
-
-// TODO: add CUDA call
-double NormSquared_gpu(const Eigen::VectorXd& x) {
-  // Call CUDA kernel
-  return 0;
-}
-
-double NormSquared(const std::vector<double>& x) {
-#ifndef GPU
-  const double res = NormSquared_cpu(x);
-#else
-  const double res = NormSquared_gpu(x);
-#endif
+  for (long i = 0; i < n; ++i) {
+    res += x[i] * y[i];
+  }
   return res;
 }
 
-double NormSquared(const Eigen::VectorXd& x) {
-#ifndef GPU
-  const double res = NormSquared_cpu(x);
-#else
-  const double res = NormSquared_gpu(x);
-#endif
-  return res;
-}
-
-double VectorDotProd(const std::vector<double>& x,
-  const std::vector<double>& y) {
-#ifndef GPU
-  const double res = VectorDotProd_cpu(x, y);
-#else
-  const double res = VectorDotProd_gpu(x, y);
-#endif
-    return res;
-}
-
-double VectorDotProd(const Eigen::VectorXd& x,
-  const Eigen::VectorXd& y) {
-#ifndef GPU
-  const double res = VectorDotProd_cpu(x, y);
-#else
-  const double res = VectorDotProd_gpu(x, y);
-#endif
-    return res;
-}
-
-double VectorDotProd_cpu(const std::vector<double>& x,
-  const std::vector<double>& y) {
-    long n = x.size();
-    double res = 0;
-    for (long i = 0; i < n; ++i) {
-      res += x[i] * y[i];
-    }
-    return res;
-}
-
-double VectorDotProd_cpu(const Eigen::VectorXd& x,
-    const Eigen::VectorXd& y) {
+double VectorDotProd_cpu(const Eigen::VectorXd &x, const Eigen::VectorXd &y) {
   return x.dot(y);
 }
 
-// TODO: add CUDA call
-double VectorDotProd_gpu(const std::vector<double>& x,
-  const std::vector<double>& y) {
-    // Call gpu prod
-
-    // Reduce result
-    double res = 0;
-    return res;
-}
-
-// TODO: add CUDA call
-double VectorDotProd_gpu(const Eigen::VectorXd& x,
-    const Eigen::VectorXd& y) {
-  // Call GPU kernel here
-  return 0;
-}
-
-void VectorInPlaceSum(std::vector<double>& x, const std::vector<double>& y) {
+void VectorInPlaceSum(std::vector<double> &x, const std::vector<double> &y) {
 #ifndef GPU
   VectorInPlaceSum_cpu(x, y);
 #else
@@ -100,19 +66,15 @@ void VectorInPlaceSum(std::vector<double>& x, const std::vector<double>& y) {
 #endif
 }
 
-void VectorInPlaceSum_cpu(std::vector<double>& x, const std::vector<double>& y) {
+void VectorInPlaceSum_cpu(std::vector<double> &x,
+                          const std::vector<double> &y) {
   long n = x.size();
   for (long i = 0; i < n; ++i) {
     x[i] += y[i];
   }
 }
 
-// TODO: add CUDA call
-void VectorInPlaceSum_gpu(std::vector<double>& x, const std::vector<double>& y) {
-  // GPU implementation
-}
-
-std::vector<double> VectorReduce(const std::vector<std::vector<double>>& v) {
+std::vector<double> VectorReduce(const std::vector<std::vector<double>> &v) {
 #ifndef GPU
   return VectorReduce_cpu(v);
 #else
@@ -120,22 +82,24 @@ std::vector<double> VectorReduce(const std::vector<std::vector<double>>& v) {
 #endif
 }
 
-std::vector<double> VectorReduce_cpu(const std::vector<std::vector<double>>& v) {
+std::vector<double>
+VectorReduce_cpu(const std::vector<std::vector<double>> &v) {
   std::vector<double> accumulator(v.front().size());
-  for (const auto& x : v) {
+  for (const auto &x : v) {
     VectorInPlaceSum_cpu(accumulator, x);
   }
   return accumulator;
 }
 
 // TODO: add CUDA call
-std::vector<double> VectorReduce_gpu(const std::vector<std::vector<double>>& v) {
+std::vector<double>
+VectorReduce_gpu(const std::vector<std::vector<double>> &v) {
   // implement GPU version
   std::vector<double> accumulator(v.front().size());
   return accumulator;
 }
 
-Eigen::VectorXd VectorReduce(const std::vector<Eigen::VectorXd>& v) {
+Eigen::VectorXd VectorReduce(const std::vector<Eigen::VectorXd> &v) {
 #ifndef GPU
   return VectorReduce_cpu(v);
 #else
@@ -143,18 +107,10 @@ Eigen::VectorXd VectorReduce(const std::vector<Eigen::VectorXd>& v) {
 #endif
 }
 
-Eigen::VectorXd VectorReduce_cpu(const std::vector<Eigen::VectorXd>& v) {
+Eigen::VectorXd VectorReduce_cpu(const std::vector<Eigen::VectorXd> &v) {
   Eigen::VectorXd accumulator = Eigen::VectorXd::Zero(v.front().size());
-  for (const Eigen::VectorXd& x : v) {
+  for (const Eigen::VectorXd &x : v) {
     accumulator += x;
   }
   return accumulator;
 }
-
-Eigen::VectorXd VectorReduce_gpu(const std::vector<Eigen::VectorXd>& v) {
-  Eigen::VectorXd accumulator = Eigen::VectorXd::Zero(v.front().size());
-  return accumulator;
-}
-
-
-
