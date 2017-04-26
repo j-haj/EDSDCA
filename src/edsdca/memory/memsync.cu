@@ -1,6 +1,8 @@
 #ifndef __SYNCMEM_HPP
 #define __SYNCMEM_HPP
 
+#ifdef GPU
+
 #include <cuda.h>
 #include "cuda_util.h"
 
@@ -53,4 +55,6 @@ namespace memory {
 
 } // memory
 } // edsdca
+
+#endif // GPU
 #endif // __SYNCMEM_HPP

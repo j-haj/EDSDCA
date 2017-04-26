@@ -1,6 +1,7 @@
 
-
 #include "edsdca/uitl/cuda_util.h"
+
+#ifdef GPU
 
 std::pair<int, int> get_grid_and_block_size() {
    int block_size;
@@ -37,3 +38,5 @@ static bool edsdca::cuda::HandleError(cudaError_t err, const char *file, int lin
   }
   return true;
 }
+
+#endif // GPU

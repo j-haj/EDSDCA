@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.9)
+cmake_minimum_required(VERSION 3.0.2)
 project(edsdca)
 
 set(SRC_DIR "${PROJECT_SOURCE_DIR}/src")
@@ -11,6 +11,7 @@ find_package(CUDA)
 
 if (${CUDA_FOUND})
   add_definitions(-DGPU)
+  list(APPEND CUDA_NVCC_FLAGS "-std=c++11")
 else()
   add_definitions(-DCPU)
 endif()
@@ -25,8 +26,6 @@ find_package(OpenMP)
 # Look for googletest
 enable_testing()
 find_package(GTest REQUIRED)
-
-
 
 # Add headers
 include_directories("${PROJECT_SOURCE_DIR}/include")
@@ -71,17 +70,19 @@ set(TEST_HEADERS
 # -----------------------------------------------------------------------------
 
 # Executable
-add_executable(edsdca_main ${SRC_DIR}/edsdca/run_model.cc ${SOURCES} ${HEADERS})
+
 add_executable(test_all ${TEST_DIR}/all_tests.cc ${SOURCES} ${HEADERS} ${TEST_HEADERS})
 
 # Linking
 if (${CUDA_FOUND} AND ${OPENMP_FOUND})
-  target_link_libraries(edsdca_main ${CUDA_LIBRARIES} ${OPENMP_LIBRARIES})
+  cuda_add_executable(edsdca_main ${SRC_DIR}/edsdca/run_model.cc ${SOURCES} ${HEADERS})
+  target_link_libraries(edsdca_main ${OPENMP_LIBRARIES})
   target_link_libraries(test_all ${GTEST_BOTH_LIBRARIES} ${CUDA_LIBRARIES} ${OPENMP_LIBRARIES})
 elseif(${CUDA_FOUND})
-  target_link_libraries(edsdca_main ${CUDA_LIBRARIES})
+  cuda_add_executable(edsdca_main ${SRC_DIR}/edsdca/run_model.cc ${SOURCES} ${HEADERS})
   target_link_libraries(test_all ${GTEST_BOTH_LIBRARIES} ${CUDA_LIBRARIES})
 else()
+  add_executable(edsdca_main ${SRC_DIR}/edsdca/run_model.cc ${SOURCES} ${HEADERS})
   target_link_libraries(test_all ${GTEST_BOTH_LIBRARIES})
 endif()
 
