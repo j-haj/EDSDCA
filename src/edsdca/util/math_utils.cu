@@ -1,4 +1,5 @@
 #include "edsdca/util/math_util.h"
+#ifdef GPU
 
 __global__
 void vector_prod_gpu(double* x, double* y, double* res, long n) {
@@ -109,3 +110,5 @@ Eigen::VectorXd VectorReduce_gpu(const std::vector<Eigen::VectorXd> &v) {
   Eigen::VectorXd accumulator = Eigen::VectorXd::Zero(v.front().size());
   return accumulator;
 }
+
+#endif // GPU

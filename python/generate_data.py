@@ -16,4 +16,4 @@ def generate_linear_sep(filename, z=1, dim=3, n=6, spread=10000):
             ofile.write(line + "\n")
 
 if __name__ == "__main__":
-    generate_linear_sep("large_test.csv", n=100000, spread=10000000)
+    generate_linear_sep("n50_s100_test.csv", n=100, spread=100)

@@ -8,6 +8,9 @@
 #include <Eigen/Dense>
 
 #include "edsdca/edsdca.h"
+#include "edsdca/loss/hingeloss.h"
+#include "edsdca/loss/loss.h"
+#include "edsdca/tools/timer.h"
 #include "edsdca/util/math_utils.h"
 
 namespace edsdca {
@@ -18,7 +21,9 @@ enum SdcaUpdateType { Average };
 class Sdca {
 
 public:
-  Sdca(double l) : lambda_(l) {}
+  Sdca(double l)
+      : lambda_(l), timer_(edsdca::tools::Timer()),
+        loss_(edsdca::loss::HingeLoss()) {}
 
   /**
    * Computes delta alpha for index i
@@ -77,6 +82,8 @@ public:
    */
   double Predict(const Eigen::VectorXd &x);
 
+  double ComputeLoss(const Eigen::MatrixXd &X, const Eigen::VectorXd &y);
+
   // ------------------------------------------------------------------------
   // Getters
   // ------------------------------------------------------------------------
@@ -94,12 +101,29 @@ public:
 
   inline std::vector<Eigen::VectorXd> accumulated_w() { return accumulated_w_; }
 
+  // ---------------------------------------------------------------------------
+  // Setters
+  // ---------------------------------------------------------------------------
+
+  void set_max_epochs(long n) { max_epochs_ = n; }
+
+  void set_batch_size(long n) { batch_size_ = n; }
+
 private:
   /// @brief Number of data points
   long n_;
 
   /// @brief Dimension of the data
   long d_;
+
+  /// @brief Handle for timer
+  edsdca::tools::Timer timer_;
+
+  /// @brief Loss function for model
+  edsdca::loss::HingeLoss loss_;
+
+  /// @brief stores pairs of elapsed time and error values
+  std::vector<std::pair<double, double>> training_hist_;
 
   /// @brief Dual variable, $\alpha$
   Eigen::VectorXd a_;

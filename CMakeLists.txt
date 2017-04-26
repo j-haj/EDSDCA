@@ -32,15 +32,19 @@ find_package(GTest REQUIRED)
 include_directories("${PROJECT_SOURCE_DIR}/include")
 include_directories(SYSTEM "${SRC_DIR}/eigen/")
 include_directories(${GTEST_INCLUDE_DIRS})
-
 # Add source files
 set(SOURCES 
             ${SRC_DIR}/edsdca/tools/string.cc
             ${SRC_DIR}/edsdca/tools/csvparser.cc
             ${SRC_DIR}/edsdca/tools/csvloader.cc
             ${SRC_DIR}/edsdca/tools/filereader.cc
+            ${SRC_DIR}/edsdca/tools/timer.cc
             ${SRC_DIR}/edsdca/util/math_utils.cc
-            ${SRC_DIR}/edsdca/models/sdca.cc)
+            ${SRC_DIR}/edsdca/util/math_utils.cu
+            ${SRC_DIR}/edsdca/util/cuda_util.cu
+            ${SRC_DIR}/edsdca/memory/memsync.cu
+            ${SRC_DIR}/edsdca/models/sdca.cc
+            ${SRC_DIR}/edsdca/loss/hingeloss.cc)
 set(HEADERS 
             include/ptags/ptags.h
             include/dlog/logging.h
@@ -49,23 +53,37 @@ set(HEADERS
             include/edsdca/tools/libsvmparser.h
             include/edsdca/tools/csvparser.h
             include/edsdca/tools/csvloader.h
+            include/edsdca/tools/timer.h
+            include/edsdca/util/cuda_util.h
             include/edsdca/util/datetime.h
             include/edsdca/util/math_utils.h
-            include/edsdca/models/sdca.h)
+            include/edsdca/models/sdca.h
+            include/edsdca/loss/loss.h
+            include/edsdca/loss/hingeloss.h)
 
 set(TEST_HEADERS
             test/math_util_test.h
             test/csv_load_test.h
             test/sdca_test.h)
 
+# -----------------------------------------------------------------------------
+# Executable and Linking
+# -----------------------------------------------------------------------------
+
+# Executable
 add_executable(edsdca_main ${SRC_DIR}/edsdca/run_model.cc ${SOURCES} ${HEADERS})
-
-# -----------------------------------------------------------------------------
-# Tests
-# -----------------------------------------------------------------------------
 add_executable(test_all ${TEST_DIR}/all_tests.cc ${SOURCES} ${HEADERS} ${TEST_HEADERS})
-target_link_libraries(test_all ${GTEST_BOTH_LIBRARIES})
 
+# Linking
+if (${CUDA_FOUND} AND ${OPENMP_FOUND})
+  target_link_libraries(edsdca_main ${CUDA_LIBRARIES} ${OPENMP_LIBRARIES})
+  target_link_libraries(test_all ${GTEST_BOTH_LIBRARIES} ${CUDA_LIBRARIES} ${OPENMP_LIBRARIES})
+elseif(${CUDA_FOUND})
+  target_link_libraries(edsdca_main ${CUDA_LIBRARIES})
+  target_link_libraries(test_all ${GTEST_BOTH_LIBRARIES} ${CUDA_LIBRARIES})
+else()
+  target_link_libraries(test_all ${GTEST_BOTH_LIBRARIES})
+endif()
 
 
 # -----------------------------------------------------------------------------

@@ -37,11 +37,14 @@ void Sdca::Fit(const Eigen::MatrixXd &X, const Eigen::VectorXd &y) {
   InitializeAlpha();
   InitializeWeights();
 
+  // Calculate number of mini-batches
+  const long num_batches = (long)n_ / batch_size_;
+  training_hist_ =
+      std::vector<std::pair<double, double>>(num_batches * max_epochs_);
+  long log_index = 0;
   for (long cur_epoch = 0; cur_epoch < max_epochs_; ++cur_epoch) {
     auto remaining_batch_indices = std::vector<long>(n_);
 
-    // Calculate number of mini-batches
-    const long num_batches = (long)n_ / batch_size_;
     for (long batch_num = 0; batch_num < num_batches; ++batch_num) {
       // Get mini-batch
       const std::vector<long> mb_indices =
@@ -52,20 +55,42 @@ void Sdca::Fit(const Eigen::MatrixXd &X, const Eigen::VectorXd &y) {
         mb_X[i] = X.row(i);
         mb_y[i] = y(i);
       }
+      // Start timer
+      timer_.Start();
       RunUpdateOnMiniBatch(mb_X, mb_y);
       ComputeAlphaBar();
       ComputeWBar();
+      timer_.Stop();
+      double cumulative_time = timer_.cumulative_time();
+      // End timer
+      double loss = ComputeLoss(X, y);
+      auto tmp_pair = std::make_pair(cumulative_time, loss);
+      training_hist_[log_index] = tmp_pair;
+
+      // update total elapsed time
+      // Consider only getting total running time to get to 10^-5 training error
+      // Get loss
     }
   }
 }
 
 double Sdca::Predict(const Eigen::VectorXd &x) {
-  double res = VectorDotProd(a_, x);
+  double res = VectorDotProd(w_, x);
   if (res > 0) {
     return 1.0;
   } else {
-    return 0.0;
+    return -1.0;
   }
+}
+
+double Sdca::ComputeLoss(const Eigen::MatrixXd &X, const Eigen::VectorXd &y) {
+  double aggregate_loss(0.0);
+  Eigen::VectorXd Xw = X * w_;
+  for (long i = 0; i < Xw.size(); ++i) {
+    aggregate_loss +=
+        loss_.Evaluate(Xw(i), y(i)) + (lambda_ / 2.0) * NormSquared(w_);
+  }
+  return aggregate_loss;
 }
 
 void Sdca::RunUpdateOnMiniBatch(const std::vector<Eigen::VectorXd> &X,
