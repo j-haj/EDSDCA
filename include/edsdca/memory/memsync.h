@@ -41,17 +41,8 @@ class MemSync {
    *
    * @return the value pulled off the GPU
    */
-#ifdef GPU
-  template <typename T>
-  static T PullValFromGpu(T* d_x) {
-    T res;
-    T* tmp_res = (T*)malloc(sizeof(T));
-    CUDA_CHECK(cudaMemcpy(res, d_x, sizeof(T), cudaMemcpyDeviceToJost));
-    res = *tmp_res;
-    free(tmp_res);
-    return res;
-  }
-#endif
+  static double PullValFromGpu(double* d_x);
+  
   /**
    * Allocates memory on the GPU and returns a pointer to the allocated
    * memory
