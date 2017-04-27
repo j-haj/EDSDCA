@@ -21,7 +21,7 @@ namespace memory {
         cv[i] = x(i);
     }
     double* d_v = MemSync::AllocateMemOnGpu(sizeof(double) * size);
-    CUDA_CHECK(cudaMemcpy(d_v, cv, size, cudaMemcpyHostToDevice));
+    cudaMemcpy(d_v, cv, size, cudaMemcpyHostToDevice);
     free(cv);
     return d_v;
   }
@@ -36,7 +36,7 @@ namespace memory {
    */
   Eigen::VectorXd MemSync::PullFromGpu(double* d_v, long size) {
     double* v = (double*)malloc(sizeof(double) *size);
-    CUDA_CHECK(cudaMemcpy(v, d_v, size, cudaMemcpyDeviceToHost));
+    cudaMemcpy(v, d_v, size, cudaMemcpyDeviceToHost);
     Eigen::VectorXd eig_v(size);
     for (long i = 0; i < size; ++i) {
         eig_v(i) = v[i];
@@ -53,14 +53,14 @@ namespace memory {
    */
   double* MemSync::AllocateMemOnGpu(const long size) {
     double* d_v = (double*)malloc(sizeof(double) * size);
-    CUDA_CHECK(cudaMalloc((void**)&d_v, size));
+    cudaMalloc((void**)&d_v, size);
     return d_v;
   }
 
   double MemSync::PullValFromGpu(double* d_x) {
     double res;
     double* tmp = (double*)malloc(sizeof(double));
-    CUDA_CHECK(cudaMemcpy(tmp, d_x, sizeof(double), cudaMemcpyDeviceToHost));
+    cudaMemcpy(tmp, d_x, sizeof(double), cudaMemcpyDeviceToHost);
     res = *tmp;
     free(tmp);
     return res;

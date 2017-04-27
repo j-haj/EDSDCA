@@ -3,17 +3,7 @@
 
 #ifdef GPU
 
-namespace edsdca {
-namespace cuda {
-
-std::pair<int, int> get_grid_and_block_size() {
-   int block_size;
-   int grid_size, min_grid_size;
-   cudaOccupancyMaxPotentialBlockSize(&min_grid_size, &block_size, )
-}
-
-
-std::string edsdca::cuda::get_device_info() {
+std::string get_device_info() {
   // Get number of devices
   int n_devices;
   cudaGetDeviceCount(&n_devices);
@@ -22,6 +12,9 @@ std::string edsdca::cuda::get_device_info() {
   ss << "Found " << n_devices << " CUDA device(s)\n\n";
 
   for (int i = 0; i < n_devices; i++) {
+    cudaDeviceProp prop;
+    cudaGetDeviceProperties(&prop, i);
+
     ss << "Device number: " << i << "\n"
        << "\tDevice name: " << prop.name << "\n"
        << "\tMemory clock rate (KHz): " << prop.memoryClockRate << "\n"
@@ -34,14 +27,5 @@ std::string edsdca::cuda::get_device_info() {
   return ss.str();
 }
 
-bool edsdca::cuda::HandleError(cudaError_t err, const char *file, int line) {
-  if (err != cudaSuccess) {
-    printf("%s in %s at line %d\n", cudaGetErrorString(err), file, line);
-    exit(EXIT_FAILURE);
-  }
-  return true;
-}
 
-} // namespace cuda
-} // namespace edsdca
 #endif // GPU

@@ -11,7 +11,7 @@ find_package(CUDA)
 
 if (${CUDA_FOUND})
   add_definitions(-DGPU)
-  list(APPEND CUDA_NVCC_FLAGS "-std=c++11")
+  list(APPEND CUDA_NVCC_FLAGS "-std=c++11 -DGPU")
 else()
   add_definitions(-DCPU)
 endif()
@@ -72,16 +72,16 @@ set(TEST_HEADERS
 
 # Executable
 
-add_executable(test_all ${TEST_DIR}/all_tests.cc ${SOURCES} ${HEADERS} ${TEST_HEADERS})
+#add_executable(test_all ${TEST_DIR}/all_tests.cc ${SOURCES} ${HEADERS} ${TEST_HEADERS})
 
 # Linking
 if (${CUDA_FOUND} AND ${OPENMP_FOUND})
   cuda_add_executable(edsdca_main ${SRC_DIR}/edsdca/run_model.cc ${SOURCES} ${HEADERS})
   target_link_libraries(edsdca_main ${OPENMP_LIBRARIES})
-  target_link_libraries(test_all ${GTEST_BOTH_LIBRARIES} ${CUDA_LIBRARIES} ${OPENMP_LIBRARIES})
+  # target_link_libraries(test_all ${GTEST_BOTH_LIBRARIES} ${CUDA_LIBRARIES} ${OPENMP_LIBRARIES})
 elseif(${CUDA_FOUND})
   cuda_add_executable(edsdca_main ${SRC_DIR}/edsdca/run_model.cc ${SOURCES} ${HEADERS})
-  target_link_libraries(test_all ${GTEST_BOTH_LIBRARIES} ${CUDA_LIBRARIES})
+  #target_link_libraries(test_all ${GTEST_BOTH_LIBRARIES} ${CUDA_LIBRARIES})
 else()
   add_executable(edsdca_main ${SRC_DIR}/edsdca/run_model.cc ${SOURCES} ${HEADERS})
   target_link_libraries(test_all ${GTEST_BOTH_LIBRARIES})
