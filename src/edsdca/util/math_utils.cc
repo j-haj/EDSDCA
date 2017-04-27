@@ -9,6 +9,10 @@ double NormSquared(const Eigen::VectorXd &x) {
   return res;
 }
 
+double NormSquared_cpu(const Eigen::VectorXd& x) {
+  return VectorDotProd_cpu(x, x);
+}
+
 double VectorDotProd(const Eigen::VectorXd &x, const Eigen::VectorXd &y) {
 #ifndef GPU
   const double res = VectorDotProd_cpu(x, y);

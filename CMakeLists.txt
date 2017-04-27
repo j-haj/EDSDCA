@@ -11,7 +11,8 @@ find_package(CUDA)
 
 if (${CUDA_FOUND})
   add_definitions(-DGPU)
-  list(APPEND CUDA_NVCC_FLAGS "-std=c++11 -DGPU")
+  list(APPEND CUDA_NVCC_FLAGS "-std=c++11")
+  list(APPEND CUDA_NVCC_FLAGS "-DGPU")
 else()
   add_definitions(-DCPU)
 endif()
@@ -31,6 +32,7 @@ find_package(GTest REQUIRED)
 include_directories("${PROJECT_SOURCE_DIR}/include")
 include_directories(SYSTEM "${SRC_DIR}/eigen/")
 include_directories(${GTEST_INCLUDE_DIRS})
+
 # Add source files
 set(SOURCES 
             ${SRC_DIR}/edsdca/tools/string.cc
@@ -44,6 +46,7 @@ set(SOURCES
             ${SRC_DIR}/edsdca/memory/memsync.cu
             ${SRC_DIR}/edsdca/models/sdca.cc
             ${SRC_DIR}/edsdca/loss/hingeloss.cc)
+
 set(HEADERS 
             include/ptags/ptags.h
             include/dlog/logging.h
@@ -77,11 +80,15 @@ set(TEST_HEADERS
 # Linking
 if (${CUDA_FOUND} AND ${OPENMP_FOUND})
   cuda_add_executable(edsdca_main ${SRC_DIR}/edsdca/run_model.cc ${SOURCES} ${HEADERS})
+  cuda_add_executable(test_all ${TEST_DIR}/all_tests.cc ${SOURCES} ${HEADERS}
+      ${TEST_HEADERS})
   target_link_libraries(edsdca_main ${OPENMP_LIBRARIES})
-  # target_link_libraries(test_all ${GTEST_BOTH_LIBRARIES} ${CUDA_LIBRARIES} ${OPENMP_LIBRARIES})
+  target_link_libraries(test_all ${GTEST_BOTH_LIBRARIES} ${CUDA_LIBRARIES} ${OPENMP_LIBRARIES})
 elseif(${CUDA_FOUND})
   cuda_add_executable(edsdca_main ${SRC_DIR}/edsdca/run_model.cc ${SOURCES} ${HEADERS})
-  #target_link_libraries(test_all ${GTEST_BOTH_LIBRARIES} ${CUDA_LIBRARIES})
+  cuda_add_executable(test_all ${TEST_DIR}/all_tests.cc ${SOURCES} ${HEADERS}
+      ${TEST_HEADERS})
+  target_link_libraries(test_all ${GTEST_BOTH_LIBRARIES} ${CUDA_LIBRARIES})
 else()
   add_executable(edsdca_main ${SRC_DIR}/edsdca/run_model.cc ${SOURCES} ${HEADERS})
   target_link_libraries(test_all ${GTEST_BOTH_LIBRARIES})

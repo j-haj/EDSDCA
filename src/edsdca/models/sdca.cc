@@ -122,7 +122,8 @@ void Sdca::RunUpdateOnMiniBatch_cpu(const std::vector<Eigen::VectorXd> &X,
 // TODO: complete the gpu mini-batch update
 void Sdca::RunUpdateOnMiniBatch_gpu(const std::vector<Eigen::VectorXd> &X,
                                     const std::vector<double> &y) {
-  std::cout << "NEED TO IMPLEMENT\n";
+  // std::cout << "NEED TO IMPLEMENT DISTRIBUTED VERSION -- FALLING BACK TO SEQUENTIAL WITH GPU ACCELERATION\n";
+  Sdca::RunUpdateOnMiniBatch_cpu(X, y);
 }
 
 std::vector<long> Sdca::GenerateMiniBatchIndexVector(const long size,
