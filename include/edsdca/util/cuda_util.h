@@ -8,7 +8,7 @@
 #include <string>
 #include <utility>
 
-#define CUDA_CHECK(err) (HandleError(err, __FILE__, __LINE__))
+#define CUDA_CHECK(err) (edsdca::cuda::HandleError(err, __FILE__, __LINE__))
 
 namespace edsdca {
 namespace cuda {
@@ -17,7 +17,7 @@ std::pair<int, int> get_grid_and_block_size();
 
 std::string get_device_info();
 
-static bool HandleError(cudaError_t err, const char *file, int line);
+bool HandleError(cudaError_t err, const char *file, int line);
 
 } // namespace cuda
 } // namespace edsdca

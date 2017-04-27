@@ -1,7 +1,10 @@
 
-#include "edsdca/uitl/cuda_util.h"
+#include "edsdca/util/cuda_util.h"
 
 #ifdef GPU
+
+namespace edsdca {
+namespace cuda {
 
 std::pair<int, int> get_grid_and_block_size() {
    int block_size;
@@ -31,7 +34,7 @@ std::string edsdca::cuda::get_device_info() {
   return ss.str();
 }
 
-static bool edsdca::cuda::HandleError(cudaError_t err, const char *file, int line) {
+bool edsdca::cuda::HandleError(cudaError_t err, const char *file, int line) {
   if (err != cudaSuccess) {
     printf("%s in %s at line %d\n", cudaGetErrorString(err), file, line);
     exit(EXIT_FAILURE);
@@ -39,4 +42,6 @@ static bool edsdca::cuda::HandleError(cudaError_t err, const char *file, int lin
   return true;
 }
 
+} // namespace cuda
+} // namespace edsdca
 #endif // GPU

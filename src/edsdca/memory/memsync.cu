@@ -1,6 +1,3 @@
-#ifndef __SYNCMEM_HPP
-#define __SYNCMEM_HPP
-
 #ifdef GPU
 
 #include "edsdca/memory/memsync.h"
@@ -17,9 +14,15 @@ namespace memory {
    * @return a pointer to the memory location on the GPU where the pushed data
    *        is stored
    */
-  double* MemSync::PushToGpu(const double* v, int size) {
-    double* d_v = AllocateOnGpu(sizeof(double) * size);
-    CUDA_CHECK(cudaMemcpy(d_v, v, size, cudaMemcpyHostToDevice));
+  double* MemSync::PushToGpu(const Eigen::VectorXd& x) {
+    int size = x.size();
+    double *cv = (double*)malloc(sizeof(double) * size);
+    for (int i = 0; i < size; ++i) {
+        cv[i] = x(i);
+    }
+    double* d_v = MemSync::AllocateMemOnGpu(sizeof(double) * size);
+    CUDA_CHECK(cudaMemcpy(d_v, cv, size, cudaMemcpyHostToDevice));
+    free(cv);
     return d_v;
   }
 
@@ -31,7 +34,7 @@ namespace memory {
    *
    * @return pointer to the location of the data on host memory
    */
-  Eigen::VectorXd PullFromGpu(double* d_v, int size) {
+  Eigen::VectorXd MemSync::PullFromGpu(double* d_v, long size) {
     double* v = (double*)malloc(sizeof(double) *size);
     CUDA_CHECK(cudaMemcpy(v, d_v, size, cudaMemcpyDeviceToHost));
     Eigen::VectorXd eig_v(size);
@@ -48,7 +51,7 @@ namespace memory {
    *
    * @return returns a pointer to the allocated memory on GPU
    */
-  double* AllocateOnGpu(int size) {
+  double* MemSync::AllocateMemOnGpu(const long size) {
     double* d_v = (double*)malloc(sizeof(double) * size);
     CUDA_CHECK(cudaMalloc((void**)&d_v, size));
     return d_v;
@@ -57,13 +60,12 @@ namespace memory {
   double MemSync::PullValFromGpu(double* d_x) {
     double res;
     double* tmp = (double*)malloc(sizeof(double));
-    CUDA_CHECK(cudaMemcpy(res, d_x, sizeof(double), cudaMemcpyDeviceToHost));
+    CUDA_CHECK(cudaMemcpy(tmp, d_x, sizeof(double), cudaMemcpyDeviceToHost));
     res = *tmp;
     free(tmp);
     return res;
-  
+  }  
 } // memory
 } // edsdca
 
 #endif // GPU
-#endif // __SYNCMEM_HPP

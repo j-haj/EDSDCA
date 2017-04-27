@@ -57,6 +57,7 @@ set(HEADERS
             include/edsdca/util/datetime.h
             include/edsdca/util/math_utils.h
             include/edsdca/models/sdca.h
+            include/edsdca/memory/memsync.h
             include/edsdca/loss/loss.h
             include/edsdca/loss/hingeloss.h)
 

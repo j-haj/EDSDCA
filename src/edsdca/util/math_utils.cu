@@ -1,4 +1,5 @@
-#include "edsdca/util/math_util.h"
+#include "edsdca/util/math_utils.h"
+
 #ifdef GPU
 
 __global__
@@ -76,7 +77,7 @@ double VectorDotProd_gpu(const std::vector<double> &x,
 
   cudaFree(d_x); cudaFree(d_y); cudaFree(res);
 
-  return result
+  return result;
 }
 
 double VectorDotProd_gpu(const Eigen::VectorXd &x, const Eigen::VectorXd &y) {
@@ -96,7 +97,7 @@ double VectorDotProd_gpu(const Eigen::VectorXd &x, const Eigen::VectorXd &y) {
   // Copy back from gpu
   double result = edsdca::memory::MemSync::PullValFromGpu(res);
 
-  cudaFree(d_x); cudaFree(d_y); cudaFree(res)
+  cudaFree(d_x); cudaFree(d_y); cudaFree(res);
   return result;
 }
 

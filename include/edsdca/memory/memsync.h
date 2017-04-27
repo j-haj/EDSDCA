@@ -1,8 +1,11 @@
 #ifndef __EDSDCA_MEMSYNC_H
 #define __EDSDCA_MEMSYNC_H
 
+#ifdef GPU
+
 #include <vector>
 
+#include <cuda.h>
 #include <Eigen/Dense>
 
 #include "edsdca/util/cuda_util.h"
@@ -11,7 +14,7 @@ namespace edsdca {
 namespace memory {
 
 class MemSync {
-
+  public:
   /**
    * Moves the @p Eigen::VectorXd from RAM to GPU and returns a pointer to the
    * memory in GPU
@@ -51,10 +54,11 @@ class MemSync {
    *
    * @return a @p double* pointer to the memory on gpu
    */
-  double *AllocateMemOnGpu(const long size);
+  static double *AllocateMemOnGpu(const long size);
 }; // class MemSync
 
 } // namespace memory
 } // namespace edsdca
 
+#endif // GPU
 #endif // __EDSDCA_MEMSYNC_H
