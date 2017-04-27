@@ -1,13 +1,10 @@
 
 #include <gtest/gtest.h>
 
-#include "edsdca/memory/memory.hpp"
-#include "edsdca/util/math_util.hpp"
-
+#include "math_util_test.h"
 
 int main(int argc, char* argv[]) {
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
 
-
-
-  return 0;
 }

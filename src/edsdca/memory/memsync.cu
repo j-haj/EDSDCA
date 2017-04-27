@@ -2,6 +2,7 @@
 
 #include "edsdca/memory/memsync.h"
 
+
 namespace edsdca {
 namespace memory {
 
@@ -20,8 +21,8 @@ namespace memory {
     for (int i = 0; i < size; ++i) {
         cv[i] = x(i);
     }
-    double* d_v = MemSync::AllocateMemOnGpu(sizeof(double) * size);
-    cudaMemcpy(d_v, cv, size, cudaMemcpyHostToDevice);
+    double* d_v = MemSync::AllocateMemOnGpu(size);
+    cudaMemcpy(d_v, cv, sizeof(double) * size, cudaMemcpyHostToDevice);
     free(cv);
     return d_v;
   }
@@ -35,8 +36,8 @@ namespace memory {
    * @return pointer to the location of the data on host memory
    */
   Eigen::VectorXd MemSync::PullFromGpu(double* d_v, long size) {
-    double* v = (double*)malloc(sizeof(double) *size);
-    cudaMemcpy(v, d_v, size, cudaMemcpyDeviceToHost);
+    double* v = (double*)malloc(sizeof(double) * size);
+    cudaMemcpy(v, d_v, sizeof(double) * size, cudaMemcpyDeviceToHost);
     Eigen::VectorXd eig_v(size);
     for (long i = 0; i < size; ++i) {
         eig_v(i) = v[i];
@@ -53,7 +54,7 @@ namespace memory {
    */
   double* MemSync::AllocateMemOnGpu(const long size) {
     double* d_v = (double*)malloc(sizeof(double) * size);
-    cudaMalloc((void**)&d_v, size);
+    cudaMalloc((void**)&d_v, sizeof(double) * size);
     return d_v;
   }
 

@@ -82,13 +82,19 @@ if (${CUDA_FOUND} AND ${OPENMP_FOUND})
   cuda_add_executable(edsdca_main ${SRC_DIR}/edsdca/run_model.cc ${SOURCES} ${HEADERS})
   cuda_add_executable(test_all ${TEST_DIR}/all_tests.cc ${SOURCES} ${HEADERS}
       ${TEST_HEADERS})
+  cuda_add_executable(test_gpu ${TEST_DIR}/eigen_gpu_test.cc ${SOURCES} ${HEADERS}
+      ${TEST_HEADERS})
   target_link_libraries(edsdca_main ${OPENMP_LIBRARIES})
   target_link_libraries(test_all ${GTEST_BOTH_LIBRARIES} ${CUDA_LIBRARIES} ${OPENMP_LIBRARIES})
+  target_link_libraries(test_gpu ${GTEST_BOTH_LIBRARIES} ${CUDA_LIBRARIES} ${OPENMP_LIBRARIES})
 elseif(${CUDA_FOUND})
   cuda_add_executable(edsdca_main ${SRC_DIR}/edsdca/run_model.cc ${SOURCES} ${HEADERS})
   cuda_add_executable(test_all ${TEST_DIR}/all_tests.cc ${SOURCES} ${HEADERS}
       ${TEST_HEADERS})
+  cuda_add_executable(test_gpu ${TEST_DIR}/eigen_gpu_test.cc ${SOURCES} ${HEADERS}
+      ${TEST_HEADERS})
   target_link_libraries(test_all ${GTEST_BOTH_LIBRARIES} ${CUDA_LIBRARIES})
+  target_link_libraries(test_gpu ${GTEST_BOTH_LIBRARIES} ${CUDA_LIBRARIES})
 else()
   add_executable(edsdca_main ${SRC_DIR}/edsdca/run_model.cc ${SOURCES} ${HEADERS})
   target_link_libraries(test_all ${GTEST_BOTH_LIBRARIES})

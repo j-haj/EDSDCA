@@ -1,5 +1,5 @@
 #include "edsdca/util/math_utils.h"
-
+#include <iostream>
 #ifdef GPU
 
 __global__
@@ -30,26 +30,7 @@ void vector_dot_gpu(double* x, double* y, double* res, long n) {
 
 
 double NormSquared_gpu(const Eigen::VectorXd &x) {
-  int block_size, grid_size, min_grid_size;
-  cudaOccupancyMaxPotentialBlockSize(&min_grid_size, &block_size,
-                                     vector_dot_gpu, 0, 0);
-  grid_size = (x.size() + block_size - 1) / block_size;
-  grid_size = std::max(grid_size, min_grid_size);
-
-  // Call CUDA kernel
-  // Copy data to gpu
-  double *d_x = edsdca::memory::MemSync::PushToGpu(x);
-
-  // Call the kernel
-  double *res = edsdca::memory::MemSync::AllocateMemOnGpu(1);
-  vector_dot_gpu<<<grid_size, block_size>>>(d_x, d_x, res, x.size());
-
-  // Copy back from gpu
-  double result = edsdca::memory::MemSync::PullValFromGpu(res);
-
-  cudaFree(d_x); cudaFree(res);
-
-  return result;
+  return VectorDotProd_gpu(x, x);
 }
 
 
@@ -64,14 +45,14 @@ double VectorDotProd_gpu(const Eigen::VectorXd &x, const Eigen::VectorXd &y) {
   double *d_y = edsdca::memory::MemSync::PushToGpu(y);
 
   // Call the kernel
-  double *res = edsdca::memory::MemSync::AllocateMemOnGpu(1);
-  vector_dot_gpu<<<grid_size, block_size>>>(d_x, d_y, res, x.size());
+  double *res = edsdca::memory::MemSync::AllocateMemOnGpu(x.size());
+  vector_prod_gpu<<<grid_size, block_size>>>(d_x, d_y, res, x.size());
 
   // Copy back from gpu
-  double result = edsdca::memory::MemSync::PullValFromGpu(res);
+  Eigen::VectorXd result = edsdca::memory::MemSync::PullFromGpu(res, x.size());
 
   cudaFree(d_x); cudaFree(d_y); cudaFree(res);
-  return result;
+  return result.sum();
 }
 
 
