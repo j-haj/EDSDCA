@@ -143,8 +143,9 @@ void Sdca::InitializeAlpha() {
   std::random_device rd;
   std::mt19937 gen(rd());
   std::normal_distribution<> norm_dist(0, 1);
-  a_ = Eigen::VectorXd(d_);
-  for (long i = 0; i < d_; ++i) {
+
+  a_ = Eigen::VectorXd(n_);
+  for (long i = 0; i < n_; ++i) {
     a_(i) = norm_dist(gen);
   }
 }

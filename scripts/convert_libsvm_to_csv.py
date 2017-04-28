@@ -5,7 +5,7 @@ def convert_to_csv(path):
     """
     Converts the file at ``path`` to a csv file
     """
-    output_file = os.path.join(path, ".csv")
+    output_file = path + ".csv"
 
     with open(path, "r") as infile:
         with open(output_file, "w") as outfile:
@@ -55,5 +55,5 @@ def convert_libsvm_to_csv(path, num_features):
                 line_num += 1
 
 if __name__ == "__main__":
-    file_path = "/home/jhaj/Documents/school/classes/s2017/machine-learning/EDSDCA/data/australian_scale"
-    convert_libsvm_to_csv(file_path, 14)
+    file_path = "/Users/jhaj/Documents/university-of-iowa/classes/s2017/machine-learning/EDSDCA/data/news20.binary"
+    convert_to_csv(file_path)

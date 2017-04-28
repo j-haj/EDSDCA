@@ -97,6 +97,8 @@ elseif(${CUDA_FOUND})
   target_link_libraries(test_gpu ${GTEST_BOTH_LIBRARIES} ${CUDA_LIBRARIES})
 else()
   add_executable(edsdca_main ${SRC_DIR}/edsdca/run_model.cc ${SOURCES} ${HEADERS})
+  add_executable(test_all ${TEST_DIR}/all_tests.cc ${SOURCES} ${HEADERS}
+      ${TEST_HEADERS})
   target_link_libraries(test_all ${GTEST_BOTH_LIBRARIES})
 endif()
 
