@@ -1,19 +1,20 @@
 import random
 
+def normalize_data(x):
+    norm = sum((i*i for i in x))
+    return [i/norm for i in x]
+
 def generate_linear_sep(filename, z=1, dim=3, n=6, spread=10000):
     with open(filename, "w") as ofile:
         for i in range(n):
             line = ""
             label = random.choice([-1, 1])
-            line += str(label)
-            for i in range(dim - 1):
-                x = random.randint(-spread//2, spread//2)
-                line += "," + str(x)
-            if label == 1:
-                line += "," + str(z + 1)
-            else:
-                line += "," + str(z - 1)
+            line += str(label) + ","
+            vec = [random.randint(-spread//2, spread//2) for _ in range(dim - 1)]
+            z_val = 2 if label == 1 else 0
+            nvec = normalize_data(vec + [z_val])
+            line += ",".join([str(x) for x in nvec])
             ofile.write(line + "\n")
 
 if __name__ == "__main__":
-    generate_linear_sep("n50_s100_test.csv", n=100, spread=100)
+    generate_linear_sep("n200_s100_test.csv", n=200, spread=100)

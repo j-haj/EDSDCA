@@ -52,18 +52,18 @@ void Sdca::Fit(const Eigen::MatrixXd &X, const Eigen::VectorXd &y) {
   long log_index = 0;
 
   // Computes $\omega$ based on current $\alpha$
-
+  ComputeW(X);
   for (long cur_epoch = 0; cur_epoch < max_epochs_; ++cur_epoch) {
 
     // Currently not used
     auto remaining_batch_indices = std::vector<long>(n_);
-    ComputeW(X);
     for (long batch_num = 0; batch_num < num_batches; ++batch_num) {
 
       // Get mini-batch by generating random indices
       const std::vector<long> mb_indices =
           GenerateMiniBatchIndexVector(batch_size_, 0, n_);
       std::vector<Eigen::VectorXd> mb_X(batch_size_);
+      ComputeW(X);
       std::vector<double> mb_y(batch_size_);
       for (long i = 0; i < batch_size_; ++i) {
         mb_X[i] = X.row(mb_indices[i]);
@@ -75,8 +75,11 @@ void Sdca::Fit(const Eigen::MatrixXd &X, const Eigen::VectorXd &y) {
 
       // Call the mini-batch update algorithm
       RunUpdateOnMiniBatch(mb_X, mb_y, mb_indices);
-      ComputeAlphaBar();
-      ComputeWBar();
+      if (batch_num * batch_size_ == update_interval_) {
+        DLOG("Updating a and w");
+        ComputeAlphaBar();
+        ComputeWBar();
+      }
 
       // Stop timer and get cumulative time
       timer_.Stop();
@@ -92,6 +95,10 @@ void Sdca::Fit(const Eigen::MatrixXd &X, const Eigen::VectorXd &y) {
     }
   }
   SaveHistory("results_test.csv");
+  for (int i = 0; i < d_; ++i) {
+    std::cout << w_[i] << " ";
+  }
+  std::cout << "\n";
 }
 
 double Sdca::Predict(const Eigen::VectorXd &x) {
@@ -105,12 +112,13 @@ double Sdca::Predict(const Eigen::VectorXd &x) {
 
 double Sdca::ComputeLoss(const Eigen::MatrixXd &X, const Eigen::VectorXd &y) {
   double aggregate_loss(0.0);
+  
   Eigen::VectorXd Xw = X * w_;
   for (long i = 0; i < n_; ++i) {
     aggregate_loss +=
         loss_.Evaluate(Xw(i), y(i));
   }
-  return aggregate_loss / y.size() + (lambda_ / 2.0) * NormSquared(w_);
+  return aggregate_loss / n_ + (lambda_ / 2.0) * NormSquared(w_);
 }
 
 void Sdca::SaveHistory(const std::string &filename) {
@@ -181,7 +189,8 @@ void Sdca::InitializeAlpha() {
 
   a_ = Eigen::VectorXd(n_);
   for (long i = 0; i < n_; ++i) {
-    a_(i) = norm_dist(gen);
+    a_(i) = 0;
+    //a_(i) = norm_dist(gen);
   }
 }
 

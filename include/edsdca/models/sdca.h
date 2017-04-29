@@ -22,9 +22,10 @@ enum SdcaUpdateType { Average };
 class Sdca {
 
 public:
-  Sdca(double l)
+  Sdca(double l, long interval=100)
       : lambda_(l), timer_(edsdca::tools::Timer()),
-        loss_(edsdca::loss::HingeLoss()) {}
+        loss_(edsdca::loss::HingeLoss()),
+            update_interval_(interval) {}
 
   /**
    * Computes delta alpha for index i
@@ -132,6 +133,10 @@ public:
   void set_batch_size(long n) { batch_size_ = n; }
 
 private:
+  
+  /// @brief Interval at which alpha_bar and w_bar are upated
+  long update_interval_;
+
   /// @brief Number of data points
   long n_;
 
