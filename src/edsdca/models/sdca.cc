@@ -29,6 +29,11 @@ void Sdca::ComputeWBar(SdcaUpdateType update_type) {
   }
 }
 
+void Sdca::ComputeW(const Eigen::MatrixXd &X) {
+  w_ = X.transpose() * a_;
+  w_ *= (1.0 / (lambda_ * n_));
+}
+
 void Sdca::Fit(const Eigen::MatrixXd &X, const Eigen::VectorXd &y) {
   // Set model proberties
   n_ = X.rows();
@@ -39,15 +44,23 @@ void Sdca::Fit(const Eigen::MatrixXd &X, const Eigen::VectorXd &y) {
   InitializeWeights();
 
   // Calculate number of mini-batches
-  const long num_batches = (long)n_ / batch_size_;
+  const long num_batches = long(n_ / batch_size_);
+
+  // training_hist_ tracks the training error and training time (s)
   training_hist_ =
       std::vector<std::pair<double, double>>(num_batches * max_epochs_);
   long log_index = 0;
-  for (long cur_epoch = 0; cur_epoch < max_epochs_; ++cur_epoch) {
-    auto remaining_batch_indices = std::vector<long>(n_);
 
+  // Computes $\omega$ based on current $\alpha$
+
+  for (long cur_epoch = 0; cur_epoch < max_epochs_; ++cur_epoch) {
+
+    // Currently not used
+    auto remaining_batch_indices = std::vector<long>(n_);
+    ComputeW(X);
     for (long batch_num = 0; batch_num < num_batches; ++batch_num) {
-      // Get mini-batch
+
+      // Get mini-batch by generating random indices
       const std::vector<long> mb_indices =
           GenerateMiniBatchIndexVector(batch_size_, 0, n_);
       std::vector<Eigen::VectorXd> mb_X(batch_size_);
@@ -56,15 +69,23 @@ void Sdca::Fit(const Eigen::MatrixXd &X, const Eigen::VectorXd &y) {
         mb_X[i] = X.row(mb_indices[i]);
         mb_y[i] = y(mb_indices[i]);
       }
+
       // Start timer
       timer_.Start();
+
+      // Call the mini-batch update algorithm
       RunUpdateOnMiniBatch(mb_X, mb_y, mb_indices);
       ComputeAlphaBar();
       ComputeWBar();
+
+      // Stop timer and get cumulative time
       timer_.Stop();
       double cumulative_time = timer_.cumulative_time();
-      // End timer
+
+      // Compute training loss with current weights
       double loss = ComputeLoss(X, y);
+
+      // Store loss and runtime
       auto tmp_pair = std::make_pair(cumulative_time, loss);
       training_hist_[log_index] = tmp_pair;
       ++log_index;
@@ -85,17 +106,19 @@ double Sdca::Predict(const Eigen::VectorXd &x) {
 double Sdca::ComputeLoss(const Eigen::MatrixXd &X, const Eigen::VectorXd &y) {
   double aggregate_loss(0.0);
   Eigen::VectorXd Xw = X * w_;
-  for (long i = 0; i < Xw.size(); ++i) {
+  for (long i = 0; i < n_; ++i) {
     aggregate_loss +=
-        loss_.Evaluate(Xw(i), y(i)) + (lambda_ / 2.0) * NormSquared(w_);
+        loss_.Evaluate(Xw(i), y(i));
   }
-  return aggregate_loss / Xw.size();
+  return aggregate_loss / y.size() + (lambda_ / 2.0) * NormSquared(w_);
 }
 
 void Sdca::SaveHistory(const std::string &filename) {
   // Open file buffer
   std::ofstream results_file;
   results_file.open(filename);
+
+  // Write results to file
   for (const auto &x : training_hist_) {
     results_file << x.first << "," << x.second << "\n";
   }

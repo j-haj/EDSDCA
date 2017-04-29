@@ -46,12 +46,13 @@ public:
    */
   inline void ApplyWeightUpdates(const double delta_alpha,
                                  const Eigen::VectorXd &x) {
-    w_ += lambda_ / (double)n_ * delta_alpha * x;
+    const double scale_factor = (lambda_ / double(n_)) * delta_alpha;
+    w_ = w_ +  x * scale_factor;
     accumulated_w_.push_back(w_);
   }
 
   inline void ApplyAlphaUpdate(const double delta_alpha, const long i) {
-    a_(i) += delta_alpha;
+    a_(i) = a_(i) + delta_alpha;
     accumulated_a_.push_back(a_);
   }
 
@@ -68,6 +69,19 @@ public:
    * @param update_type The update method (default is average)
    */
   void ComputeWBar(SdcaUpdateType update_type = SdcaUpdateType::Average);
+
+  /**
+   * Computes $omega$ given $alpha$. This is called at the beginning of each
+   * epoch of SDCA.
+   *
+   * The formula for this update is equation (3) from SDCA for Reg. Loss
+   * Minimization (Shalev-Schwartz, et al)
+   *
+   *    \omega(\alpha) = \frac{1}{\lambda n}\sum_{i=1}^n \alpha_i x_i
+   *
+   * @param X matrix of all the data
+   */
+  void ComputeW(const Eigen::MatrixXd &X);
 
   /**
    * Fits an SVM problem via SDCA for the given data

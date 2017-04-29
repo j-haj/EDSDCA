@@ -10,7 +10,7 @@
 #include "edsdca/tools/csvloader.h"
 
 #define NUM_TESTS 10000
-#define LAMBDA 100
+#define LAMBDA 1000
 
 class SdcaTest : public ::testing::Test {
 
@@ -19,7 +19,7 @@ protected:
 
   void SetUp() {
     // Load data
-    auto loader = edsdca::tools::CsvLoader("../test/data/n50_s100.csv");
+    auto loader = edsdca::tools::CsvLoader("../test/data/n50_s100_test.csv");
 
     loader.LoadData(3, 0);
     Eigen::MatrixXd features = loader.features();
