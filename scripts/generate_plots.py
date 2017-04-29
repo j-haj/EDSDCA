@@ -21,6 +21,9 @@ def generate_loss_plot(filename, savename):
     """
     t, loss = load_csv_loss_data(filename)
     plt.plot(t, loss, linewidth=0.25)
+    plt.xlabel("Runtime (s)")
+    plt.ylabel("Loss")
+    plt.title("Cumulative Training Loss vs Runtime")
     plt.savefig(savename, dpi=1000)
 
 def main():

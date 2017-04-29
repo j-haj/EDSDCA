@@ -19,7 +19,7 @@ protected:
 
   void SetUp() {
     // Load data
-    auto loader = edsdca::tools::CsvLoader("../test/data/n50_s100_test.csv");
+    auto loader = edsdca::tools::CsvLoader("../test/data/n50_s100.csv");
 
     loader.LoadData(3, 0);
     Eigen::MatrixXd features = loader.features();
