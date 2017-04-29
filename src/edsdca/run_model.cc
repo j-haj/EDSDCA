@@ -8,6 +8,12 @@
 #include "edsdca/models/sdca.h"
 
 int main(int argc, char* argv[]) {
+#ifdef CPU
+  std::cout << "CPU MODE\n";
+#else
+  std::cout << "GPU MODE\n";
+#endif
+
   dlog::DebugLogger::InitDebugLogging();
   ptags::Ptag::InitPTags();
   DLOG("Running models...");
