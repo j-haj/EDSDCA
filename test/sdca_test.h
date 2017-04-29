@@ -10,7 +10,7 @@
 #include "edsdca/tools/csvloader.h"
 
 #define NUM_TESTS 10000
-#define LAMBDA 10
+#define LAMBDA 100
 
 class SdcaTest : public ::testing::Test {
 

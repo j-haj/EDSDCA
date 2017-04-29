@@ -2,6 +2,7 @@
 #define __EDSDCA_SDCA_H
 
 #include <algorithm>
+#include <fstream>
 #include <random>
 #include <vector>
 
@@ -84,6 +85,13 @@ public:
 
   double ComputeLoss(const Eigen::MatrixXd &X, const Eigen::VectorXd &y);
 
+  /**
+   * Saves the training history to a CSV file with filename @p filename
+   *
+   * @param filename name of the file used to save the training history
+   */
+  void SaveHistory(const std::string& filename);
+
   // ------------------------------------------------------------------------
   // Getters
   // ------------------------------------------------------------------------
@@ -151,27 +159,34 @@ private:
    *
    * @param X mini-batch feature data
    * @param y mini-batch label data
+   * @param indices vector of random integers used in selecting the mini-bath
+   * data
    */
   void RunUpdateOnMiniBatch(const std::vector<Eigen::VectorXd> &X,
-                            const std::vector<double> &y);
+                            const std::vector<double> &y,
+                            const std::vector<long> &indices);
 
   /**
    * Runs the updates for $\alpha$ and $\omega$ on the CPU
    *
    * @param X mini-batch feature data
    * @param y mini-batch label data
+   * @param indices vector of random integers used in selecting the mini-batch
    */
   void RunUpdateOnMiniBatch_cpu(const std::vector<Eigen::VectorXd> &X,
-                                const std::vector<double> &y);
+                                const std::vector<double> &y,
+                                const std::vector<long> &indices);
 
   /**
    * Runs the updates for $\alpha$ and $\omega$ on the GPU
    *
    * @param X mini-batch feature data
    * @param y mini-batch label data
+   * @param indices vector of random integers used in selecting the mini-batch
    */
   void RunUpdateOnMiniBatch_gpu(const std::vector<Eigen::VectorXd> &X,
-                                const std::vector<double> &y);
+                                const std::vector<double> &y,
+                                const std::vector<long> &indices);
 
   /**
    * Creates a @p std::vector of indices from 0 to max - 1 to be used in

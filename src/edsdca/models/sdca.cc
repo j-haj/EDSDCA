@@ -4,8 +4,9 @@ namespace edsdca {
 namespace models {
 
 double Sdca::DeltaAlpha(const Eigen::VectorXd &x, const double y, long i) {
+  Eigen::VectorXd tmp_w = accumulated_w_.size() == 0 ? w_ : accumulated_w_.back();
   const double a =
-      (1.0 - VectorDotProd(x, w_) * y) / (NormSquared(x) / (lambda_ * n_)) +
+      (1.0 - VectorDotProd(x, tmp_w) * y) / (NormSquared(x) / (lambda_ * n_)) +
       a_(i) * y;
   return y * std::max(0.0, std::min(1.0, a)) - a_(i);
 }
@@ -48,16 +49,16 @@ void Sdca::Fit(const Eigen::MatrixXd &X, const Eigen::VectorXd &y) {
     for (long batch_num = 0; batch_num < num_batches; ++batch_num) {
       // Get mini-batch
       const std::vector<long> mb_indices =
-          GenerateMiniBatchIndexVector(batch_size_, 0, d_);
+          GenerateMiniBatchIndexVector(batch_size_, 0, n_);
       std::vector<Eigen::VectorXd> mb_X(batch_size_);
       std::vector<double> mb_y(batch_size_);
       for (long i = 0; i < batch_size_; ++i) {
-        mb_X[i] = X.row(i);
-        mb_y[i] = y(i);
+        mb_X[i] = X.row(mb_indices[i]);
+        mb_y[i] = y(mb_indices[i]);
       }
       // Start timer
       timer_.Start();
-      RunUpdateOnMiniBatch(mb_X, mb_y);
+      RunUpdateOnMiniBatch(mb_X, mb_y, mb_indices);
       ComputeAlphaBar();
       ComputeWBar();
       timer_.Stop();
@@ -66,12 +67,10 @@ void Sdca::Fit(const Eigen::MatrixXd &X, const Eigen::VectorXd &y) {
       double loss = ComputeLoss(X, y);
       auto tmp_pair = std::make_pair(cumulative_time, loss);
       training_hist_[log_index] = tmp_pair;
-
-      // update total elapsed time
-      // Consider only getting total running time to get to 10^-5 training error
-      // Get loss
+      ++log_index;
     }
   }
+  SaveHistory("results_test.csv");
 }
 
 double Sdca::Predict(const Eigen::VectorXd &x) {
@@ -90,40 +89,53 @@ double Sdca::ComputeLoss(const Eigen::MatrixXd &X, const Eigen::VectorXd &y) {
     aggregate_loss +=
         loss_.Evaluate(Xw(i), y(i)) + (lambda_ / 2.0) * NormSquared(w_);
   }
-  return aggregate_loss;
+  return aggregate_loss / Xw.size();
+}
+
+void Sdca::SaveHistory(const std::string &filename) {
+  // Open file buffer
+  std::ofstream results_file;
+  results_file.open(filename);
+  for (const auto &x : training_hist_) {
+    results_file << x.first << "," << x.second << "\n";
+  }
+
+  results_file.close();
 }
 
 void Sdca::RunUpdateOnMiniBatch(const std::vector<Eigen::VectorXd> &X,
-                                const std::vector<double> &y) {
+                                const std::vector<double> &y,
+                                const std::vector<long> &indices) {
 #ifndef GPU
-  Sdca::RunUpdateOnMiniBatch_cpu(X, y);
+  Sdca::RunUpdateOnMiniBatch_cpu(X, y, indices);
 #else
-  Sdca::RunUpdateOnMiniBatch_gpu(X, y);
+  Sdca::RunUpdateOnMiniBatch_gpu(X, y, indices);
 #endif
 }
 
 void Sdca::RunUpdateOnMiniBatch_cpu(const std::vector<Eigen::VectorXd> &X,
-                                    const std::vector<double> &y) {
+                                    const std::vector<double> &y,
+                                    const std::vector<long> &indices) {
   const long batch_size = y.size();
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  std::uniform_int_distribution<> dist(0, d_ - 1);
 
   for (long i = 0; i < batch_size; ++i) {
-    const long current_dim = dist(gen);
+    const long current_dim = indices[i];
     const Eigen::VectorXd x_i = X[i];
     const double y_i = y[i];
     const double delta_a = DeltaAlpha(x_i, y_i, current_dim);
     ApplyAlphaUpdate(delta_a, current_dim);
     ApplyWeightUpdates(delta_a, x_i);
   }
+  ComputeAlphaBar();
+  ComputeWBar();
 }
 
 // TODO: complete the gpu mini-batch update
 void Sdca::RunUpdateOnMiniBatch_gpu(const std::vector<Eigen::VectorXd> &X,
-                                    const std::vector<double> &y) {
+                                    const std::vector<double> &y,
+                                    const std::vector<long> &indices) {
   // std::cout << "NEED TO IMPLEMENT DISTRIBUTED VERSION -- FALLING BACK TO SEQUENTIAL WITH GPU ACCELERATION\n";
-  Sdca::RunUpdateOnMiniBatch_cpu(X, y);
+  Sdca::RunUpdateOnMiniBatch_cpu(X, y, indices);
 }
 
 std::vector<long> Sdca::GenerateMiniBatchIndexVector(const long size,

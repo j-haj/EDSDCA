@@ -12,6 +12,7 @@ void Timer::Stop() {
   if (is_running_) {
     stop_time_ = std::chrono::high_resolution_clock::now();
     is_running_ = false;
+    elapsed();
   }
 }
 
