@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(edsdca)
 
+option(CPU_ONLY "CPU_ONLY" OFF)
+
 set(SRC_DIR "${PROJECT_SOURCE_DIR}/src")
 set(TEST_DIR "${PROJECT_SOURCE_DIR}/test")
 set(GTEST_ROOW "${SRC_DIR}/googletest")
@@ -9,7 +11,7 @@ set(CMAKE_CXX_STANDARD 11)
 # If CUDA compiler found, ``CUDA_FOUND`` will be set to ``true``
 find_package(CUDA)
 
-if (${CUDA_FOUND})
+if (${CUDA_FOUND} AND NOT ${CPU_ONLY})
   add_definitions(-DGPU)
   list(APPEND CUDA_NVCC_FLAGS "-std=c++11")
   list(APPEND CUDA_NVCC_FLAGS "-DGPU")
@@ -78,7 +80,8 @@ set(TEST_HEADERS
 #add_executable(test_all ${TEST_DIR}/all_tests.cc ${SOURCES} ${HEADERS} ${TEST_HEADERS})
 
 # Linking
-if (${CUDA_FOUND} AND ${OPENMP_FOUND})
+if (${CUDA_FOUND} AND ${OPENMP_FOUND} AND NOT ${CPU_ONLY})
+  message("CUDA AND OPENMP BUILD")
   cuda_add_executable(edsdca_main ${SRC_DIR}/edsdca/run_model.cc ${SOURCES} ${HEADERS})
   cuda_add_executable(test_all ${TEST_DIR}/all_tests.cc ${SOURCES} ${HEADERS}
       ${TEST_HEADERS})
@@ -87,7 +90,8 @@ if (${CUDA_FOUND} AND ${OPENMP_FOUND})
   target_link_libraries(edsdca_main ${OPENMP_LIBRARIES})
   target_link_libraries(test_all ${GTEST_BOTH_LIBRARIES} ${CUDA_LIBRARIES} ${OPENMP_LIBRARIES})
   target_link_libraries(test_gpu ${GTEST_BOTH_LIBRARIES} ${CUDA_LIBRARIES} ${OPENMP_LIBRARIES})
-elseif(${CUDA_FOUND})
+elseif(${CUDA_FOUND} AND NOT ${CPU_ONLY})
+  message("CUDA BUILD")
   cuda_add_executable(edsdca_main ${SRC_DIR}/edsdca/run_model.cc ${SOURCES} ${HEADERS})
   cuda_add_executable(test_all ${TEST_DIR}/all_tests.cc ${SOURCES} ${HEADERS}
       ${TEST_HEADERS})
@@ -96,6 +100,7 @@ elseif(${CUDA_FOUND})
   target_link_libraries(test_all ${GTEST_BOTH_LIBRARIES} ${CUDA_LIBRARIES})
   target_link_libraries(test_gpu ${GTEST_BOTH_LIBRARIES} ${CUDA_LIBRARIES})
 else()
+  message("CPU BUILD")
   add_executable(edsdca_main ${SRC_DIR}/edsdca/run_model.cc ${SOURCES} ${HEADERS})
   add_executable(test_all ${TEST_DIR}/all_tests.cc ${SOURCES} ${HEADERS}
       ${TEST_HEADERS})

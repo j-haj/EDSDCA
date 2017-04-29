@@ -51,6 +51,6 @@ TEST(NormSquared, Gpu) {
   // Norm squared should be 55
   EXPECT_DOUBLE_EQ(NormSquared_gpu(eigen_x), 55);
 }
-
 #endif // GPU
+
 #endif // __TEST_MATH_UTIL_TEST_H
