@@ -37,11 +37,6 @@ protected:
 
 TEST_F(SdcaTest, CheckLambda) { ASSERT_EQ(sdca_.lambda(), LAMBDA); }
 
-TEST_F(SdcaTest, CheckAlpha) {
-  Eigen::VectorXd a = sdca_.a();
-  ASSERT_LE(0, 2);
-}
-
 TEST_F(SdcaTest, CheckPositiveClass) {
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -75,4 +70,4 @@ TEST_F(SdcaTest, CheckNegativeClass) {
   }
   ASSERT_EQ(total_correct, NUM_TESTS);
 }
-#endif
+#endif // __TEST_SDCA_TEST_H

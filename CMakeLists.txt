@@ -75,10 +75,6 @@ set(TEST_HEADERS
 # Executable and Linking
 # -----------------------------------------------------------------------------
 
-# Executable
-
-#add_executable(test_all ${TEST_DIR}/all_tests.cc ${SOURCES} ${HEADERS} ${TEST_HEADERS})
-
 # Linking
 if (${CUDA_FOUND} AND ${OPENMP_FOUND} AND NOT ${CPU_ONLY})
   message("CUDA AND OPENMP BUILD")
