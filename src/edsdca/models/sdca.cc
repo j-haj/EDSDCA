@@ -14,9 +14,6 @@ double Sdca::DeltaAlpha(const Eigen::VectorXd &x, const double y, long i) {
 void Sdca::ComputeAlphaBar(SdcaUpdateType update_type) {
   switch (update_type) {
   case SdcaUpdateType::Average:
-    if (accumulated_a_.size() == 0) {
-      DLOG("WARNING! accumulated_a_ has no elements!");
-    }
     Eigen::VectorXd reduced_accumulated_a = VectorReduce(accumulated_a_);
     reduced_accumulated_a *= 1.0 / accumulated_a_.size();
     accumulated_a_.clear();
@@ -26,9 +23,6 @@ void Sdca::ComputeAlphaBar(SdcaUpdateType update_type) {
 void Sdca::ComputeWBar(SdcaUpdateType update_type) {
   switch (update_type) {
   case SdcaUpdateType::Average:
-    if (accumulated_w_.size() == 0) {
-      DLOG("WARNING! accumulated_w_ has no elements!");
-    }
     Eigen::VectorXd reduced_accumulated_w = VectorReduce(accumulated_w_);
     reduced_accumulated_w *= 1.0 / accumulated_w_.size();
     accumulated_w_.clear();
@@ -80,11 +74,8 @@ void Sdca::Fit(const Eigen::MatrixXd &X, const Eigen::VectorXd &y) {
       timer_.Start();
 
       // Call the mini-batch update algorithm
-      std::cout << "mb_X.size() = " << mb_X.size() << std::endl;
-      std::cout << "mb_y.size() = " << mb_y.size() << std::endl;
       RunUpdateOnMiniBatch(mb_X, mb_y, mb_indices);
       if (batch_num * batch_size_ == update_interval_) {
-        DLOG("Updating a and w");
         ComputeAlphaBar();
         ComputeWBar();
       }

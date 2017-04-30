@@ -2,7 +2,6 @@
 
 #include "edsdca/memory/memsync.h"
 
-
 namespace edsdca {
 namespace memory {
 
@@ -23,7 +22,7 @@ namespace memory {
     }
 
     // Make sure memory is allocated before proceeding
-    if (!memory_is_allocated_) {
+    if (!memory_is_allocated_ || size != MemSync::d_) {
         SetMemoryAllocationSize(size);
         AllocateGlobalSharedMem();
     }
@@ -49,7 +48,7 @@ namespace memory {
     }
 
     // Make sure memory is allocated before proceeding
-    if (!memory_is_allocated_) {
+    if (!memory_is_allocated_ || size != MemSync::d_) {
         SetMemoryAllocationSize(size);
         AllocateGlobalSharedMem();
     }
@@ -99,6 +98,11 @@ namespace memory {
   }
 
   void MemSync::AllocateGlobalSharedMem() {
+    if (memory_is_allocated_) {
+        cudaFree(dx_);
+        cudaFree(dy_);
+        cudaFree(res_);
+    }
     cudaMalloc((double**)&dx_, d_ * sizeof(double));
     cudaMalloc((double**)&dy_, d_ * sizeof(double));
     cudaMalloc((double**)&res_, d_ * sizeof(double));

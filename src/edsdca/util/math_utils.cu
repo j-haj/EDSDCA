@@ -52,7 +52,6 @@ double VectorDotProd_gpu(const Eigen::VectorXd &x, const Eigen::VectorXd &y) {
   // Copy back from gpu
   Eigen::VectorXd result =
       edsdca::memory::MemSync::PullFromGpu(edsdca::memory::MemSync::res_, x.size());
-
   return result.sum();
 }
 
