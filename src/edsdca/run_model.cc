@@ -21,7 +21,7 @@ int main(int argc, char* argv[]) {
   DLOG("Attempting to instantiate an instance of CsvLoader for australian_scale data...");
   auto loader = edsdca::tools::CsvLoader("../test/data/dim1000_n1000_s100_test.csv");
   DLOG("CsvLoader instantiated! Attempting to load data....");
-  loader.LoadData(14, 0);
+  loader.LoadData(1000, 0);
   DLOG("Data loaded! Attempting to fit model for lamba=1000");
   edsdca::models::Sdca sdca = edsdca::models::Sdca(1000);
   sdca.Fit(loader.features(), loader.labels());
