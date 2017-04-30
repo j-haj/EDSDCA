@@ -24,6 +24,7 @@ namespace memory {
 
     // Make sure memory is allocated before proceeding
     if (!memory_is_allocated_) {
+        SetMemoryAllocationSize(size);
         AllocateGlobalSharedMem();
     }
     cudaMemcpy(MemSync::dx_, cv, sizeof(double) * size, cudaMemcpyHostToDevice);
@@ -49,6 +50,7 @@ namespace memory {
 
     // Make sure memory is allocated before proceeding
     if (!memory_is_allocated_) {
+        SetMemoryAllocationSize(size);
         AllocateGlobalSharedMem();
     }
     cudaMemcpy(MemSync::dy_, cv, sizeof(double) * size, cudaMemcpyHostToDevice);
@@ -97,9 +99,9 @@ namespace memory {
   }
 
   void MemSync::AllocateGlobalSharedMem() {
-    cudaMalloc(&dx_, d_ * sizeof(double));
-    cudaMalloc(&dy_, d_ * sizeof(double));
-    cudaMalloc(&res_, d_ * sizeof(double));
+    cudaMalloc((double**)&dx_, d_ * sizeof(double));
+    cudaMalloc((double**)&dy_, d_ * sizeof(double));
+    cudaMalloc((double**)&res_, d_ * sizeof(double));
     memory_is_allocated_ = true;
   }
 } // memory

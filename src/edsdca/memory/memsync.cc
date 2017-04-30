@@ -22,6 +22,7 @@ double* MemSync::dx_ = nullptr;
 double* MemSync::dy_ = nullptr;
 double* MemSync::res_ = nullptr;
 bool MemSync::memory_is_allocated_ = false;
+bool MemSync::is_heap_allocated_ = false;
 
 } // namespace memory
 } // namespace edsdca

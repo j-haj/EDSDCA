@@ -82,7 +82,6 @@ class MemSync {
    */
   static double *GetResultPointer();
 
-  private:
   /**
    * Static to pointer to dx - this is used to prevent excessive allocations
    */
@@ -103,6 +102,12 @@ class MemSync {
    * allocations need to be made
    */
   static bool memory_is_allocated_;
+
+  /**
+   * Flag that gets set to true once there is a heap allocation for @p dx_, @p
+   * dy_, and @p res_
+   */
+  static bool is_heap_allocated_;
 
   /**
    * Size of the allocated memory. This is equal to total memory allocated on

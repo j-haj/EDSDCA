@@ -45,11 +45,13 @@ double VectorDotProd_gpu(const Eigen::VectorXd &x, const Eigen::VectorXd &y) {
   double *d_y = edsdca::memory::MemSync::PushToGpuY(y);
 
   // Call the kernel
-  double *res = edsdca::memory::MemSync::GetResultPointer();
-  vector_prod_gpu<<<grid_size, block_size>>>(d_x, d_y, res, x.size());
+  vector_prod_gpu<<<grid_size, block_size>>>(edsdca::memory::MemSync::dx_,
+         edsdca::memory::MemSync::dy_,
+         edsdca::memory::MemSync::res_, x.size());
 
   // Copy back from gpu
-  Eigen::VectorXd result = edsdca::memory::MemSync::PullFromGpu(res, x.size());
+  Eigen::VectorXd result =
+      edsdca::memory::MemSync::PullFromGpu(edsdca::memory::MemSync::res_, x.size());
 
   return result.sum();
 }
