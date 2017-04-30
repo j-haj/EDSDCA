@@ -4,7 +4,7 @@ def normalize_data(x):
     norm = sum((i*i for i in x))
     return [i/norm for i in x]
 
-def generate_linear_sep(filename, z=1, dim=3, n=6, spread=10000):
+def generate_linear_sep(filename, z=1, dim=100, n=6, spread=10000):
     with open(filename, "w") as ofile:
         for i in range(n):
             line = ""
@@ -17,4 +17,4 @@ def generate_linear_sep(filename, z=1, dim=3, n=6, spread=10000):
             ofile.write(line + "\n")
 
 if __name__ == "__main__":
-    generate_linear_sep("n200_s100_test.csv", n=200, spread=100)
+    generate_linear_sep("dim100_n200_s100_test.csv", n=200, spread=100)
