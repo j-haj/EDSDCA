@@ -41,17 +41,17 @@ double VectorDotProd_gpu(const Eigen::VectorXd &x, const Eigen::VectorXd &y) {
   grid_size = (x.size() + block_size - 1) / block_size;
   grid_size = std::max(grid_size, min_grid_size);
 
-  double *d_x = edsdca::memory::MemSync::PushToGpu(x);
-  double *d_y = edsdca::memory::MemSync::PushToGpu(y);
+  double *d_x = edsdca::memory::MemSync::PushToGpuX(x);
+  double *d_y = edsdca::memory::MemSync::PushToGpuY(y);
 
   // Call the kernel
-  double *res = edsdca::memory::MemSync::AllocateMemOnGpu(x.size());
-  vector_prod_gpu<<<grid_size, block_size>>>(d_x, d_y, res, x.size());
+  vector_prod_gpu<<<grid_size, block_size>>>(edsdca::memory::MemSync::dx_,
+         edsdca::memory::MemSync::dy_,
+         edsdca::memory::MemSync::res_, x.size());
 
   // Copy back from gpu
-  Eigen::VectorXd result = edsdca::memory::MemSync::PullFromGpu(res, x.size());
-
-  cudaFree(d_x); cudaFree(d_y); cudaFree(res);
+  Eigen::VectorXd result =
+      edsdca::memory::MemSync::PullFromGpu(edsdca::memory::MemSync::res_, x.size());
   return result.sum();
 }
 

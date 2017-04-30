@@ -45,7 +45,7 @@ void Sdca::Fit(const Eigen::MatrixXd &X, const Eigen::VectorXd &y) {
 
   // Calculate number of mini-batches
   const long num_batches = long(n_ / batch_size_);
-
+  std::cout << "Running " << num_batches << " number of batches\n";
   // training_hist_ tracks the training error and training time (s)
   training_hist_ =
       std::vector<std::pair<double, double>>(num_batches * max_epochs_);
@@ -76,7 +76,6 @@ void Sdca::Fit(const Eigen::MatrixXd &X, const Eigen::VectorXd &y) {
       // Call the mini-batch update algorithm
       RunUpdateOnMiniBatch(mb_X, mb_y, mb_indices);
       if (batch_num * batch_size_ == update_interval_) {
-        DLOG("Updating a and w");
         ComputeAlphaBar();
         ComputeWBar();
       }

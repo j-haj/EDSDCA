@@ -15,6 +15,17 @@ namespace memory {
 
 class MemSync {
   public:
+  
+  /**
+   * Gets a reference do dx_
+   */
+  static double* GetDx();
+
+  /**
+   * Gets a reference to dy_
+   */
+  static double* GetDy();
+
   /**
    * Moves the @p Eigen::VectorXd from RAM to GPU and returns a pointer to the
    * memory in GPU
@@ -23,7 +34,17 @@ class MemSync {
    *
    * @return pointer to the data on the GPU
    */
-  static double *PushToGpu(const Eigen::VectorXd &x);
+  static double *PushToGpuX(const Eigen::VectorXd &x);
+  
+  /**
+   * Moves the @p Eigen::VectorXd from RAM to GPU and returns a pointer to the
+   * memory in GPU
+   *
+   * @param x reference to the @p Eigen::VectorXd in memory
+   *
+   * @return pointer to the data on the GPU
+   */
+  static double *PushToGpuY(const Eigen::VectorXd &x);
 
   /**
    * Copies the data from GPU to RAM and creates and Eigen::VectorXd which is
@@ -55,7 +76,61 @@ class MemSync {
    * @return a @p double* pointer to the memory on gpu
    */
   static double *AllocateMemOnGpu(const long size);
+
+  /**
+   * Returns a pointer to a pre-allocated result vecotr of size @p d_
+   */
+  static double *GetResultPointer();
+
+  /**
+   * Static to pointer to dx - this is used to prevent excessive allocations
+   */
+  static double* dx_;
+
+  /**
+   * Static pointer to dy - this is used to prevent excessive allocations
+   */
+  static double* dy_;
+
+  /**
+   * Static pointer to res_ - this is used for pulling results off the GPU
+   */
+  static double* res_;
+
+  /**
+   * This is an internal flag used to determine if dx_ and dy_ memory
+   * allocations need to be made
+   */
+  static bool memory_is_allocated_;
+
+  /**
+   * Flag that gets set to true once there is a heap allocation for @p dx_, @p
+   * dy_, and @p res_
+   */
+  static bool is_heap_allocated_;
+
+  /**
+   * Size of the allocated memory. This is equal to total memory allocated on
+   * GPU divided by 2 divided by sizeof(double).
+   */
+  static long d_;
+
+  /**
+   * This is is called to set the shared memroy allocation size. This is
+   * typically the size of the feature vectors.
+   *
+   * @param n the size (e.g. count) of the data (NOT size in bytes)
+   */
+  static void SetMemoryAllocationSize(long n);
+
+  /**
+   * Allocates memory if memory has not yet been allocated or needs to be
+   * allocated (due to new size requirements)
+   */
+  static void AllocateGlobalSharedMem();
 }; // class MemSync
+
+
 
 } // namespace memory
 } // namespace edsdca
