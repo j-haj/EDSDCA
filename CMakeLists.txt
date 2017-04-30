@@ -45,6 +45,7 @@ set(SOURCES
             ${SRC_DIR}/edsdca/util/math_utils.cc
             ${SRC_DIR}/edsdca/util/math_utils.cu
             ${SRC_DIR}/edsdca/util/cuda_util.cu
+            ${SRC_DIR}/edsdca/memory/memsync.cc
             ${SRC_DIR}/edsdca/memory/memsync.cu
             ${SRC_DIR}/edsdca/models/sdca.cc
             ${SRC_DIR}/edsdca/loss/hingeloss.cc)

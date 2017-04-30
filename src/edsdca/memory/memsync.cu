@@ -15,16 +15,45 @@ namespace memory {
    * @return a pointer to the memory location on the GPU where the pushed data
    *        is stored
    */
-  double* MemSync::PushToGpu(const Eigen::VectorXd& x) {
+  double* MemSync::PushToGpuX(const Eigen::VectorXd& x) {
     int size = x.size();
     double *cv = (double*)malloc(sizeof(double) * size);
     for (int i = 0; i < size; ++i) {
         cv[i] = x(i);
     }
-    double* d_v = MemSync::AllocateMemOnGpu(size);
-    cudaMemcpy(d_v, cv, sizeof(double) * size, cudaMemcpyHostToDevice);
+
+    // Make sure memory is allocated before proceeding
+    if (!memory_is_allocated_) {
+        AllocateGlobalSharedMem();
+    }
+    cudaMemcpy(MemSync::dx_, cv, sizeof(double) * size, cudaMemcpyHostToDevice);
     free(cv);
-    return d_v;
+    return dx_;
+  }
+    
+  /**
+   * Puts data stored by @p v onto GPU memory
+   *
+   * @param v data to be transfered to GPU
+   * @param size size of the required data buffer (in bytes)
+   *
+   * @return a pointer to the memory location on the GPU where the pushed data
+   *        is stored
+   */
+  double* MemSync::PushToGpuY(const Eigen::VectorXd& x) {
+    int size = x.size();
+    double *cv = (double*)malloc(sizeof(double) * size);
+    for (int i = 0; i < size; ++i) {
+        cv[i] = x(i);
+    }
+
+    // Make sure memory is allocated before proceeding
+    if (!memory_is_allocated_) {
+        AllocateGlobalSharedMem();
+    }
+    cudaMemcpy(MemSync::dy_, cv, sizeof(double) * size, cudaMemcpyHostToDevice);
+    free(cv);
+    return dy_;
   }
 
   /**
@@ -65,7 +94,14 @@ namespace memory {
     res = *tmp;
     free(tmp);
     return res;
-  }  
+  }
+
+  void MemSync::AllocateGlobalSharedMem() {
+    cudaMalloc(&dx_, d_ * sizeof(double));
+    cudaMalloc(&dy_, d_ * sizeof(double));
+    cudaMalloc(&res_, d_ * sizeof(double));
+    memory_is_allocated_ = true;
+  }
 } // memory
 } // edsdca
 
