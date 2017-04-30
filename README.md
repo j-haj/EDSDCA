@@ -37,3 +37,15 @@ ninja
 ```
 
 Running the executable is the same as above.
+
+## Testing
+There are also test executables that are created (depending on available
+hardware). These are run in the same manner as ``edsdca_main``
+
+## Modifying EDSDCA Main
+To use a different dataset in ``edsdca_main``, modify the path to the specified
+dataset in the file ``src/edsdca/run_models.cc``. Make sure the new dataset has
+a format similar to the other datasets. The main supported formats are:
+
+* CSV
+* LibSVM sparse representation
