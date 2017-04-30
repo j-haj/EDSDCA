@@ -11,7 +11,33 @@
 \maketitle
 \section{Overview}
 \begin{frame}{Problem Overview}
-    The very first frame
+    \begin{itemize}
+        \item Implement SDCA using a GPU
+        \item Two versions:
+            \begin{itemize}
+                \item Sequential - uses GPU for vector operations
+                \item Distributed - perform updates on multiple dimensions in
+                    parallel
+            \end{itemize}
+    \end{itemize}
+
 \end{frame}
+
+\begin{frame}{Issues We Encountered}
+    \begin{itemize}
+        \item Memory allocation
+            \begin{itemize}
+                \item Initial implementation allocated memory on the GPU each
+                    time it was needed
+                \item Improved implementation used static pointers to locations
+                    on the GPU's memory
+                \item In a test dataset, this reduced the number of memory
+                    allocations from 200,000 to 3 allocations
+            \end{itemize}
+        \item Algorithm verification
+    \end{itemize}
+
+\end{frame}
+
 
 \end{document}
