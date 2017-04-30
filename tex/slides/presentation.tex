@@ -1,6 +1,5 @@
 \documentclass{beamer}
 \usetheme{metropolis}
-\usecolortheme{dove}
 
 \title{Efficient Distributed SDCA}
 \author{Jeff Hajewski and Mingrui Liu}
@@ -24,6 +23,7 @@
 \end{frame}
 
 \begin{frame}{Issues We Encountered}
+    Not as easy as we expected!
     \begin{itemize}
         \item Memory allocation
             \begin{itemize}
@@ -35,8 +35,18 @@
                     allocations from 200,000 to 3 allocations
             \end{itemize}
         \item Algorithm verification
+            \begin{itemize}
+                \item Code looks correct, results don't make sense
+                \item Unit tests can verify individual components (e.g., GPU
+                    dot product, data loading and parsing, etc.)
+            \end{itemize}
     \end{itemize}
+\end{frame}
 
+\begin{frame}{Results}
+    \begin{itemize}
+        \item Code efficiency needs to improve
+    \end{itemize}
 \end{frame}
 
 
