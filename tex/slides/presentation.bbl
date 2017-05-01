@@ -1,0 +1,63 @@
+\begin{thebibliography}{}
+
+\bibitem[Bottou, 2010]{bottou2010large}
+Bottou, L. (2010).
+\newblock Large-scale machine learning with stochastic gradient descent.
+\newblock In {\em Proceedings of COMPSTAT'2010}, pages 177--186. Springer.
+
+\bibitem[Boyd et~al., 2011]{boyd2011distributed}
+Boyd, S., Parikh, N., Chu, E., Peleato, B., and Eckstein, J. (2011).
+\newblock Distributed optimization and statistical learning via the alternating
+  direction method of multipliers.
+\newblock {\em Foundations and Trends{\textregistered} in Machine Learning},
+  3(1):1--122.
+
+\bibitem[Johnson and Zhang, 2013]{johnson2013accelerating}
+Johnson, R. and Zhang, T. (2013).
+\newblock Accelerating stochastic gradient descent using predictive variance
+  reduction.
+\newblock In {\em Advances in Neural Information Processing Systems}, pages
+  315--323.
+
+\bibitem[Lian et~al., 2015]{lian2015asynchronous}
+Lian, X., Huang, Y., Li, Y., and Liu, J. (2015).
+\newblock Asynchronous parallel stochastic gradient for nonconvex optimization.
+\newblock In {\em Advances in Neural Information Processing Systems}, pages
+  2737--2745.
+
+\bibitem[Nemirovski et~al., 2009]{nemirovski2009robust}
+Nemirovski, A., Juditsky, A., Lan, G., and Shapiro, A. (2009).
+\newblock Robust stochastic approximation approach to stochastic programming.
+\newblock {\em SIAM Journal on optimization}, 19(4):1574--1609.
+
+\bibitem[Shalev-Shwartz and Zhang, 2013]{shalev2013stochastic}
+Shalev-Shwartz, S. and Zhang, T. (2013).
+\newblock Stochastic dual coordinate ascent methods for regularized loss
+  minimization.
+\newblock {\em Journal of Machine Learning Research}, 14(Feb):567--599.
+
+\bibitem[Shalev-Shwartz and Zhang, 2014]{shalev2014accelerated}
+Shalev-Shwartz, S. and Zhang, T. (2014).
+\newblock Accelerated proximal stochastic dual coordinate ascent for
+  regularized loss minimization.
+\newblock In {\em ICML}, pages 64--72.
+
+\bibitem[Xiao and Zhang, 2014]{xiao2014proximal}
+Xiao, L. and Zhang, T. (2014).
+\newblock A proximal stochastic gradient method with progressive variance
+  reduction.
+\newblock {\em SIAM Journal on Optimization}, 24(4):2057--2075.
+
+\bibitem[Yang, 2013]{yang2013trading}
+Yang, T. (2013).
+\newblock Trading computation for communication: Distributed stochastic dual
+  coordinate ascent.
+\newblock In {\em Advances in Neural Information Processing Systems}, pages
+  629--637.
+
+\bibitem[Yang et~al., 2013]{yang2013analysis}
+Yang, T., Zhu, S., Jin, R., and Lin, Y. (2013).
+\newblock Analysis of distributed stochastic dual coordinate ascent.
+\newblock {\em arXiv preprint arXiv:1312.1031}.
+
+\end{thebibliography}
