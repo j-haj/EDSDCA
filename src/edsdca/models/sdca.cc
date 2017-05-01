@@ -85,12 +85,14 @@ void Sdca::Fit(const Eigen::MatrixXd &X, const Eigen::VectorXd &y) {
       double cumulative_time = timer_.cumulative_time();
 
       // Compute training loss with current weights
-      double loss = ComputeLoss(X, y);
+      if ((batch_num + num_batches * cur_epoch) % loss_interval_ == 0) {
+        double loss = ComputeLoss(X, y);
 
-      // Store loss and runtime
-      auto tmp_pair = std::make_pair(cumulative_time, loss);
-      training_hist_[log_index] = tmp_pair;
-      ++log_index;
+        // Store loss and runtime
+        auto tmp_pair = std::make_pair(cumulative_time, loss);
+        training_hist_[log_index] = tmp_pair;
+        ++log_index;
+      }
     }
   }
   SaveHistory("results_test.csv");

@@ -137,6 +137,9 @@ private:
   /// @brief Interval at which alpha_bar and w_bar are upated
   long update_interval_;
 
+  /// @brief Interval at which training loss is computed
+  long loss_interval_ = 100;
+
   /// @brief Number of data points
   long n_;
 

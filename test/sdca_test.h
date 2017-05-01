@@ -19,9 +19,9 @@ protected:
 
   void SetUp() {
     // Load data
-    auto loader = edsdca::tools::CsvLoader("../test/data/n200_s100_test.csv");
+    auto loader = edsdca::tools::CsvLoader("../test/data/dim100_n200_s100_test.csv");
 
-    loader.LoadData(3, 0);
+    loader.LoadData(100, 0);
     Eigen::MatrixXd features = loader.features();
     Eigen::VectorXd labels = loader.labels();
 
