@@ -1,17 +1,335 @@
-\documentclass{beamer}
-\usetheme{metropolis}
-\usecolortheme{dove}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beamer Presentation
+% LaTeX Template
+% Version 1.0 (10/11/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\title{Efficient Distributed SDCA}
-\author{Jeff Hajewski and Mingrui Liu}
-\date{\today}
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+
+%\documentclass{beamer}
+%\usepackage{enumitem}
+%\usepackage{booktabs}  
+\documentclass{beamer} %
+\usetheme{CambridgeUS}
+\usepackage[latin1]{inputenc}
+\usefonttheme{professionalfonts}
+\usepackage{times}
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{verbatim}
+\usetikzlibrary{arrows,shapes}   
+\def \S {\mathbf{S}}
+\def \A {\mathcal{A}}
+\def \X {\mathcal{X}}
+\def \Ab {\bar{\A}}
+\def \R {\mathbb{R}}
+\def \Kt {\widetilde{K}}
+\def \k {\mathbf{k}}
+\def \w {\mathbf{w}}
+\def \v {\mathbf{v}}
+\def \t {\mathbf{t}}
+\def \x {\mathbf{x}}
+\def \Se {\mathcal{S}}
+\def \E {\mathrm{E}}
+\def \Rh {\widehat{R}}
+\def \x {\mathbf{x}}
+\def \p {\mathbf{p}}
+\def \a {\mathbf{a}}
+\def \diag {\mbox{diag}}
+\def \b {\mathbf{b}}
+\def \e {\mathbf{e}}
+\def \ba {\boldsymbol{\alpha}}
+\def \c {\mathbf{c}}
+\def \tr {\mbox{tr}}
+\def \d {\mathbf{d}}
+\def \z {\mathbf{z}}
+\def \s {\mathbf{s}}
+\def \bh {\widehat{b}}
+\def \y {\mathbf{y}}
+\def \u {\mathbf{u}}
+%\def \L {\mathcal{L}}
+\def \H {\mathcal{H}}
+\def \g {\mathbf{g}}
+\def \F {\mathcal{F}}
+\def \I {\mathbb{I}}
+\def \P {\mathcal{P}}
+\def \Q {\mathcal{Q}}
+\def \xh {\widehat{\x}}
+\def \wh {\widehat{\w}}
+\def \ah {\widehat{\alpha}}
+\def \Rc {\mathcal R}
+
+\def \Bh {\widehat B}
+\def \Ah {\widehat A}
+\def \Uh {\widehat U}
+\def \Ut {\widetilde U}
+\def \B {\mathbf B}
+\def \C {\mathbf C}
+\def \U {\mathbf U}
+\def \Kh {\widehat K}
+\def \fh {\widehat f}
+\def \yh {\widehat y}
+\def \Xh {\widehat{X}}
+\def \Fh {\widehat{F}}
+
+
+\def \y {\mathbf{y}}
+\def \E {\mathrm{E}}
+\def \x {\mathbf{x}}
+\def \g {\mathbf{g}}
+\def \D {\mathcal{D}}
+\def \z {\mathbf{z}}
+\def \u {\mathbf{u}}
+\def \H {\mathcal{H}}
+\def \Pc {\mathcal{P}}
+\def \w {\mathbf{w}}
+\def \r {\mathbf{r}}
+\def \R {\mathbb{R}}
+\def \S {\mathcal{S}}
+\def \regret {\mbox{regret}}
+\def \Uh {\widehat{U}}
+\def \Q {\mathcal{Q}}
+\def \W {\mathcal{W}}
+\def \N {\mathcal{N}}
+\def \A {\mathcal{A}}
+\def \q {\mathbf{q}}
+\def \v {\mathbf{v}}
+\def \M {\mathcal{M}}
+\def \c {\mathbf{c}}
+\def \ph {\widehat{p}}
+\def \d {\mathbf{d}}
+\def \p {\mathbf{p}}
+\def \q {\mathbf{q}}
+\def \db {\bar{\d}}
+\def \dbb {\bar{d}}
+\def \I {\mathcal{I}}
+\def \xt {\widetilde{\x}}
+\def \f {\mathbf{f}}
+\def \a {\mathbf{a}}
+\def \b {\mathbf{b}}
+\def \ft {\widetilde{\f}}
+\def \bt {\widetilde{\b}}
+\def \h {\mathbf{h}}
+\def \B {\mathbf{B}}
+\def \bts {\widetilde{b}}
+\def \fts {\widetilde{f}}
+\def \Gh {\widehat{G}}
+\def \G {\mathcal {G}}
+\def \bh {\widehat{b}}
+\def \fh {\widehat{f}}
+\def \wh {\widehat{\w}}
+\def \vb {\bar{v}}
+\def \zt {\widetilde{\z}}
+\def \zts {\widetilde{z}}
+\def \s {\mathbf{s}}
+\def \gh {\widehat{\g}}
+\def \vh {\widehat{\v}}
+\def \Sh {\widehat{S}}
+\def \rhoh {\widehat{\rho}}
+\def \hh {\widehat{\h}}
+\def \C {\mathcal{C}}
+\def \V {\mathcal{L}}
+\def \t {\mathbf{t}}
+\def \xh {\widehat{\x}}
+\def \Ut {\widetilde{U}}
+\def \wt {\widetilde{\w}}
+\def \Th {\widehat{T}}
+\def \Ot {\tilde{\mathcal{O}}}
+\def \X {\mathcal{X}}
+\def \nb {\widehat{\nabla}}
+\def \K {\mathcal{K}}
+\def \P {\mathbb{P}}
+\def \T {\mathcal{T}}
+\def \F {\mathcal{F}}
+\def \ft{\widetilde{f}}
+\def \xt {\widetilde{x}}
+\def \Rt {\mathcal{R}}
+\def \Rb {\bar{\Rt}}
+\def \wb {\bar{\w}}
+%\mode<presentation> {
+	
+	% The Beamer class comes with a number of default slide themes
+	% which change the colors and layouts of slides. Below this is a list
+	% of all the themes, uncomment each in turn to see what they look like.
+	
+	%\usetheme{default}
+	%\usetheme{AnnArbor}
+	%\usetheme{Antibes}
+	%\usetheme{Bergen}
+	%\usetheme{Berkeley}
+	%\usetheme{Berlin}
+	%\usetheme{Boadilla}
+	%\usetheme{CambridgeUS}
+	%\usetheme{Copenhagen}
+	%\usetheme{Darmstadt}
+	%\usetheme{Dresden}
+	%\usetheme{Frankfurt}
+	%\usetheme{Goettingen}
+	%\usetheme{Hannover}
+	%\usetheme{Ilmenau}
+	%\usetheme{JuanLesPins}
+	%\usetheme{Luebeck}
+	%\usetheme{Madrid}
+	%\usetheme{Malmoe}
+	%\usetheme{Marburg}
+	%\usetheme{Montpellier}
+	%\usetheme{PaloAlto}
+	%\usetheme{Pittsburgh}
+	%\usetheme{Rochester}
+	%\usetheme{Singapore}
+	%\usetheme{Szeged}
+	%\usetheme{Warsaw}
+	
+	% As well as themes, the Beamer class has a number of color themes
+	% for any slide theme. Uncomment each of these in turn to see how it
+	% changes the colors of your current slide theme.
+	
+	%\usecolortheme{albatross}
+	%\usecolortheme{beaver}
+	%\usecolortheme{beetle}
+	%\usecolortheme{crane}
+	%\usecolortheme{dolphin}
+	%\usecolortheme{dove}
+	%\usecolortheme{fly}
+	%\usecolortheme{lily}
+	%\usecolortheme{orchid}
+	%\usecolortheme{rose}
+	%\usecolortheme{seagull}
+	%\usecolortheme{seahorse}
+	%\usecolortheme{whale}
+	%\usecolortheme{wolverine}
+	
+	%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+	%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+	
+	%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+%}
+
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title{Efficient Distributed Stochastic Dual Coordinate Ascent} % The short title appears at the bottom of every slide, the full title is only on the title page
+
+%\author{John Smith} % Your name
+\author{Jeff Hajewski \\ Mingrui Liu}
+\date{May 3, 2017}
 \institute{University of Iowa}
 
+%\date{\today} % Date, can be changed to a custom date
+\AtBeginSubsection[]
+{
+	\begin{frame}<beamer>{Outline}
+		\tableofcontents[currentsection,currentsubsection]
+	\end{frame}
+}
 \begin{document}
-\maketitle
-\section{Overview}
-\begin{frame}{Problem Overview}
-    The very first frame
+	
+	\begin{frame}
+		\titlepage % Print the title page as the first slide
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Overview} % Table of contents slide, comment this block out to remove it
+		\tableofcontents % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
+	\end{frame}
+	
+	%----------------------------------------------------------------------------------------
+	%	PRESENTATION SLIDES
+	%----------------------------------------------------------------------------------------
+	
+	%------------------------------------------------
+\section{Problem Description and Related Work}
+\subsection{Problem of Interest}
+\begin{frame}{Problem of Interest}
+	Many machine learning problems can be formulated as the Regularized Finite Sum Minimization (RFSM) problem.
+	\begin{equation}
+		\label{RLM}
+		\min_{w\in\R^d}P(w), \text{where }P(w)=\frac{1}{n}\sum_{i=1}^{n}\phi(w^\top x_i,y_i)+\lambda g(w),
+	\end{equation}
+	where $w\in\R^d$ denotes the weight vector, $(x_i,y_i),x_i\in\R^d,y_i\in\R$,
+	$i=1,\ldots,n$ are training data, $\lambda>0$ is a regularization parameter,
+	$\phi(z,y)$ is a convex function of $z$, and $g(w)$ is a convex function of $w$.
 \end{frame}
 
+\begin{frame}{Approaches to solve RFSM problem}
+	\begin{itemize}
+	\item \textbf{The difficulty:}\\ When the data size $n$ is very large, it is difficult to use full gradient method or even fit all data on one single machine.
+	\pause
+	
+	\item \textbf{The countermeasures:}\\
+	\begin{itemize}
+		\item Stochastic Optimization\\
+		\item Distributed Optimization
+	\end{itemize}
+	\end{itemize}
+\end{frame}
+%
+\subsection{Related Work}
+\begin{frame}{Stochastic Optimization}
+	\begin{itemize}
+	\item	Stochastic Gradient Descent (SGD) \cite{bottou2010large,nemirovski2009robust}
+	%\pause
+	\item Stochastic Variance Reduced Gradient (SVRG) \cite{johnson2013accelerating,xiao2014proximal}
+	%\pause
+	\item  \textcolor{red}{Stochastic Dual Coordinate Ascent (SDCA)} \cite{shalev2013stochastic,shalev2014accelerated}
+	%\pause
+	\item \ldots
+	\end{itemize}
+\end{frame}
+	%----------------------------------------------------------------------------------------
+\begin{frame}{Distributed Optimization}
+	\begin{itemize}
+		\item Distributed SGD \cite{lian2015asynchronous}
+		\item Distributed Stochastic ADMM \cite{boyd2011distributed}
+		\item \textcolor{red}{Distributed SDCA}  \cite{yang2013trading,yang2013analysis}
+	\end{itemize}
+\end{frame}
+\begin{frame}{Our Contribution}
+	\begin{itemize}
+	\item The current SDCA and distributed SDCA are implemented by CPU
+	\item Our contribution is to implement \textcolor{red}{a practically more efficient GPU-based implementation}, in both sequential setting and distributed setting.
+	\end{itemize}
+\end{frame}
+\section{Practical GPU-version of SDCA}
+\subsection{GPU-version of vanilla SDCA}
+\begin{frame}{GPU-version vanilla SDCA}
+
+\end{frame}
+\bibliographystyle{apalike}	
+\bibliography{courseProject}
+
 \end{document}
+
+
+%\AtBeginSection[]
+%{
+%	\begin{frame}<beamer>
+%		\frametitle{Outline for section \thesection}
+%		\tableofcontents[currentsection]
+%	\end{frame}
+%}
+%
+%\title{Efficient Distributed SDCA}
+%
+%\begin{document}
+%\maketitle
+%\begin{frame}{Table of contents}
+%\tableofcontents
+%\end{frame}
+%\section{Overview}
+
+
+%\end{document}
