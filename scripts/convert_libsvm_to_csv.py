@@ -1,5 +1,4 @@
-import os
-
+import os 
 
 def convert_to_csv(path):
     """
@@ -55,5 +54,6 @@ def convert_libsvm_to_csv(path, num_features):
                 line_num += 1
 
 if __name__ == "__main__":
-    file_path = "/Users/jhaj/Documents/university-of-iowa/classes/s2017/machine-learning/EDSDCA/data/news20.binary"
+    file_path = \
+    "/Users/jhaj/Documents/university-of-iowa/classes/s2017/machine-learning/EDSDCA/data/covtype.libsvm.binary.scale"
     convert_to_csv(file_path)
