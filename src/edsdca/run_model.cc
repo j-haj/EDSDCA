@@ -23,7 +23,8 @@ int main(int argc, char* argv[]) {
   DLOG("CsvLoader instantiated! Attempting to load data....");
   loader.LoadData(14, 0);
   DLOG("Data loaded! Attempting to fit model for lamba=10");
-  edsdca::models::Sdca sdca = edsdca::models::Sdca(10);
+  edsdca::models::Sdca sdca = edsdca::models::Sdca(10, 1);
+  sdca.set_max_epochs(200);
   sdca.Fit(loader.features(), loader.labels());
   
   /*

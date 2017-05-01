@@ -47,7 +47,6 @@ void Sdca::Fit(const Eigen::MatrixXd &X, const Eigen::VectorXd &y) {
 
   // Calculate number of mini-batches
   const long num_batches = long(n_ / batch_size_);
-  std::cout << "Running " << num_batches << " number of batches\n";
   // training_hist_ tracks the training error and training time (s)
   training_hist_ =
       std::vector<std::pair<double, double>>(num_batches * max_epochs_);
@@ -77,13 +76,14 @@ void Sdca::Fit(const Eigen::MatrixXd &X, const Eigen::VectorXd &y) {
 
       // Call the mini-batch update algorithm
       RunUpdateOnMiniBatch(mb_X, mb_y, mb_indices);
+      timer_.Stop();
+
       if ((batch_num + num_batches * cur_epoch) % update_interval_  == 0) {
         ComputeAlphaBar();
         ComputeWBar();
       }
 
       // Stop timer and get cumulative time
-      timer_.Stop();
       double cumulative_time = timer_.cumulative_time();
 
       // Compute training loss with current weights
@@ -97,14 +97,11 @@ void Sdca::Fit(const Eigen::MatrixXd &X, const Eigen::VectorXd &y) {
       }
     }
   }
+
   w_ = w_bar_;
   ComputeW(X);
 
   SaveHistory("results_test.csv");
-  for (int i = 0; i < d_; ++i) {
-    std::cout << w_[i] << " ";
-  }
-  std::cout << "\n";
 }
 
 double Sdca::Predict(const Eigen::VectorXd &x) {
@@ -124,7 +121,7 @@ double Sdca::ComputeLoss(const Eigen::MatrixXd &X, const Eigen::VectorXd &y) {
     aggregate_loss +=
         loss_.Evaluate(Xw(i), y(i));
   }
-  return aggregate_loss / n_ + (lambda_ / 2.0) * NormSquared(w_);
+  return aggregate_loss / n_ + (lambda_ / 2.0) * NormSquared(w_bar_);
 }
 
 void Sdca::SaveHistory(const std::string &filename) {
@@ -134,6 +131,9 @@ void Sdca::SaveHistory(const std::string &filename) {
 
   // Write results to file
   for (const auto &x : training_hist_) {
+    if (x.first == 0 && x.second == 0) {
+      continue;
+    }
     results_file << x.first << "," << x.second << "\n";
   }
 
@@ -143,10 +143,16 @@ void Sdca::SaveHistory(const std::string &filename) {
 void Sdca::RunUpdateOnMiniBatch(const std::vector<Eigen::VectorXd> &X,
                                 const std::vector<double> &y,
                                 const std::vector<long> &indices) {
+  switch (sdca_type_) {
+    case SdcaModelType::Sequential:
+      Sdca::RunUpdateOnMiniBatch_cpu(X, y, indices);
+      break;
+    case SdcaModelType::Distributed:
 #ifndef GPU
-  Sdca::RunUpdateOnMiniBatch_cpu(X, y, indices);
+      DLOG("WARNING! Attempting to run GPU model without a GPU! Running CPU model instead.");
+      Sdca::RunUpdateOnMiniBatch_cpu(X, y, indices);
 #else
-  Sdca::RunUpdateOnMiniBatch_gpu(X, y, indices);
+      Sdca::RunUpdateOnMiniBatch_gpu(X, y, indices);
 #endif
 }
 
@@ -163,8 +169,6 @@ void Sdca::RunUpdateOnMiniBatch_cpu(const std::vector<Eigen::VectorXd> &X,
     ApplyAlphaUpdate(delta_a, current_dim);
     ApplyWeightUpdates(delta_a, x_i);
   }
-  ComputeAlphaBar();
-  ComputeWBar();
 }
 
 // TODO: complete the gpu mini-batch update

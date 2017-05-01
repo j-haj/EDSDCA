@@ -51,6 +51,23 @@ TEST(NormSquared, Gpu) {
   // Norm squared should be 55
   EXPECT_DOUBLE_EQ(NormSquared_gpu(eigen_x), 55);
 }
+
+TEST(MatrixVectorProd, Gpu) {
+  auto eigen_vec = Eigen::VectorXd(3);
+  eigen_vec = << 1, 1, 1;
+
+  auto eigen_mat = Eigen::MatrixXd(3, 3);
+  eigen_mat << 1, 1, 1,
+               1, 1, 1,
+               1, 1, 1;
+
+  auto actual_result = MatrixVectorMultiply(eigen_mat, eigen_vec);
+  auto expected_result = eigen_mat * eigen_vec;
+
+  for (int i = 0; i < 3; ++i) {
+    EXPECT_DOUBLE_EQ(actual_result(i), expected_result(i));
+  } 
+}
 #endif // GPU
 
 #endif // __TEST_MATH_UTIL_TEST_H

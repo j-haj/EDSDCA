@@ -12,17 +12,18 @@
 
 #define NUM_TESTS 10000
 #define LAMBDA 100
+#define UPDATE_INTERVAL 10
 
 class SdcaTest : public ::testing::Test {
 
 protected:
-  SdcaTest() : sdca_(edsdca::models::Sdca(LAMBDA)) {}
+  SdcaTest() : sdca_(edsdca::models::Sdca(LAMBDA, UPDATE_INTERVAL)) {}
 
   void SetUp() {
     // Load data
     auto loader = edsdca::tools::CsvLoader("../test/data/n200_s100_test.csv");
 
-    loader.LoadData(100, 0);
+    loader.LoadData(3, 0);
     Eigen::MatrixXd features = loader.features();
     Eigen::VectorXd labels = loader.labels();
 

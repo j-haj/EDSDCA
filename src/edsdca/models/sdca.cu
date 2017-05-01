@@ -6,7 +6,8 @@
 #include "edsdca/util/cuda_util.h"
 
 __global__
-void distributed_sdca(double* x, double* y, double* a, double* w) {
+void distributed_sdca(double* X, double* y, double* a, double* w, long* indices,
+    long m, long n) {
   // IMPLEMENT
 }
 
@@ -19,8 +20,13 @@ namespace edsdca {
 namespace models {
 
 void Sdca::RunUpdateOnMiniBatch_gpu(const std::vector<Eigen::VectorXd> &X,
-                                    const std::vector<double> &y) {
-  // Use threads and blocks
+                                    const std::vector<double> &y,
+                                    const std::vector<long> &indices) {
+  // Perform matrix-vector multiplication
+
+  // Compute delta-alpha
+
+  // Possibly call ComputeW?
 }
 
 } // namespace models

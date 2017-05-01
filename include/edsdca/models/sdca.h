@@ -18,6 +18,7 @@ namespace edsdca {
 namespace models {
 
 enum SdcaUpdateType { Average };
+enum SdcaModelType { Sequential, Distributed };
 
 class Sdca {
 
