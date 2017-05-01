@@ -6,6 +6,7 @@
 #include <Eigen/Dense>
 #include <gtest/gtest.h>
 
+#include "edsdca/util/math_utils.h"
 #include "edsdca/models/sdca.h"
 #include "edsdca/tools/csvloader.h"
 
@@ -19,13 +20,13 @@ protected:
 
   void SetUp() {
     // Load data
-    auto loader = edsdca::tools::CsvLoader("../test/data/dim100_n200_s100_test.csv");
+    auto loader = edsdca::tools::CsvLoader("../test/data/n200_s100_test.csv");
 
     loader.LoadData(100, 0);
     Eigen::MatrixXd features = loader.features();
     Eigen::VectorXd labels = loader.labels();
 
-    sdca_.set_max_epochs(10);
+    sdca_.set_max_epochs(5);
     sdca_.set_batch_size(1);
 
     // Fit the model
@@ -45,6 +46,7 @@ TEST_F(SdcaTest, CheckPositiveClass) {
   for (int i = 0; i < NUM_TESTS; ++i) {
     Eigen::VectorXd test_x = Eigen::VectorXd(3);
     test_x << dist(gen), dist(gen), 2;
+    test_x = NormalizeVector(test_x);
     double result = sdca_.Predict(test_x);
     if (result == 1) {
       total_correct += 1;
@@ -63,6 +65,7 @@ TEST_F(SdcaTest, CheckNegativeClass) {
   for (int i = 0; i < NUM_TESTS; ++i) {
     Eigen::VectorXd test_x = Eigen::VectorXd(3);
     test_x << dist(gen), dist(gen), 0;
+    test_x = NormalizeVector(test_x);
     double result = sdca_.Predict(test_x);
     if (result == -1) {
       total_correct += 1;

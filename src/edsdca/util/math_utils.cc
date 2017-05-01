@@ -1,5 +1,12 @@
 #include "edsdca/util/math_utils.h"
 
+Eigen::VectorXd NormalizeVector(const Eigen::VectorXd &x) {
+  double norm = std::sqrt(NormSquared(x));
+  Eigen::VectorXd normalized_x = x;
+  normalized_x /= norm;
+  return normalized_x;
+}
+
 double NormSquared(const Eigen::VectorXd &x) {
 #ifndef GPU
   const double res = NormSquared_cpu(x);

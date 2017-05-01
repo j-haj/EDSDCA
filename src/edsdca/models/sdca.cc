@@ -17,6 +17,7 @@ void Sdca::ComputeAlphaBar(SdcaUpdateType update_type) {
     Eigen::VectorXd reduced_accumulated_a = VectorReduce(accumulated_a_);
     reduced_accumulated_a *= 1.0 / accumulated_a_.size();
     accumulated_a_.clear();
+    a_bar_ = reduced_accumulated_a;
   }
 }
 
@@ -26,6 +27,7 @@ void Sdca::ComputeWBar(SdcaUpdateType update_type) {
     Eigen::VectorXd reduced_accumulated_w = VectorReduce(accumulated_w_);
     reduced_accumulated_w *= 1.0 / accumulated_w_.size();
     accumulated_w_.clear();
+    w_bar_ = reduced_accumulated_w;
   }
 }
 
@@ -75,7 +77,7 @@ void Sdca::Fit(const Eigen::MatrixXd &X, const Eigen::VectorXd &y) {
 
       // Call the mini-batch update algorithm
       RunUpdateOnMiniBatch(mb_X, mb_y, mb_indices);
-      if (batch_num * batch_size_ == update_interval_) {
+      if ((batch_num + num_batches * cur_epoch) % update_interval_  == 0) {
         ComputeAlphaBar();
         ComputeWBar();
       }
@@ -95,6 +97,9 @@ void Sdca::Fit(const Eigen::MatrixXd &X, const Eigen::VectorXd &y) {
       }
     }
   }
+  w_ = w_bar_;
+  ComputeW(X);
+
   SaveHistory("results_test.csv");
   for (int i = 0; i < d_; ++i) {
     std::cout << w_[i] << " ";
@@ -114,7 +119,7 @@ double Sdca::Predict(const Eigen::VectorXd &x) {
 double Sdca::ComputeLoss(const Eigen::MatrixXd &X, const Eigen::VectorXd &y) {
   double aggregate_loss(0.0);
   
-  Eigen::VectorXd Xw = X * w_;
+  Eigen::VectorXd Xw = X * w_bar_;
   for (long i = 0; i < n_; ++i) {
     aggregate_loss +=
         loss_.Evaluate(Xw(i), y(i));
@@ -189,9 +194,11 @@ void Sdca::InitializeAlpha() {
   std::normal_distribution<> norm_dist(0, 1);
 
   a_ = Eigen::VectorXd(n_);
+  a_bar_ = Eigen::VectorXd(n_);
+
   for (long i = 0; i < n_; ++i) {
     a_(i) = 0;
-    //a_(i) = norm_dist(gen);
+    a_bar_(i) = 0;
   }
 }
 
@@ -199,9 +206,12 @@ void Sdca::InitializeWeights() {
   std::random_device rd;
   std::mt19937 gen(rd());
   std::normal_distribution<> norm_dist(0, 1);
+
   w_ = Eigen::VectorXd(d_);
+  w_bar_ = Eigen::VectorXd(d_);
   for (long i = 0; i < d_; ++i) {
     w_(i) = norm_dist(gen);
+    w_bar_(i) = w_(i);
   }
 }
 

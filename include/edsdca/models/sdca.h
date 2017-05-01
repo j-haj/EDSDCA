@@ -157,12 +157,18 @@ private:
 
   /// @brief Dual variable, $\alpha$
   Eigen::VectorXd a_;
+  
+  /// @brief Dual variable of averaged updates
+  Eigen::VectorXd a_bar_;
 
   /// @brief Accumulates @p a_ updates
   std::vector<Eigen::VectorXd> accumulated_a_;
 
   /// @brief Primal variable, $\omega$
   Eigen::VectorXd w_;
+
+  /// @brief Averaged weights $\bar \omega$
+  Eigen::VectorXd w_bar_;
 
   /// @brief Accumulates the @p w_ updates
   std::vector<Eigen::VectorXd> accumulated_w_;

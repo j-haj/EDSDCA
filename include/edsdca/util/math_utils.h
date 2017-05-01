@@ -9,6 +9,9 @@
 
 #include "edsdca/memory/memsync.h"
 
+// Returns a normalized vector for the given input
+Eigen::VectorXd NormalizeVector(const Eigen::VectorXd &x);
+
 // Norm for Eigen vector
 double NormSquared_cpu(const Eigen::VectorXd &x);
 double NormSquared(const Eigen::VectorXd &x);
