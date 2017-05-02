@@ -183,6 +183,9 @@ private:
   /// @brief default mini-batch size of 1
   long batch_size_ = 1;
 
+  /// @brief Type of optimizer used - Sequential or Distributed
+  SdcaModelType sdca_type_;
+
   /**
    * Runs the updates for $\alpha$ and $\omega$
    *

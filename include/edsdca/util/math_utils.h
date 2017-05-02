@@ -9,6 +9,13 @@
 
 #include "edsdca/memory/memsync.h"
 
+// Returns a vector that is the result of a matrix-vector multiplication
+Eigen::VectorXd MatrixVectorMultiply(const Eigen::MatrixXd &X, const Eigen::VectorXd &y);
+Eigen::VectorXd MatrixVectorMultiply_cpu(const Eigen::MatrixXd &X,
+                                         const Eigen::VectorXd &y);
+Eigen::VectorXd MatrixVectorMultiply_gpu(const Eigen::MatrixXd &X,
+                                         const Eigen::VectorXd &y);
+
 // Returns a normalized vector for the given input
 Eigen::VectorXd NormalizeVector(const Eigen::VectorXd &x);
 

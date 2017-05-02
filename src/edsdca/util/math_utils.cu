@@ -78,10 +78,10 @@ Eigen::VectorXd VectorReduce_gpu(const std::vector<Eigen::VectorXd> &v) {
 
 Eigen::VectorXd MatrixVectorMultiply(const Eigen::MatrixXd &X, const
     Eigen::VectorXd &y) {
-  int block_size, grid_size, min_gride_size;
+  int block_size, grid_size, min_grid_size;
   cudaOccupancyMaxPotentialBlockSize(&min_grid_size, &block_size,
       matrix_vector_prod, 0, 0);
-  grid_size = (X.size() + block_size - 1) / block_size;
+  grid_size = int((X.size() + block_size - 1) / block_size);
   grid_size = std::max(grid_size, min_grid_size);
 
   double *d_X = edsdca::memory::MemSync::PushToGpuX(X);

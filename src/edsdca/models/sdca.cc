@@ -154,6 +154,7 @@ void Sdca::RunUpdateOnMiniBatch(const std::vector<Eigen::VectorXd> &X,
 #else
       Sdca::RunUpdateOnMiniBatch_gpu(X, y, indices);
 #endif
+  }
 }
 
 void Sdca::RunUpdateOnMiniBatch_cpu(const std::vector<Eigen::VectorXd> &X,

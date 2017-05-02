@@ -54,7 +54,7 @@ TEST(NormSquared, Gpu) {
 
 TEST(MatrixVectorProd, Gpu) {
   auto eigen_vec = Eigen::VectorXd(3);
-  eigen_vec = << 1, 1, 1;
+  eigen_vec << 1, 1, 1;
 
   auto eigen_mat = Eigen::MatrixXd(3, 3);
   eigen_mat << 1, 1, 1,
