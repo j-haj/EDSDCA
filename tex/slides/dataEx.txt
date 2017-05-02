@@ -2,7 +2,7 @@ class Data {
   enum DataLocation { Gpu, Cpu };
 
   // Pointer to GPU memory
-  double *dx_
+  std::unique_ptr<double> dx_
   // Local reference (RAM)
   Eigen::VectorXd x_;
   // DataLocation::Gpu or DataLocation::Cpu

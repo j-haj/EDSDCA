@@ -1,3 +1,7 @@
+class MemSync {
+  // class code
+  static double *dx_;
+};
 void MemSync::PushToGpu(const vector &x) {
   int n_bytes = sizeof(double) * x.size();
 
