@@ -55,14 +55,17 @@ TEST(NormSquared, Gpu) {
 TEST(MatrixVectorProd, Gpu) {
   auto eigen_vec = Eigen::VectorXd(3);
   eigen_vec << 1, 1, 1;
-
+  std::cout << eigen_vec << std::endl;
   auto eigen_mat = Eigen::MatrixXd(3, 3);
   eigen_mat << 1, 1, 1,
                1, 1, 1,
                1, 1, 1;
+  std::cout << eigen_mat << std::endl;
+  auto expected_result = eigen_mat * eigen_vec;
+  std::cout << "Actual result:\n" << expected_result << std::endl;
 
   auto actual_result = MatrixVectorMultiply(eigen_mat, eigen_vec);
-  auto expected_result = eigen_mat * eigen_vec;
+  std::cout << "Result:\n" << actual_result << std::endl;
 
   for (int i = 0; i < 3; ++i) {
     EXPECT_DOUBLE_EQ(actual_result(i), expected_result(i));

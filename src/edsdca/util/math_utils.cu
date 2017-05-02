@@ -83,7 +83,8 @@ Eigen::VectorXd MatrixVectorMultiply(const Eigen::MatrixXd &X, const
       matrix_vector_prod, 0, 0);
   grid_size = int((X.size() + block_size - 1) / block_size);
   grid_size = std::max(grid_size, min_grid_size);
-
+    
+  std::cout << "Pre PushToGpu\n";
   double *d_X = edsdca::memory::MemSync::PushToGpuX(X);
   double *d_y = edsdca::memory::MemSync::PushToGpuY(y);
 

@@ -26,7 +26,8 @@ public:
   Sdca(double l, long interval=100)
       : lambda_(l), timer_(edsdca::tools::Timer()),
         loss_(edsdca::loss::HingeLoss()),
-            update_interval_(interval) {}
+            update_interval_(interval),
+            sdca_type_(SdcaModelType::Sequential) {}
 
   /**
    * Computes delta alpha for index i
