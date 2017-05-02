@@ -1,0 +1,7 @@
+void MemSync::PushToGpu(const vector &x) {
+  int n_bytes = sizeof(double) * x.size();
+
+  // Copy data to GPU
+  cudaMemcpy(MemSync::dx_, &x[0],
+             n_bytes, cudaMemcpyHostToDevice);
+}

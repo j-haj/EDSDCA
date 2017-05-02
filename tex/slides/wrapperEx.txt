@@ -1,0 +1,8 @@
+double VectorDotProduct(const vector &x,
+                        const vector &y) {
+#ifdef GPU
+  return VectorDotProduct_gpu(x, y);
+#else
+  return VectorDotProduct_cpu(x, y);
+#endif
+}
