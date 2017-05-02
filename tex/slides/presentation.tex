@@ -18,14 +18,16 @@
 %\documentclass{beamer}
 %\usepackage{enumitem}
 %\usepackage{booktabs}  
-\documentclass{beamer} %
+\documentclass{beamer} 
 \usetheme{metropolis}
+\usepackage{algorithmicx}
 \usepackage[latin1]{inputenc}
 \usefonttheme{professionalfonts}
 \usepackage{times}
 \usepackage{tikz}
 \usepackage{amsmath}
-\usepackage{verbatim}
+\usepackage{fancyvrb}
+\usepackage{listings}
 \usetikzlibrary{arrows,shapes}   
 \def \S {\mathbf{S}}
 \def \A {\mathcal{A}}
@@ -241,73 +243,193 @@
 		\titlepage % Print the title page as the first slide
 	\end{frame}
 	
-	\begin{frame}
-		\frametitle{Overview} % Table of contents slide, comment this block out to remove it
-		\tableofcontents % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
-	\end{frame}
+	%\begin{frame}
+	%	\frametitle{Overview} % Table of contents slide, comment this block out to remove it
+	%	\tableofcontents % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
+	%\end{frame}
 	
 	%----------------------------------------------------------------------------------------
 	%	PRESENTATION SLIDES
 	%----------------------------------------------------------------------------------------
 	
 	%------------------------------------------------
-\section{Problem Description and Related Work}
-\subsection{Problem of Interest}
-\begin{frame}{Problem of Interest}
+\section{Problem Overview}
+\begin{frame}{Problem Overview - The Primal Problem}
 	Many machine learning problems can be formulated as the Regularized Finite Sum Minimization (RFSM) problem.
+  \vspace{1em}
 	\begin{equation}
 		\label{RLM}
-		\min_{w\in\R^d}P(w), \text{where }P(w)=\frac{1}{n}\sum_{i=1}^{n}\phi(w^\top x_i,y_i)+\lambda g(w),
+		\min_{w\in\R^d}P(w)
 	\end{equation}
-	where $w\in\R^d$ denotes the weight vector, $(x_i,y_i),x_i\in\R^d,y_i\in\R$,
-	$i=1,\ldots,n$ are training data, $\lambda>0$ is a regularization parameter,
-	$\phi(z,y)$ is a convex function of $z$, and $g(w)$ is a convex function of $w$.
+  \vspace{1.5em}\\
+  where 
+  \begin{align*}
+    P(w) &= \frac{1}{n}\sum_{i=1}^{n}\phi(w^\top x_i,y_i)+\lambda g(w)\\
+    w, x_i & \in \R^d, \text{ for } i = 1, \dots, n\\
+    y_i & \in \R, \text{ for } i = 1, \dots, n\\
+    \phi(z,y) & \text{ is convex in $z$}\\
+    g(w) & \text{ is convex in $w$}\\
+  \end{align*}
+  
 \end{frame}
 
-\begin{frame}{Approaches to solve RFSM problem}
-	\begin{itemize}
-	\item \textbf{The difficulty:}\\ When the data size $n$ is very large, it is difficult to use full gradient method or even fit all data on one single machine.
-	\pause
-	
-	\item \textbf{The countermeasures:}\\
-	\begin{itemize}
-		\item Stochastic Optimization\\
-		\item Distributed Optimization
-	\end{itemize}
-	\end{itemize}
+\begin{frame}{Problem Overview - The Dual Problem}
+  We consider the case when $g(w)=\frac{1}{2}\|w\|_2^2$, then the dual problem is given by
+  \vspace{1em}
+  \begin{equation}
+    \max_{\alpha \in \R^n} D(\alpha)
+  \end{equation}
+  where 
+  \begin{align*}
+    D(\alpha) &= \frac{1}{n}\sum_{i=1}^n -\phi^*_i(-\alpha_i) -
+    \frac{\lambda}{2}\Big|\Big|\frac{1}{\lambda n}\sum_{i=1}^n\alpha_i x_i\Big|\Big|^2\\
+    x_i & \in \R^d, \text{ for } i = 1, \dots, n\\
+    \alpha & \in \R^n\\
+    \phi^*_i(u) &= \max_z (zu - \phi_i(z))
+  \end{align*}
 \end{frame}
 %
-\subsection{Related Work}
-\begin{frame}{Stochastic Optimization}
+%\subsection{Related Work}
+\begin{frame}{Related Work}
+  The two key papers influencing our work are:
 	\begin{itemize}
-	\item	Stochastic Gradient Descent (SGD) \cite{bottou2010large,nemirovski2009robust}
-	%\pause
-	\item Stochastic Variance Reduced Gradient (SVRG) \cite{johnson2013accelerating,xiao2014proximal}
-	%\pause
-	\item  \textcolor{red}{Stochastic Dual Coordinate Ascent (SDCA)} \cite{shalev2013stochastic,shalev2014accelerated}
-	%\pause
-	\item \ldots
+	  \item  Stochastic Dual Coordinate Ascent (SDCA) \cite{shalev2013stochastic}
+	  \item Distributed SDCA  \cite{yang2013trading,yang2013analysis}
 	\end{itemize}
 \end{frame}
 	%----------------------------------------------------------------------------------------
-\begin{frame}{Distributed Optimization}
-	\begin{itemize}
-		\item Distributed SGD \cite{lian2015asynchronous}
-		\item Distributed Stochastic ADMM \cite{boyd2011distributed}
-		\item \textcolor{red}{Distributed SDCA}  \cite{yang2013trading,yang2013analysis}
-	\end{itemize}
-\end{frame}
-\begin{frame}{Our Contribution}
-	\begin{itemize}
-	\item The current SDCA and distributed SDCA are implemented by CPU
-	\item Our contribution is to implement \textcolor{red}{a practically more efficient GPU-based implementation}, in both sequential setting and distributed setting.
-	\end{itemize}
-\end{frame}
-\section{Practical GPU-version of SDCA}
-\subsection{GPU-version of vanilla SDCA}
-\begin{frame}{GPU-version vanilla SDCA}
 
+\begin{frame}{What is SDCA?}
+  \begin{itemize}
+    \item \textbf{SDCA} - randomly pick a coordinate axis of $\mathbf{\alpha}
+      \in \R^n$, find update that best improves
+      the objective\vspace{1em}
+    \item \textbf{Distributed SDCA} - randomly pick $k$ coordinate axes of
+      $\mathbf{\alpha} \in \R^n$, simultaneously
+      find updates that best improve the objective (independently)
+  \end{itemize}
 \end{frame}
+
+\begin{frame}[standout]
+  What if we ran SDCA on the GPU?
+\end{frame}
+
+\begin{frame}{Parallelizing SDCA}
+  Two approaches:
+	\begin{itemize}
+    \item Naive approach: simply parallelize all tensor operations (e.g., dot
+      product, matrix-vector multiplication, etc.) \pause
+  \item Better: mimic the distributed apporach by \cite{yang2013trading} on a GPU
+	\end{itemize}
+\end{frame}
+\section{Implementation}
+\begin{frame}{Main Points}
+  The key area of concern:
+  \begin{itemize}
+    \item Memory
+      \begin{itemize}
+        \item Allocation \pause
+        \item Communication (via PCIE bus rather than network) \pause
+        \item How can we cognitive load of writing this code?
+      \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Dealing with Memory Allocation}
+  Naive approach:
+  \VerbatimInput[fontsize=\small]{allocExample.txt}
+  On a small dataset(200 points in $\mathbb{R}^3$) we hit over 200k allocations,
+  which comprised nearly \textbf{95\%} of the GPU compute time ($\approx 13$
+    seconds).
+\end{frame}
+
+\begin{frame}[standout]
+  Can we do better?\\ \pause
+  Yes!
+\end{frame}
+
+
+\begin{frame}{Dealing with Memory Allocation}
+  Better approach:
+  \VerbatimInput[fontsize=\small]{allocImproved.txt}
+  The use of static class pointers reduced the 200k allocations down to only
+  \textbf{3 memory allocations}, which comprised only \textbf{0.03\%} compute
+    time ($\approx 180 \mu s$).
+\end{frame}
+
+\begin{frame}[standout]
+  What about the cost of communication?
+\end{frame}
+
+\begin{frame}{Communication Costs}
+  Copying data to and from the GPU is the next most expensive operation.
+  \begin{itemize}
+    \item About 50\% of the compute time, or 768 ms (using the same toy dataset,
+      after we have fixed the memory allocation issue) \pause
+    \item Mostly unnecessary!
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Communication Costs}
+  Consider the following algorithm using the GPU:
+  \begin{algorithmic}[1]
+    \State $\Delta \omega_i \gets f(\mathbf{x}, \omega)$
+    \State $\omega_i \gets \omega_i + \Delta \omega_i$
+  \end{algorithmic}
+  
+  To handle this efficiently we should:
+  \begin{itemize}
+      \pause
+    \item Reuse $\omega$ in step 2 since we already moved it to the GPU for step
+      1 \pause
+    \item Perform step 2 on the GPU since the data is already there. No need to
+      pull it off and then move it back to the GPU
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Communication Costs}
+  The sad reality is this is quite complicated.
+
+  \begin{itemize}
+    \item Lots of book-keeping
+    \item Are there edge cases?
+    \item Need to watch out for memory leaks. Remember, \textbf{no} GC!
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[standout]
+  How can we handle this complexity?
+\end{frame}
+
+\begin{frame}{Wrappers}
+  We use wrappers (also known as decorators) to add additional functionality to
+  our code. For example,
+  \VerbatimInput[fontsize=\small]{wrapperEx.txt}
+\end{frame}
+
+\begin{frame}{Wrappers}
+  To handle the flow of data from GPU to CPU, as well as book-keeping, we can
+  use something like this:
+  \VerbatimInput[fontsize=\small]{dataEx.txt}
+\end{frame}
+
+\begin{frame}[standout]
+  What about results?
+\end{frame}
+
+\begin{frame}
+  We are still finalizing results. There is a lot of non-trivial structural code
+  behind this.
+  \begin{itemize}
+    \item Loading data \pause
+    \item CUDA can be challenging \pause
+    \item Algorithm \pause
+    \item Algorithm performance tracking \pause
+    \item Expect distributed SDCA to be the fastest, followed by CUDA
+      accelerated SDCA, followed by SDCA
+  \end{itemize}
+\end{frame}
+
 \bibliographystyle{apalike}	
 \bibliography{courseProject}
 
