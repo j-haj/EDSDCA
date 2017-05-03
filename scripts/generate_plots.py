@@ -14,7 +14,8 @@ def load_csv_loss_data(filename):
             y.append(data[1])
     return x, y
 
-def generate_loss_plots(filename1, data_name1, filename2, data_name2, title, savename):
+def generate_loss_plots(filename1, data_name1, filename2, data_name2, title,
+        savename, xmax=None):
     """
     creates a plot of the loss data stored in ``filename``
     """
@@ -23,6 +24,9 @@ def generate_loss_plots(filename1, data_name1, filename2, data_name2, title, sav
 
     plt.plot(t1, loss1, linewidth=0.25, label=data_name1)
     plt.plot(t2, loss2, linewidth=0.25, label=data_name2)
+
+    if xmax is not None:
+        plt.xlim([0, xmax])
     plt.xlabel("runtime (s)")
     plt.ylabel("loss")
     plt.title(title)
@@ -62,12 +66,14 @@ if __name__ == "__main__":
             help="Label for data in if2")
     parser.add_argument("--title", dest="title", type=str,
             help="Title for plot")
+    parser.add_argument("--xmax", dest="xmax", type=int,
+            help="Maximum value for x axis")
 
     args = parser.parse_args()
     if args.infile != None:
         generate_loss_plot(args.infile, args.outfile)
     else:
         generate_loss_plots(args.infile1, args.label1, args.infile2,
-                args.label2, args.title, args.outfile)
+                args.label2, args.title, args.outfile, args.xmax)
 
 
