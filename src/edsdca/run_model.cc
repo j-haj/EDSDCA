@@ -19,9 +19,9 @@ int main(int argc, char* argv[]) {
   DLOG("Running models...");
 
   DLOG("Attempting to instantiate an instance of CsvLoader for australian_scale data...");
-  auto loader = edsdca::tools::CsvLoader("../test/data/dim10000_n1000_s100_test.csv");
+  auto loader = edsdca::tools::CsvLoader("../test/data/dim50k_n1000_s100_test.csv");
   DLOG("CsvLoader instantiated! Attempting to load data....");
-  loader.LoadData(10000, 0);
+  loader.LoadData(50000, 0);
   DLOG("Data loaded! Attempting to fit model for lamba=10");
   edsdca::models::Sdca sdca = edsdca::models::Sdca(10, 1);
   sdca.set_max_epochs(20);

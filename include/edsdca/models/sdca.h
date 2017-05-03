@@ -140,7 +140,7 @@ private:
   long update_interval_;
 
   /// @brief Interval at which training loss is computed
-  long loss_interval_ = 100;
+  long loss_interval_ = 200;
 
   /// @brief Number of data points
   long n_;

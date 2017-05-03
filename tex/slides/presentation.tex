@@ -28,6 +28,8 @@
 \usepackage{amsmath}
 \usepackage{fancyvrb}
 \usepackage{listings}
+\usepackage{graphicx}
+\graphicspath{{./img/}}
 %\usepackage{algorithm,algorithmic}
 \usetikzlibrary{arrows,shapes}   
 %\renewcommand{\algorithmicrequire}{\textbf{Input:}}
@@ -353,7 +355,7 @@
       \begin{itemize}
         \item Allocation \pause
         \item Communication (via PCIE bus rather than network) \pause
-        \item How can we cognitive load of writing this code?
+        \item How can we reduce cognitive load of writing this code?
       \end{itemize}
   \end{itemize}
 \end{frame}
@@ -440,18 +442,61 @@
   What about results?
 \end{frame}
 
-\begin{frame}
+\begin{frame}{Distributed SDCA}
+  \begin{itemize}
+    \item We have a closed-form solution for $\Delta \alpha$ \pause
+    \item The computationally intensive task is $\omega^\top x_i$ \pause
+    \item This means for $k$ coordinate axes, we want to compute $X\omega$,
+      where $X = (x_{i_1}^\top x_{i_2}^\top \cdots x_{i_k}^\top)^\top$. \pause
+  \end{itemize}
+  We can reformulate the distributed version as matrix-vector multiplication.
+  This is just an extension of the naive approach!
+\end{frame}
+
+\begin{frame}{Distributed SDCA - The Challenge}
+  So what is the challenge?\\ \pause
+  Our memory management class is poorly written
+  \begin{itemize}
+    \item $X$ is a matrix now, not a vector\pause
+    \item However, we have only allocated memory for vectors
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Results - Challenges}
   We are still finalizing results. There is a lot of non-trivial structural code
   behind this.
   \begin{itemize}
     \item Loading data \pause
-    \item CUDA can be challenging \pause
+    \item CUDA can be challenging  - communication is slowing us down\pause
     \item Algorithm \pause
     \item Algorithm performance tracking \pause
     \item Expect distributed SDCA to be the fastest, followed by CUDA
       accelerated SDCA, followed by SDCA
   \end{itemize}
 \end{frame}
+
+\begin{frame}{Results - Australian Dataset ($\R^{14}$, 690 points)}
+  Naive approach\\
+  \begin{figure}
+    \includegraphics[scale=0.5]{cpu_vs_gpu}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Results - Generated Dataset ($\R^{10k}$, 1000 points)}
+  Naive approach\\
+  \begin{figure}
+    \includegraphics[scale=0.5]{dim10k_CPU_GPU}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}{Results - Generated Dataset ($\R^{50k}$, 1000 points)}
+  Naive approach\\
+  \begin{figure}
+    \includegraphics[scale=0.5]{50k_lim}
+\end{figure}
+\end{frame}
+
 
 \bibliographystyle{apalike}	
 \bibliography{courseProject}
