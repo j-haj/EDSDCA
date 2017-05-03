@@ -28,7 +28,10 @@
 \usepackage{amsmath}
 \usepackage{fancyvrb}
 \usepackage{listings}
+%\usepackage{algorithm,algorithmic}
 \usetikzlibrary{arrows,shapes}   
+%\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+%\renewcommand{\algorithmicensure}{\textbf{Output:}}
 \def \S {\mathbf{S}}
 \def \A {\mathcal{A}}
 \def \X {\mathcal{X}}
@@ -247,13 +250,16 @@
 	%	\frametitle{Overview} % Table of contents slide, comment this block out to remove it
 	%	\tableofcontents % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
 	%\end{frame}
-	
+	\begin{frame}{Outline}
+		\tableofcontents
+	\end{frame}
 	%----------------------------------------------------------------------------------------
 	%	PRESENTATION SLIDES
 	%----------------------------------------------------------------------------------------
 	
 	%------------------------------------------------
 \section{Problem Overview}
+
 \begin{frame}{Problem Overview - The Primal Problem}
 	Many machine learning problems can be formulated as the Regularized Finite Sum Minimization (RFSM) problem.
   \vspace{1em}
@@ -308,6 +314,23 @@
       $\mathbf{\alpha} \in \R^n$, simultaneously
       find updates that best improve the objective (independently)
   \end{itemize}
+\end{frame}
+\begin{frame}{SDCA Algorithm}
+	SDCA procedure:
+	\begin{itemize}
+		\item Let $w^{(0)}=w(\alpha^{(0)})$
+		\item \textbf{Iterate}: for $t=1,2,\ldots,T$
+		\begin{itemize}
+			\item Randomly pick $i$
+			\item \textcolor{red}{Find $\triangle\alpha_i$ to maximize $-\phi_i^*(-(\alpha^{(t-1)}+\triangle\alpha_i))-\frac{\lambda n}{2}\|w^{(t-1)}+(\lambda n)^{-1}\triangle \alpha_i x_i\|^2$}
+			\item \textcolor{red}{$\alpha^{(t)}\leftarrow\alpha^{(t-1)}+\triangle\alpha_ie_i$}
+			\item \textcolor{red}{$w^{(t)}\leftarrow w^{(t-1)}+(\lambda n)^{-1}\triangle\alpha_i x_i$}
+		\end{itemize}
+	\item Output (Random option):\\
+			Let $\bar{\alpha}=\alpha^{(t)}$ and $\bar{w}=w^{(t)}$ for some random $t\in T_0+1,\ldots,T$\\
+	\textbf{Return} $\bar{w}$
+	\end{itemize}
+	\textbf{Remark:} The red steps spend the largest proportion of computing resources. 
 \end{frame}
 
 \begin{frame}[standout]
