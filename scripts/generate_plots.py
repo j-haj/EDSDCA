@@ -14,16 +14,32 @@ def load_csv_loss_data(filename):
             y.append(data[1])
     return x, y
 
+def generate_loss_plots(filename1, data_name1, filename2, data_name2, title, savename):
+    """
+    creates a plot of the loss data stored in ``filename``
+    """
+    t1, loss1 = load_csv_loss_data(filename1)
+    t2, loss2 = load_csv_loss_data(filename2)
+
+    plt.plot(t1, loss1, linewidth=0.25, label=data_name1)
+    plt.plot(t2, loss2, linewidth=0.25, label=data_name2)
+    plt.xlabel("runtime (s)")
+    plt.ylabel("loss")
+    plt.title(title)
+    plt.legend()
+    plt.savefig(savename, dpi=600)
+
+
 
 def generate_loss_plot(filename, savename):
     """
-    Creates a plot of the loss data stored in ``filename``
+    creates a plot of the loss data stored in ``filename``
     """
     t, loss = load_csv_loss_data(filename)
     plt.plot(t, loss, linewidth=0.25)
-    plt.xlabel("Runtime (s)")
-    plt.ylabel("Loss")
-    plt.title("Cumulative Training Loss vs Runtime")
+    plt.xlabel("runtime (s)")
+    plt.ylabel("loss")
+    plt.title("cumulative training loss vs runtime")
     plt.savefig(savename, dpi=1000)
 
 def main():
@@ -35,5 +51,23 @@ if __name__ == "__main__":
             help="Location of loss data file")
     parser.add_argument("--of", dest="outfile", type=str,
             help="Location of the generated graph image")
+
+    parser.add_argument("--if1", dest="infile1", type=str,
+            help="Location of loss data for file 1")
+    parser.add_argument("--l1", dest="label1", type=str,
+            help="Label for data in if1")
+    parser.add_argument("--if2", dest="infile2", type=str,
+            help="Location of loss data for file 2")
+    parser.add_argument("--l2", dest="label2", type=str,
+            help="Label for data in if2")
+    parser.add_argument("--title", dest="title", type=str,
+            help="Title for plot")
+
     args = parser.parse_args()
-    generate_loss_plot(args.infile, args.outfile)
+    if args.infile != None:
+        generate_loss_plot(args.infile, args.outfile)
+    else:
+        generate_loss_plots(args.infile1, args.label1, args.infile2,
+                args.label2, args.title, args.outfile)
+
+
