@@ -13,10 +13,16 @@ void MemSync::SetMemoryAllocationSize(long n) {
   MemSync::d_ = n;
 }
 
+void MemSync::SetMatrixMemoryAllocationSize(long n) {
+  MemSync::matrix_size_ = n;
+}
+
 long MemSync::d_ = 0;
+long MemSync::matrix_size_ = 0;
 double* MemSync::dx_ = nullptr;
 double* MemSync::dy_ = nullptr;
 double* MemSync::res_ = nullptr;
+double* MemSync::dX_ = nullptr;
 bool MemSync::memory_is_allocated_ = false;
 bool MemSync::is_heap_allocated_ = false;
 #endif // GPU

@@ -71,7 +71,7 @@ public:
    *
    * @param update_type The update method (default is average)
    */
-  void ComputeWBar(SdcaUpdateType update_type = SdcaUpdateType::Average);
+  void ComputeWBar();
 
   /**
    * Computes $omega$ given $alpha$. This is called at the beginning of each
@@ -134,6 +134,7 @@ public:
 
   void set_batch_size(long n) { batch_size_ = n; }
 
+  void set_model_type(SdcaModelType type) { sdca_type_ = type; }
 private:
   
   /// @brief Interval at which alpha_bar and w_bar are upated
@@ -148,6 +149,9 @@ private:
   /// @brief Dimension of the data
   long d_;
 
+  /// @brief Scale factor for distributed algorithm
+  long scale_;
+  
   /// @brief Handle for timer
   edsdca::tools::Timer timer_;
 
@@ -175,6 +179,9 @@ private:
   /// @brief Accumulates the @p w_ updates
   std::vector<Eigen::VectorXd> accumulated_w_;
 
+  /// @brief Accumulates v in distributed mode
+  std::vector<Eigen::VectorXd> accumulated_v_;
+  
   /// @brief Regularization term
   double lambda_;
 

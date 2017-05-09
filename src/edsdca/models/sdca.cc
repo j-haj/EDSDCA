@@ -21,13 +21,23 @@ void Sdca::ComputeAlphaBar(SdcaUpdateType update_type) {
   }
 }
 
-void Sdca::ComputeWBar(SdcaUpdateType update_type) {
-  switch (update_type) {
-  case SdcaUpdateType::Average:
+void Sdca::ComputeWBar() {
+  switch (sdca_type_) {
+  case SdcaModelType::Sequential:
+    {
     Eigen::VectorXd reduced_accumulated_w = VectorReduce(accumulated_w_);
     reduced_accumulated_w *= 1.0 / accumulated_w_.size();
     accumulated_w_.clear();
     w_bar_ = reduced_accumulated_w;
+    break;
+    }
+  case SdcaModelType::Distributed:
+    {
+    Eigen::VectorXd reduced_accumulated_v = VectorReduce(accumulated_v_);
+    reduced_accumulated_v *= 1.0 / (lambda_ * n_);
+    w_bar_ = reduced_accumulated_v;
+    break;
+    }
   }
 }
 
@@ -40,7 +50,7 @@ void Sdca::Fit(const Eigen::MatrixXd &X, const Eigen::VectorXd &y) {
   // Set model proberties
   n_ = X.rows();
   d_ = X.cols();
-
+  
   // Initialize w_ and a_
   InitializeAlpha();
   InitializeWeights();

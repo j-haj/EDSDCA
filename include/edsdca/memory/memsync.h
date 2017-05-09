@@ -27,6 +27,11 @@ class MemSync {
   static double* GetDy();
 
   /**
+   *
+   */
+  static double *PushToGpuMatrix(const std::vector<Eigen::VectorXd> &X);
+
+  /**
    * Moves the @p Eigen::VectorXd from RAM to GPU and returns a pointer to the
    * memory in GPU
    *
@@ -59,6 +64,16 @@ class MemSync {
   static Eigen::VectorXd PullFromGpu(double *d_x, long size);
 
   /**
+   * Copes the data at @p dX_ from GPU to RAM
+   */
+  static Eigen::MatrixXd PullMatrixFromGpu();
+
+  /**
+   * Copies the data from @p res_ from GPU to RAM
+   */
+  static Eigen::VectorXd PullResFromGpu();
+
+  /**
    * Pulls a single value from memory on the GPU
    *
    * @param d_x pointer to the value on the GPU
@@ -86,6 +101,11 @@ class MemSync {
    * Static to pointer to dx - this is used to prevent excessive allocations
    */
   static double* dx_;
+
+  /**
+   * Static pointer to DX - this is a reference to a matrix on the GPU
+   */
+  static double* dX_;
 
   /**
    * Static pointer to dy - this is used to prevent excessive allocations
@@ -116,12 +136,24 @@ class MemSync {
   static long d_;
 
   /**
+   * Size of the allocated memory for dX_, a matrix.
+   */
+  static long matrix_size_;
+
+  /**
    * This is is called to set the shared memroy allocation size. This is
    * typically the size of the feature vectors.
    *
    * @param n the size (e.g. count) of the data (NOT size in bytes)
    */
   static void SetMemoryAllocationSize(long n);
+
+  /**
+   * This is called to set the shared memory allocation size of the matrix dX_
+   *
+   * @param n the size of the matrix (e.g., number of elements)
+   */
+  static void SetMatrixMemoryAllocationSize(long n);
 
   /**
    * Allocates memory if memory has not yet been allocated or needs to be

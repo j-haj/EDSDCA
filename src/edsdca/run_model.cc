@@ -19,11 +19,15 @@ int main(int argc, char* argv[]) {
   DLOG("Running models...");
 
   DLOG("Attempting to instantiate an instance of CsvLoader for australian_scale data...");
-  auto loader = edsdca::tools::CsvLoader("../test/data/dim50k_n1000_s100_test.csv");
+  auto loader = edsdca::tools::CsvLoader("../data/australian_scale.csv");
   DLOG("CsvLoader instantiated! Attempting to load data....");
-  loader.LoadData(50000, 0);
+  loader.LoadData(14, 0);
   DLOG("Data loaded! Attempting to fit model for lamba=10");
+
+  // Set model type to either edsdca::models::SdcaModelType::Sequential
+  // or to edsdca::models;;SdcaModelType::Distributed
   edsdca::models::Sdca sdca = edsdca::models::Sdca(10, 1);
+  sdca.set_model_type(edsdca::models::SdcaModelType::Distributed);
   sdca.set_max_epochs(20);
   sdca.Fit(loader.features(), loader.labels());
   

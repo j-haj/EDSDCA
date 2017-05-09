@@ -76,27 +76,25 @@ Eigen::VectorXd VectorReduce_gpu(const std::vector<Eigen::VectorXd> &v) {
   return accumulator;
 }
 
-Eigen::VectorXd MatrixVectorMultiply(const Eigen::MatrixXd &X, const
+Eigen::VectorXd MatrixVectorMultiply(const std::vector<Eigen::VectorXd> &X, const
     Eigen::VectorXd &y) {
   int block_size, grid_size, min_grid_size;
   cudaOccupancyMaxPotentialBlockSize(&min_grid_size, &block_size,
       matrix_vector_prod, 0, 0);
-  grid_size = int((X.size() + block_size - 1) / block_size);
+  grid_size = int((X.size() * X.front().size() + block_size - 1) / block_size);
   grid_size = std::max(grid_size, min_grid_size);
     
-  std::cout << "Pre PushToGpu\n";
-  double *d_X = edsdca::memory::MemSync::PushToGpuX(X);
+  double *d_X = edsdca::memory::MemSync::PushToGpuMatrix(X);
   double *d_y = edsdca::memory::MemSync::PushToGpuY(y);
 
   // Call the kernel
-  matrix_vector_prod<<<grid_size, block_size>>>(edsdca::memory::MemSync::dx_,
+  matrix_vector_prod<<<grid_size, block_size>>>(edsdca::memory::MemSync::dX_,
       edsdca::memory::MemSync::dy_,
-      edsdca::memory::MemSync::res_, X.rows(), X.cols());
-
+      edsdca::memory::MemSync::res_, X.size(), X.front().size());
+  
   // Copy back from GPU
   Eigen::VectorXd result =
-    edsdca::memory::MemSync::PullFromGpu(edsdca::memory::MemSync::res_,
-        X.rows());
+    edsdca::memory::MemSync::PullResFromGpu();
   return result;
 }
 

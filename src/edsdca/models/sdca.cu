@@ -1,20 +1,8 @@
 #include "edsdca/models/sdca.h"
 
-#ifdef GPU
 #include "edsdca/util/math utils.h"
 #include "edsdca/memory/memsync.h"
 #include "edsdca/util/cuda_util.h"
-
-__global__
-void distributed_sdca(double* X, double* y, double* a, double* w, long* indices,
-    long m, long n) {
-  // IMPLEMENT
-}
-
-__device__
-double compute_delta_alpha() {
-
-}
 
 namespace edsdca {
 namespace models {
@@ -22,9 +10,24 @@ namespace models {
 void Sdca::RunUpdateOnMiniBatch_gpu(const std::vector<Eigen::VectorXd> &X,
                                     const std::vector<double> &y,
                                     const std::vector<long> &indices) {
-  // Perform matrix-vector multiplication
 
-  // Compute delta-alpha
+  // Our "batch size" is only one data point over ``X.rows()`` number of workers, thus
+  // ``scl`` is set to 1/X.rows()
+  double scl = 1.0 / X.rows();
+  
+  // Perform matrix-vector multiplication
+  Eigen::VectorXd wx = MatrixVectorMultiply(X, w_);
+
+  // Computes delta_alphas
+  Eigen::VectorXd d_alphas(X.rows());
+  for (long i = 0; i < indices.size(); ++i) {
+    double numerator = 1 - wx(i) * y[i];
+    double denominator = scl * X[i].normSquared() / (lambda_ * n_);
+    double d_alpha = y[i] * std::max(0.0,std::min(1.0,
+	          numerator / denominator + a_(indices[i]) * y[i])) - a_(indices[i]);
+    ApplyAlphaUpdate(d_alpha, indices[i]);
+    accumulated_v_.push_back(d_alpha * X[i]);
+  }
 
   // Possibly call ComputeW?
 }

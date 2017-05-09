@@ -4,6 +4,32 @@
 
 namespace edsdca {
 namespace memory {
+    
+  /**
+   * Puts data from matrix @p X onto GPU memory
+   *
+   * @param X data to be transfered to GPU memory
+   */
+  double *MemSync::PushToGpuMatrix(const std::vector<Eigen::VectorXd> &X) {
+    int rows = X.size();
+    int cols = X.front().size();
+    double *cx = (double*)malloc(sizeof(double) * rows * cols);
+    for (int i = 0; i < rows; ++i) {
+      for (int j = 0; j < cols; ++j) {
+        cx[i * rows + j] = X[i](j);
+      }
+    }
+
+    if (!memory_is_allocated_ || rows * cols != MemSync::matrix_size_) {
+      SetMatrixMemoryAllocationSize(rows * cols);
+      AllocateGlobalSharedMem();
+    }
+    cudaMemcpy(MemSync::dX_, cx, sizeof(double) * rows * cols,
+            cudaMemcpyHostToDevice);
+    free(cx);
+    return dX_;
+  }
+
 
   /**
    * Puts data stored by @p v onto GPU memory
@@ -75,6 +101,33 @@ namespace memory {
     return eig_v;
   }
 
+  Eigen::MatrixXd MemSync::PullMatrixFromGpu() {
+    int cols = d_;
+    int rows = int(matrix_size_ / d_);
+    double *tmpX = (double*)malloc(sizeof(double) * matrix_size_);
+    cudaMemcpy(tmpX, dX_, sizeof(double) * matrix_size_,
+            cudaMemcpyDeviceToHost);
+    Eigen::MatrixXd result(rows, cols);
+    for (int i = 0; i < rows; ++i) {
+      for (int j = 0; j < cols; ++j) {
+        result(i, j) = tmpX[i * rows + i];
+      }
+    }
+    free(tmpX);
+    return result;
+  }
+
+  Eigen::VectorXd MemSync::PullResFromGpu() {
+    double *tmpR = (double*)malloc(sizeof(double) * d_);
+    cudaMemcpy(tmpR, res_, sizeof(double) * d_, cudaMemcpyDeviceToHost);
+    Eigen::VectorXd result(d_);
+    for (long i = 0; i < d_; ++i) {
+      result(i) = tmpR[i];
+    }
+    free(tmpR);
+    return result;
+  }
+
   /**
    * Allocates memory on the GPU
    *
@@ -102,10 +155,12 @@ namespace memory {
         cudaFree(dx_);
         cudaFree(dy_);
         cudaFree(res_);
+        cudaFree(dX_);
     }
     cudaMalloc((double**)&dx_, d_ * sizeof(double));
     cudaMalloc((double**)&dy_, d_ * sizeof(double));
     cudaMalloc((double**)&res_, d_ * sizeof(double));
+    cudaMalloc((double**)&dX_, matrix_size_ * sizeof(double));
     memory_is_allocated_ = true;
   }
 } // memory
