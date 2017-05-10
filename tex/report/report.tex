@@ -364,6 +364,8 @@ distributed SDCA solution.
 \end{algorithm}
 The traditional SDCA algorithm \cite{shalev2013stochastic} is described in Algorithm \ref{sequentialSDCA}, where $g(w)=\frac{1}{2}\|w\|_2^2$.
 In that procedure, the most expensive work is in line 4--6. We employ the GPU acceleration technique to make those lines run in a faster manner.
+\subsection{Naive GPU Implementation}
+\subsection{Refined GPU Implementation}
 \section{GPU Acceleration for Distributed SDCA}
 The distributed SDCA \cite{yang2013trading} is described in Algorithm \ref{distributedSDCA}. We restrict our implementation over the case when $g(w)=\frac{1}{2}\|w\|_2^2$. The procedure \textbf{SDCA-mR} is the procedure on $k$-th machine (process).
 \begin{algorithm}[H]
