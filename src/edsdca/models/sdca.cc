@@ -54,7 +54,8 @@ void Sdca::Fit(const Eigen::MatrixXd &X, const Eigen::VectorXd &y) {
   // Initialize w_ and a_
   InitializeAlpha();
   InitializeWeights();
-
+  DLOG("a_ and w_ initialized");
+  
   // Calculate number of mini-batches
   const long num_batches = long(n_ / batch_size_);
   // training_hist_ tracks the training error and training time (s)
@@ -64,6 +65,7 @@ void Sdca::Fit(const Eigen::MatrixXd &X, const Eigen::VectorXd &y) {
 
   // Computes $\omega$ based on current $\alpha$
   ComputeW(X);
+  DLOG("w_ properly initialized");
   for (long cur_epoch = 0; cur_epoch < max_epochs_; ++cur_epoch) {
 
     // Currently not used
@@ -74,12 +76,17 @@ void Sdca::Fit(const Eigen::MatrixXd &X, const Eigen::VectorXd &y) {
       const std::vector<long> mb_indices =
           GenerateMiniBatchIndexVector(batch_size_, 0, n_);
       std::vector<Eigen::VectorXd> mb_X(batch_size_);
+      DLOG("Mini-batch index vector created");
+      
       ComputeW(X);
+      DLOG("Computed w_");
       std::vector<double> mb_y(batch_size_);
       for (long i = 0; i < batch_size_; ++i) {
         mb_X[i] = X.row(mb_indices[i]);
         mb_y[i] = y(mb_indices[i]);
       }
+
+      DLOG("Mini-batch created");
 
       // Start timer
       timer_.Start();
@@ -162,8 +169,10 @@ void Sdca::RunUpdateOnMiniBatch(const std::vector<Eigen::VectorXd> &X,
       DLOG("WARNING! Attempting to run GPU model without a GPU! Running CPU model instead.");
       Sdca::RunUpdateOnMiniBatch_cpu(X, y, indices);
 #else
+      DLOG("Running GPU mini-batch update");
       Sdca::RunUpdateOnMiniBatch_gpu(X, y, indices);
 #endif
+      break;
   }
 }
 
@@ -182,12 +191,27 @@ void Sdca::RunUpdateOnMiniBatch_cpu(const std::vector<Eigen::VectorXd> &X,
   }
 }
 
-// TODO: complete the gpu mini-batch update
 void Sdca::RunUpdateOnMiniBatch_gpu(const std::vector<Eigen::VectorXd> &X,
-                                    const std::vector<double> &y,
-                                    const std::vector<long> &indices) {
-  // std::cout << "NEED TO IMPLEMENT DISTRIBUTED VERSION -- FALLING BACK TO SEQUENTIAL WITH GPU ACCELERATION\n";
-  Sdca::RunUpdateOnMiniBatch_cpu(X, y, indices);
+				    const std::vector<double> &y,
+				    const std::vector<long> &indices) {
+  // Our 'batch size' is only one data poiunt over X.rows() number of workers
+  // thus ``scl`` is set to X.rows
+  double scl = X.size();
+
+  Eigen::VectorXd wx = MatrixVectorMultiply(X, w_);
+
+  DLOG("Computing delta_alphas");
+
+  for (long i = 0; i < indices.size(); ++i) {
+    double nmrtr = 1.0 - wx(i) * y[i];
+    auto tmpX = X[i];
+    double dnmntr = scl * tmpX.squaredNorm() / (lambda_ * n_);
+    double d_alpha = y[i] * std::max(0.0, std::min(1.0,
+						   nmrtr / dnmntr + a_(indices[i]) * y[i])) - a_(indices[i]);
+    DLOG("Applying alpha update");
+    ApplyAlphaUpdate(d_alpha, indices[i]);
+    accumulated_v_.push_back(d_alpha * X[i]);
+  }
 }
 
 std::vector<long> Sdca::GenerateMiniBatchIndexVector(const long size,

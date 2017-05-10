@@ -29,6 +29,7 @@ int main(int argc, char* argv[]) {
   edsdca::models::Sdca sdca = edsdca::models::Sdca(10, 1);
   sdca.set_model_type(edsdca::models::SdcaModelType::Distributed);
   sdca.set_max_epochs(20);
+  DLOG("Fitting the data\n");
   sdca.Fit(loader.features(), loader.labels());
   
   /*
