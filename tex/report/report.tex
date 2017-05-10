@@ -1,0 +1,515 @@
+\documentclass{article}
+
+% if you need to pass options to natbib, use, e.g.:
+% \PassOptionsToPackage{numbers, compress}{natbib}
+% before loading nips_2016
+%
+% to avoid loading the natbib package, add option nonatbib:
+% \usepackage[nonatbib]{nips_2016}
+
+%\usepackage{nips_2016}
+
+% to compile a camera-ready version, add the [final] option, e.g.:
+ \usepackage[final]{nips_2016}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{amsmath}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{times}
+% For figures
+\usepackage{graphicx} % more modern
+%\usepackage{epsfig} % less modern
+\usepackage{subfigure} 
+%\usepackage{subcaption}
+% For citations
+\usepackage{natbib}
+
+\usepackage{amsmath, amsthm, amssymb, multirow, paralist}
+\newtheorem{thm}{Theorem}
+\newtheorem{prop}{Proposition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{cor}{Corollary}
+\newtheorem{definition}{Definition}
+%\newtheorem{ass}[thm]{Assumption}
+\newtheorem{assumption}{Assumption}
+\newtheorem{obs}{Observation}
+
+\usepackage{enumitem}
+\usepackage{booktabs}     
+\def \S {\mathbf{S}}
+\def \A {\mathcal{A}}
+\def \X {\mathcal{X}}
+\def \Ab {\bar{\A}}
+\def \R {\mathbb{R}}
+\def \Kt {\widetilde{K}}
+\def \k {\mathbf{k}}
+\def \w {\mathbf{w}}
+\def \v {\mathbf{v}}
+\def \t {\mathbf{t}}
+\def \x {\mathbf{x}}
+\def \Se {\mathcal{S}}
+\def \E {\mathrm{E}}
+\def \Rh {\widehat{R}}
+\def \x {\mathbf{x}}
+\def \p {\mathbf{p}}
+\def \a {\mathbf{a}}
+\def \diag {\mbox{diag}}
+\def \b {\mathbf{b}}
+\def \e {\mathbf{e}}
+\def \ba {\boldsymbol{\alpha}}
+\def \c {\mathbf{c}}
+\def \tr {\mbox{tr}}
+\def \d {\mathbf{d}}
+\def \z {\mathbf{z}}
+\def \s {\mathbf{s}}
+\def \bh {\widehat{b}}
+\def \y {\mathbf{y}}
+\def \u {\mathbf{u}}
+%\def \L {\mathcal{L}}
+\def \H {\mathcal{H}}
+\def \g {\mathbf{g}}
+\def \F {\mathcal{F}}
+\def \I {\mathbb{I}}
+\def \P {\mathcal{P}}
+\def \Q {\mathcal{Q}}
+\def \xh {\widehat{\x}}
+\def \wh {\widehat{\w}}
+\def \ah {\widehat{\alpha}}
+\def \Rc {\mathcal R}
+
+\def \Bh {\widehat B}
+\def \Ah {\widehat A}
+\def \Uh {\widehat U}
+\def \Ut {\widetilde U}
+\def \B {\mathbf B}
+\def \C {\mathbf C}
+\def \U {\mathbf U}
+\def \Kh {\widehat K}
+\def \fh {\widehat f}
+\def \yh {\widehat y}
+\def \Xh {\widehat{X}}
+\def \Fh {\widehat{F}}
+
+
+\def \y {\mathbf{y}}
+\def \E {\mathrm{E}}
+\def \x {\mathbf{x}}
+\def \g {\mathbf{g}}
+\def \D {\mathcal{D}}
+\def \z {\mathbf{z}}
+\def \u {\mathbf{u}}
+\def \H {\mathcal{H}}
+\def \Pc {\mathcal{P}}
+\def \w {\mathbf{w}}
+\def \r {\mathbf{r}}
+\def \R {\mathbb{R}}
+\def \S {\mathcal{S}}
+\def \regret {\mbox{regret}}
+\def \Uh {\widehat{U}}
+\def \Q {\mathcal{Q}}
+\def \W {\mathcal{W}}
+\def \N {\mathcal{N}}
+\def \A {\mathcal{A}}
+\def \q {\mathbf{q}}
+\def \v {\mathbf{v}}
+\def \M {\mathcal{M}}
+\def \c {\mathbf{c}}
+\def \ph {\widehat{p}}
+\def \d {\mathbf{d}}
+\def \p {\mathbf{p}}
+\def \q {\mathbf{q}}
+\def \db {\bar{\d}}
+\def \dbb {\bar{d}}
+\def \I {\mathcal{I}}
+\def \xt {\widetilde{\x}}
+\def \f {\mathbf{f}}
+\def \a {\mathbf{a}}
+\def \b {\mathbf{b}}
+\def \ft {\widetilde{\f}}
+\def \bt {\widetilde{\b}}
+\def \h {\mathbf{h}}
+\def \B {\mathbf{B}}
+\def \bts {\widetilde{b}}
+\def \fts {\widetilde{f}}
+\def \Gh {\widehat{G}}
+\def \G {\mathcal {G}}
+\def \bh {\widehat{b}}
+\def \fh {\widehat{f}}
+\def \wh {\widehat{\w}}
+\def \vb {\bar{v}}
+\def \zt {\widetilde{\z}}
+\def \zts {\widetilde{z}}
+\def \s {\mathbf{s}}
+\def \gh {\widehat{\g}}
+\def \vh {\widehat{\v}}
+\def \Sh {\widehat{S}}
+\def \rhoh {\widehat{\rho}}
+\def \hh {\widehat{\h}}
+\def \C {\mathcal{C}}
+\def \V {\mathcal{L}}
+\def \t {\mathbf{t}}
+\def \xh {\widehat{\x}}
+\def \Ut {\widetilde{U}}
+\def \wt {\widetilde{\w}}
+\def \Th {\widehat{T}}
+\def \Ot {\tilde{\mathcal{O}}}
+\def \X {\mathcal{X}}
+\def \nb {\widehat{\nabla}}
+\def \K {\mathcal{K}}
+\def \P {\mathbb{P}}
+\def \T {\mathcal{T}}
+\def \F {\mathcal{F}}
+\def \ft{\widetilde{f}}
+\def \xt {\widetilde{x}}
+\def \Rt {\mathcal{R}}
+\def \Rb {\bar{\Rt}}
+\def \wb {\bar{\w}}
+\title{Efficient Distributed Stochastic Dual Coordinate Ascent}
+
+% The \author macro works with any number of authors. There are two
+% commands used to separate the names and addresses of multiple
+% authors: \And and \AND.
+%
+% Using \And between authors leaves it to LaTeX to determine where to
+% break the lines. Using \AND forces a line break at that point. So,
+% if LaTeX puts 3 of 4 authors names on the first line, and the last
+% on the second line, try using \AND instead of \And before the third
+% author name.
+
+\author{
+  Mingrui Liu, Jeff Hajewski \\
+  Department of Computer Science\\
+  University of Iowa\\
+  Iowa City, IA  52242 \\
+  \texttt{mingrui-liu@uiowa.edu, jeffery-hajewski@uiowa.edu} \\
+  %% examples of more authors
+%   \And
+%   123\\Department of Computer Science\\
+%   	University of Iowa\\
+%   	Iowa City, IA  52242 \\
+%   	\texttt{mingrui-liu@uiowa.edu, jeffery-hajewski@uiowa.edu} \\
+  %%Affiliation{Department of Computer Science} \\
+  %% Address \\
+  %% \texttt{email} \\
+  %% \AND
+  %% Coauthor \\
+  %% Affiliation \\
+  %% Address \\
+  %% \texttt{email} \\
+  %% \And
+  %% Coauthor \\
+  %% Affiliation \\
+  %% Address \\
+  %% \texttt{email} \\
+  %% \And
+  %% Coauthor \\
+  %% Affiliation \\
+  %% Address \\
+  %% \texttt{email} \\
+}
+
+\begin{document}
+% \nipsfinalcopy is no longer used
+
+\maketitle
+
+\begin{abstract}
+%  The abstract paragraph should be indented \nicefrac{1}{2}~inch
+%  (3~picas) on both the left- and right-hand margins. Use 10~point
+%  type, with a vertical spacing (leading) of 11~points.  The word
+%  \textbf{Abstract} must be centered, bold, and in point size 12. Two
+%  line spaces precede the abstract. The abstract must be limited to
+%  one paragraph. This latex file is modified from the NIPS  2016 template. 
+We propose the design and analysis of an efficient, distributed, 
+SDCA algorithm that uses GPUs to improve compute efficiency an asynchronous
+communication for model updates. This work builds off the previous work of T.
+Yang \cite{yang2013trading}, M. Li \cite{li2014scaling}, and A. Agarwal
+\cite{agarwal2011distributed} creating a more scalable and efficient SDCA
+algorithm. Specifically, we propose to use CUDA to improve the runtime
+efficiency of the gradient and parameter update calculations along with the use
+of MPI for network communication. The asynchronous nature of the communication
+will be handled using standard MPI facilities combined with threading in C++.
+\end{abstract}
+
+\section{Introduction}
+%What is the research problem that you are trying to tackle? Describe the background and motivation. 
+In recent years, the amount and size of available data has grown at an
+incredible rate. As the size of the data grows, the challenge of applying
+standard machine learning algorithms to the data has become increasingly
+complex. Two common countermeasures used to deal with this are employing
+stochastic optimization algorithms, and utilizing computational resources in a
+parallel or distributed manner~\cite{boyd2011distributed}. 
+
+In this paper, we consider a class of convex optimization problems with special
+structure, whose objective can be expressed as the sum of a finite sum of loss
+functions and a regularization function: \begin{equation}
+\label{RLM}
+	\min_{w\in\R^d}P(w), \text{where }P(w)=\frac{1}{n}\sum_{i=1}^{n}\phi(w^\top x_i,y_i)+\lambda g(w),
+\end{equation}
+where $w\in\R^d$ denotes the weight vector, $(x_i,y_i),x_i\in\R^d,y_i\in\R$,
+$i=1,\ldots,n$ are training data, $\lambda>0$ is a regularization parameter,
+$\phi(z,y)$ is a convex function of $z$, and $g(w)$ is a convex function of $w$.
+We refer to the problem in (\ref{RLM}) as Regularized Finite Sum Minimization
+(RFSM) problem. When $g(w)=0$, the problem reduces to the Finite Sum
+Minimization (FSM) problem.
+
+Both RFSM and FSM problems have been extensively studied in machine learning and
+optimization literature. When $n$ is large, numerous sequential stochastic
+optimization algorithms have been
+proposed~\cite{bottou2010large,nemirovski2009robust,roux2012stochastic,shalev2013stochastic,shalev2013accelerated,johnson2013accelerating,ouyang2013stochastic,
+suzuki2013dual,shalev2014accelerated,xiao2014proximal,defazio2014saga,zhang2015stochastic,lin2014accelerated,defazio2016simple,allen2016katyusha,lan2015optimal},
+and there also exist several parallel or distributed stochastic
+algorithms~\cite{boyd2011distributed,recht2011hogwild,zinkevich2010parallelized,yang2013trading,zhang2014asynchronous,zinkevich2010parallelized,agarwal2011distributed}.
+Specifically, S. Shalv-Shwartz and T. Zhang~\cite{shalev2013stochastic} proposed
+the Stochastic Dual Coordinate Ascent (SDCA) which provided new analysis with strong theoretical
+guarantees regarding the duality gap. T. Yang~\cite{yang2013trading,yang2013analysis} developed two 
+Distributed Stochastic Dual Coordinate Ascent (DisDCA) algorithms and analyzed
+the tradeoff between network communication between nodes and the difficulty of
+the performed computation (task). However, the problem of developing a more
+efficient distributed SDCA algorithm is still open. In this paper, we first
+provide a GPU implementation of the vanilla distributed
+SDCA~\cite{yang2013trading}, and then give an asynchronous distributed approach
+to SDCA to make full use of computational resources that scale well. 
+
+\section{Related Work}
+%\label{gen_inst}
+First we review the related work of sequential stochastic convex optimization
+for solving FSM and RFSM problems. The first numerical scheme of stochastic
+optimization stems from stochastic gradient descent
+(SGD)~\cite{bottou2010large,nemirovski2009robust}, which was designed to avoid
+the calculation of full gradient and gets faster convergence than full gradient
+descent (FGD). To improve the converge rate of SGD, many new algorithms were
+proposed by exploiting the finite sum structure, including the Stochastic
+average gradient (SAG)~\cite{roux2012stochastic}, stochastic dual coordinate
+ascent (SDCA)~\cite{shalev2013stochastic}, stochastic variance reduced gradient
+(SVRG)~\cite{johnson2013accelerating}, accelerated proximal coordinate gradient method
+(APCG)~\cite{lin2014accelerated},  SAGA~\cite{Defazio2014},
+Prox-SDCA~\cite{shalev2014accelerated}, Prox-SVRG~\cite{xiao2014proximal}, and
+stochastic primal-dual coordinate method (SPDC)~\cite{zhang2015stochastic}.
+Recently, the optimal first-order stochastic optimization method were
+developed~\cite{allen2016katyusha,lan2015optimal}. Although there exist rich
+literature studying sequential stochastic optimization with strong theoretical
+guarantee, less efforts have been devoted to considering them in a parallel or
+distributed manner. It constitutes a huge gap between theory and practice, since
+nowadays the size of data increases at a rapid speed, which makes one-core
+processor or one computer very difficult to handle it properly. 
+
+Then we review several related work of distributed optimization algorithms. In
+the existing literature, many distributed algorithms have been developed on top of
+stochastic gradient descent (SGD), alternating direction method of multipliers
+(ADMM), and stochastic dual coordinate ascent (SDCA). The two main approaches
+used in developing parallel algorithsm for SGD are based on shared memory and
+distributed memory architectures. Some work~\cite{lian2015asynchronous}
+looks at both settings, in addition to removing the syncrhonization requirement
+in the distributed memory setting.
+A number of approaches~\cite{zinkevich2010parallelized,recht2011hogwild,agarwal2011distributed}
+consider the asynchronous or lock-free setting, making use of parameter servers
+\cite{li2014scaling}, sparsity \cite{recht2011hogwild}, as well as unique
+data-flow architectures for parameter updates \cite{agarwal2011distributed}.
+ADMM stems from \cite{gabay1976dual}, which was developed to solve the equality
+constrained optimization problem. Recently, two independent works of stochastic
+ADMM were proposed~\cite{ouyang2013stochastic,suzuki2013dual}. A standard
+reference for distributed ADMM is~\cite{boyd2011distributed}. The advances of
+SDCA algorithms~\cite{shalev2013stochastic} and its
+variant~\cite{shalev2013accelerated,shalev2014accelerated,lin2014accelerated}
+enjoy faster convergence than SGD and ADMM, and the distributed SDCA
+(DisDCA)~\cite{yang2013trading,yang2013analysis} was developed along with novel
+analysis of tradeoff between computation and communication. \cite{yang2013trading} serves as the starting point for our work.
+
+We will build off of work from T. Yang's work on distributed SDCA~\cite{yang2013trading}, first add GPU capabilities and then incorporating M.
+Li's work on parameter servers~\cite{li2014scaling} to handle communication
+updates in the distributed setting.  In~\cite{yang2013trading}, SDCA is
+implemented in a distributed, synchronized fashion. While the achieved results
+were quite promising, they did not take advantage of hardware acceleration or
+asynchronous communication.  \cite{li2014scaling} builds an asynchronous
+communication framework using the concept of parameter servers, which are
+central data stores for model parameters, and distributed workers working in an
+asynchronous fashion (i.e., communication and parameter updates are non-blocking
+operations).  Additionally,
+\cite{agarwal2011distributed} explores the
+theoretical ramifications of delayed parameter updates in general distributed
+stochastic optimization setting. By combining the work
+of T. Yang, M. Li, and A. Agarwal, we hope to develop a robust,
+distributed SDCA solution.
+
+\section{GPU Acceleration for Sequential SDCA}
+\begin{algorithm}[H]
+	\caption{Sequential SDCA}
+	\label{sequentialSDCA}
+	\begin{algorithmic}[1]
+	\REQUIRE~~ $\alpha^{(0)}$
+		\ENSURE~~$\bar{w}$
+		\STATE Let $w^{(0)}=w(\alpha^{(0)})$, where $w(\alpha)=\frac{1}{n}\sum_{i=1}^{n}\alpha_ix_i$
+		\FOR{ $t=1,2,\ldots,T$}
+		\STATE Randomly pick $i$
+		\STATE Find $\triangle\alpha_i$ to maximize $-\phi_i^*(-(\alpha^{(t-1)}+\triangle\alpha_i))-\frac{\lambda n}{2}\|w^{(t-1)}+(\lambda n)^{-1}\triangle \alpha_i x_i\|^2$
+		\STATE $\alpha^{(t)}\leftarrow\alpha^{(t-1)}+\triangle\alpha_ie_i$
+		
+		\STATE $w^{(t)}\leftarrow w^{(t-1)}+(\lambda n)^{-1}\triangle\alpha_i x_i$
+		\ENDFOR
+		
+		\STATE Output (Random option):\\
+		Let $\bar{\alpha}=\alpha^{(t)}$ and $\bar{w}=w^{(t)}$ for some random $t\in T_0+1,\ldots,T$\\
+		\RETURN $\bar{w}$
+		
+	\end{algorithmic}
+\end{algorithm}
+The traditional SDCA algorithm \cite{shalev2013stochastic} is described in Algorithm \ref{sequentialSDCA}, where $g(w)=\frac{1}{2}\|w\|_2^2$.
+In that procedure, the most expensive work is in line 4--6. We employ the GPU acceleration technique to make those lines run in a faster manner.
+\section{GPU Acceleration for Distributed SDCA}
+The distributed SDCA \cite{yang2013trading} is described in Algorithm \ref{distributedSDCA}. We restrict our implementation over the case when $g(w)=\frac{1}{2}\|w\|_2^2$. The procedure \textbf{SDCA-mR} is the procedure on $k$-th machine (process).
+\begin{algorithm}[H]
+	\caption{Distributed SDCA}
+	\label{distributedSDCA}
+	\begin{algorithmic}[1]
+		\STATE	Start $K$ processes by calling the following procedure \textbf{SDCA-mR} with input $m$ and $T$.\\ 
+		\begin{center}Procedure \textbf{SDCA-mR}
+			\end{center}
+		\REQUIRE~~Number of Iterations $T$, number of samples $m$ at each iteration
+		\ENSURE~~$w^{T}$
+	\STATE Let $\alpha_k^{(0)}=0$, $v^{(0)}=0$, $w^{0}=0$
+	\STATE \textbf{Read Data:} $(x_{k,i},y_{k,i})$, $i=1,\ldots,n_k$
+	\FOR{$t=1,\ldots,T$}
+	\FOR{$j=1,\ldots,m$}
+	\STATE Randomly pick $i\in\{1,\ldots,n_k\}$ and let $i_j=i$
+	\STATE Find $\Delta\alpha_{k,i}$ by
+	\begin{equation*}
+		\Delta\alpha_{k,i}=\max_{\Delta\alpha}-\phi_{k,i}^*(-(\alpha_{k,i}^{t-1}+\Delta\alpha))-\Delta\alpha x_{k,i}^\top w^{t-1}-\frac{mK}{2\lambda n}(\Delta\alpha)^2\|x_{k,i}\|_2^2
+	\end{equation*}
+	\STATE Set $\alpha_{k,i}=\alpha_{k,i}^{t-1}+\Delta\alpha_{k,i}$
+	\ENDFOR
+	\STATE \textbf{Reduce:} $v^{t}:\frac{1}{\lambda n}\sum_{j=1}^{m}\Delta\alpha_{k,i_j}x_{k,i_j}\rightarrow v^{t-1}$\\ (Remark: the reduce step is implemented in two steps
+	\begin{itemize}
+		\item The master node adds the increment from each machine (process) together
+		 \item Each machine (process) receives $v^t$ from the broadcasting process from master node 
+		\end{itemize})
+	\STATE \textbf{Update:} $w^t=v^t$
+%	\STATE Wait for Other Machine updating $w^{t}$ and receive the updated $w^{(t)}$ from the master node, where the mas
+	\ENDFOR
+	\RETURN $w^T$
+	\end{algorithmic}
+\end{algorithm}
+\section{Experimental Results}
+
+%\section{The Proposed Work}
+%We will approach this problem from both theoretical and implementation
+%perspectives. On the theoretical side we hope to make guarantees on convergence
+%of our proposed approach, while on the implementation side we hope to build a
+%scalable system that can take advantage of its hardware as well as work in a
+%distributed setting.
+%
+%\subsection{Theory}
+%We will try to establish the convergence result of the
+%proposed asynchronous distributed SDCA and analyze the tradeoff between
+%computation and asynchronous communication.
+%
+%\subsection{Implementation}
+%There are two key aspects to the implementation: taking advantage of the GPU and
+%handling the asynchronous communication.
+%
+%\subsubsection{GPU}
+%When available, GPU acceleration will be used via CUDA. We will start by using
+%CUDA libraries such as \texttt{cuBLAS} for efficient math operations.
+%Additionally, we will also add CUDA kernels for portions of our algorithms that
+%are easily parallelized in a SIMD fashion.
+%
+%\subsubsection{Asynchronous Communication}
+%Once the hardware acceleration is established, we will turn our focus to
+%building a distributed, asynchronous communication framework. Each comptuer 
+%in the cluster will work on a small subproblem whose solution will be used
+%in the parameter update. This result will be sent to a parameter server, which will
+%handle parameter updates and synchronoization across workers. The planned architecture
+%will be similar to that of~\cite{li2014scaling}, using a central parameter server that
+%communicates asynchronously with distributed workers. This asyncrhonous
+%communication framework will be built using MPI and C++ threading facilities.
+%Additional libraries may be used such as Eigen for linear algebra.
+%
+%\section{Plan}
+%We will work in parallel, making progress on both the theory and implementation
+%aspects of the project.
+%
+%\subsection{Theory}
+%We will first study the theories and analysis techniques in the existing
+%literature and then try to prove the correctness of naive asynchronous approach.
+%If it works, we will try to establish the convergence rate and analyze the
+%computation and communication cost respectively.  
+%
+%\subsection{Implementation}
+%The first part of the implementation approach will be adding CUDA support for
+%the core math operations. The focus is on correctness, rather than optimizing
+%runtime. This is also the simpler portion of the project and will require less
+%time that the asynchronous communciation frmaework.
+%
+%The second part of the implementation is building the asynchronous communication
+%framework. This will be the most complex part of the implementation and require
+%the most time and effort.
+%\subsection{Comparisions with Other Methods}
+%We plan to test our implementation using two suites of tests: a GPU test suite
+%and a communication test suite. The GPU test suite will compare a CPU-only build
+%with a GPU based build. The communication test suite will compare a single
+%machine model (with GPU acceleration) against a distributed, asynchronous model
+%on a large data set. While it would be ideal to compare the asynchronous
+%framework against a synchronous framework, the technical requirements of adding
+%a synchronous communication framework are beyond the scope of this work.
+%
+%\subsubsection{Proposed Datasets}
+%Our two test suites rely on very different types of data. When running the GPU
+%tests, the datasets must fit on a given computer (although not necessarily in
+%RAM). The asynchronous communication test data should be very large -- finding
+%this type of data is a bit more challenging than for the GPU data. We plan to
+%test a few datasets for the GPU tests, for example \texttt{covtype.binary} and
+%\texttt{kdd2010-raw}. These datasets range from 500,000 data points to
+%about 19M data points, respectively, and from about 50 features to nearly 1.1M
+%features, respectively. This gives a good spectrum of types of data. The
+%asynchronous communication test will only use a single data set. Currently, we
+%are considering two data sets -- the \textit{Common Crawl} corpus, which is
+%hosted on AWS and consists of a month's worth of web crawling across two billion
+%web pages, or possibly the YouTube 8M dataset, which contains frame-level
+%features and is roughly 1.7TB in size (which is still small enough to fit on a
+%single machine). However, at this point the datasets
+%for the asynchronous communication tests cannot be specified with any certainty.
+
+
+%\subsubsection*{Acknowledgments}
+%
+%Use unnumbered third level headings for the acknowledgments. All
+%acknowledgments go at the end of the paper. Do not include
+%acknowledgments in the anonymized submission, only in the final paper.
+
+%\section*{References}
+
+%References follow the acknowledgments. Use unnumbered first-level
+%heading for the references. Any choice of citation style is acceptable
+%as long as you are consistent. It is permissible to reduce the font
+%size to \verb+small+ (9 point) when listing the references.
+%
+%\medskip
+%
+%\small
+%
+%[1] Alexander, J.A.\ \& Mozer, M.C.\ (1995) Template-based algorithms
+%for connectionist rule extraction. In G.\ Tesauro, D.S.\ Touretzky and
+%T.K.\ Leen (eds.), {\it Advances in Neural Information Processing
+%  Systems 7}, pp.\ 609--616. Cambridge, MA: MIT Press.
+%
+%[2] Bower, J.M.\ \& Beeman, D.\ (1995) {\it The Book of GENESIS:
+%  Exploring Realistic Neural Models with the GEneral NEural SImulation
+%  System.}  New York: TELOS/Springer--Verlag.
+%
+%[3] Hasselmo, M.E., Schnell, E.\ \& Barkai, E.\ (1995) Dynamics of
+%learning and recall at excitatory recurrent synapses and cholinergic
+%modulation in rat hippocampal region CA3. {\it Journal of
+%  Neuroscience} {\bf 15}(7):5249-5262.
+%123~\cite{Bolte:2006:LIN:1328019.1328299},\cite{banerjee2007generalized}\cite{zhangcs14}\cite{shalev2016sdca}\cite{yang2013trading}
+%123~\cite{Shalev-Shwartz2016a} is a good approach
+\bibliography{courseProject}
+\bibliographystyle{abbrv}
+\end{document}
