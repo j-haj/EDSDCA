@@ -62,3 +62,20 @@ Eigen::VectorXd VectorReduce_cpu(const std::vector<Eigen::VectorXd> &v) {
   return accumulator;
 }
 
+Eigen::VectorXd MatrixVectorMultiply_cpu(const std::vector<Eigen::VectorXd> &X,
+					 const Eigen::VectorXd &y) {
+  auto result = Eigen::VectorXd(y.size());
+  for (int i = 0; i < y.size(); ++i) {
+    result(i) = X[i].dot(y);
+  }
+  return result;
+}
+
+Eigen::VectorXd MatrixVectorMultiply(const std::vector<Eigen::VectorXd> &X,
+				     const Eigen::VectorXd &y) {
+#ifndef GPU
+  return MatrixVectorMultiply_cpu(X, y);
+#else
+  return MatrixVectorMultiply_gpu(X, y);
+#endif
+}

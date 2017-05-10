@@ -76,7 +76,7 @@ Eigen::VectorXd VectorReduce_gpu(const std::vector<Eigen::VectorXd> &v) {
   return accumulator;
 }
 
-Eigen::VectorXd MatrixVectorMultiply(const std::vector<Eigen::VectorXd> &X, const
+Eigen::VectorXd MatrixVectorMultiply_gpu(const std::vector<Eigen::VectorXd> &X, const
     Eigen::VectorXd &y) {
   int block_size, grid_size, min_grid_size;
   cudaOccupancyMaxPotentialBlockSize(&min_grid_size, &block_size,
