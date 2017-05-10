@@ -350,10 +350,10 @@ distributed SDCA solution.
 		\STATE Let $w^{(0)}=w(\alpha^{(0)})$, where $w(\alpha)=\frac{1}{n}\sum_{i=1}^{n}\alpha_ix_i$
 		\FOR{ $t=1,2,\ldots,T$}
 		\STATE Randomly pick $i$
-		\STATE Find $\triangle\alpha_i$ to maximize $-\phi_i^*(-(\alpha^{(t-1)}+\triangle\alpha_i))-\frac{\lambda n}{2}\|w^{(t-1)}+(\lambda n)^{-1}\triangle \alpha_i x_i\|^2$
-		\STATE $\alpha^{(t)}\leftarrow\alpha^{(t-1)}+\triangle\alpha_ie_i$
+		\STATE Find $\Delta\alpha_i$ to maximize $-\phi_i^*(-(\alpha^{(t-1)}+\Delta\alpha_i))-\frac{\lambda n}{2}\|w^{(t-1)}+(\lambda n)^{-1}\Delta \alpha_i x_i\|^2$
+		\STATE $\alpha^{(t)}\leftarrow\alpha^{(t-1)}+\Delta\alpha_ie_i$
 		
-		\STATE $w^{(t)}\leftarrow w^{(t-1)}+(\lambda n)^{-1}\triangle\alpha_i x_i$
+		\STATE $w^{(t)}\leftarrow w^{(t-1)}+(\lambda n)^{-1}\Delta\alpha_i x_i$
 		\ENDFOR
 		
 		\STATE Output (Random option):\\
