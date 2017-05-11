@@ -76,17 +76,13 @@ void Sdca::Fit(const Eigen::MatrixXd &X, const Eigen::VectorXd &y) {
       const std::vector<long> mb_indices =
           GenerateMiniBatchIndexVector(batch_size_, 0, n_);
       std::vector<Eigen::VectorXd> mb_X(batch_size_);
-      DLOG("Mini-batch index vector created");
       
       ComputeW(X);
-      DLOG("Computed w_");
       std::vector<double> mb_y(batch_size_);
       for (long i = 0; i < batch_size_; ++i) {
         mb_X[i] = X.row(mb_indices[i]);
         mb_y[i] = y(mb_indices[i]);
       }
-
-      DLOG("Mini-batch created");
 
       // Start timer
       timer_.Start();
@@ -112,6 +108,7 @@ void Sdca::Fit(const Eigen::MatrixXd &X, const Eigen::VectorXd &y) {
         training_hist_[log_index] = tmp_pair;
         ++log_index;
       }
+      DLOG("Epoch complete");
     }
   }
 
