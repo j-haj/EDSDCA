@@ -26,6 +26,8 @@
 \usepackage{times}
 % For figures
 \usepackage{graphicx} % more modern
+\usepackage{listings}
+\graphicspath{{./img/}}
 %\usepackage{epsfig} % less modern
 \usepackage{subfigure} 
 %\usepackage{subcaption}
@@ -365,7 +367,28 @@ distributed SDCA solution.
 The traditional SDCA algorithm \cite{shalev2013stochastic} is described in Algorithm \ref{sequentialSDCA}, where $g(w)=\frac{1}{2}\|w\|_2^2$.
 In that procedure, the most expensive work is in line 4--6. We employ the GPU acceleration technique to make those lines run in a faster manner.
 \subsection{Naive GPU Implementation}
+The naive implementation (hereafter referred to as the sequential GPU algorithm)
+is simply the CPU based algorithm but we replace all linear algebra/vector
+operations with CUDA kernels and carrying them out on the GPU. In other words,
+there is no change to the SDCA algorithm, we simply perform some of our
+calculations on the GPU, rather than performing everything on the CPU.
+
 \subsection{Refined GPU Implementation}
+The refined GPU implementation (hereafter referred to as the distributed GPU
+algorithm) is based on the work of \cite{yang2013trading}. Essentially, we took
+the idea of parallelizing SDCA over a number of machines, and replaced the
+machines with threads on a GPU. Instead of network communication we have
+communication via the PCIE bus, which, while slower than RAM access, is
+considerably faster than ethernet. Additionally, rather than send a batch of
+data to each thread (to mimic sending data to a worker node), we send a single
+data point to $k$ threads, rather than $m$ data points to $k$ threads. This
+simplifies communication and computation, and results ing a matrix-vector
+calculation that is performed on the GPU. While we could further optimze this
+algorithm by performing additional calculations on the GPU, the low-level
+implementations and handling of shared and non-shared GPU memory as well as
+thread synchronization proved to be too much to tackle for this project given
+our time constraint. However, moving forward these are great areas to explore.
+
 \section{GPU Acceleration for Distributed SDCA}
 The distributed SDCA \cite{yang2013trading} is described in Algorithm \ref{distributedSDCA}. We restrict our implementation over the case when $g(w)=\frac{1}{2}\|w\|_2^2$. The procedure \textbf{SDCA-mR} is the procedure on $k$-th machine (process).
 \begin{algorithm}[H]
@@ -432,12 +455,58 @@ GPU. Performing more of these updates simultaneously on the GPU reduces the
 number of communications with the GPU and thus improving  the overall runtime.
 Conversely, as the mini-batch size decreases we would expect GPU compute times
 to degrade, since a small mini-batch requires more data transfers back and
-forth between host RAM (on the computer) and device RAM (VRAM on the GPU).\\
+forth between host RAM (on the computer) and device RAM (VRAM on the
+GPU). Lastly, the NA result for the distributed GPU implementation on a batch
+size of 128 is the result of a memory corruption error. At the time of writing
+this report we were still chasing down the cause of the memory corruption. We
+believe this is a bad memory access while indexing through the matrix of data on
+the GPU, but are still working on this issue. As we will discuss later, this is
+another reason we would have been better off using a third-party library for
+these kernels (such as cuBLAS, implemented by NVIDIA).\\
 
-Figure [FIGURE HERE] shows a graph comparing sequential CPU versus sequential
-GPU. Again, the CPU version outperforms the GPU version for reasons we will
-discuss on the following section.
+Figure \ref{fig:australian} shows a graph comparing sequential CPU versus
+sequential GPU for the Australian dataset (from the LibSVM data archives). This
+data set only contains 54 features and roughly 690 data points, making it a good
+data set for quick tests and analyses.
 
+\begin{figure}
+  \includegraphics[scale=0.5]{cpu_vs_gpu}
+  \centering
+  \caption{Comparison of training loss for sequential CPU and sequential GPU for
+    the scaled Australian data set.}
+  \label{fig:australian}
+\end{figure}
+
+To get a better sense of the CPU versus GPU comparison, we generated data that
+would allow us to control the number of features so we could better understand
+how more features impacted performace on the GPU and CPU implementations. Figure
+\ref{fig:10k} shows a comparison of sequential CPU versus sequential GPU for
+data with 10,000 features while figure \ref{fig:50k} shows the same comparison
+but for data with 50,000 features.
+
+\begin{figure}
+  \centering
+  \includegraphics[scale=0.65]{dim10k_CPU_GPU}
+  \caption{Comparison of training loss for generated data with 10,000
+    features. The algorithms used are sequential CPU and sequential GPU.}
+  \label{fig:10k}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \includegraphics[scale=0.65]{dim50k_CPU_GPU}
+  \caption{Comparison of training loss for generated data with 50,000
+    features. the algorithms used are sequential CPU and sequential GPU.}
+  \label{fig:50k}
+  \end{figure}
+
+As expected, as the dimension of the feature space increases (figure
+\ref{fig:50K}) we see an improvement in the sequential GPU version relative to
+the sequential CPU version. This is because the GPU implementation can more
+efficiently handle vector dot product as the dimension of the vector
+increases. Unfortunately, as we will discuss in the following sections, there
+are other limiting factors preventing us from achieving ideal performance.
+  
 \subsection{Discussion}
 As seen in the preceding table and figure, the CPU implementation outperformed
 the GPU implementations across the board. While this was not expected, the
@@ -515,7 +584,13 @@ very low-level. Using a library such as cuBLAS would have been a better
 approach in hind-sight. However, at the onset of the project we determined
 writing a wrapper class for our data that would allow us to interface with the
 cuBLAS kernels more easily would require more time than we had available for
-the project.
+the project.\\
+
+Aside from taking advantage of cuBLAS, we can also perform more operations in
+the update phase of the distributed GPU algorithm on the GPU. Currently we
+simply perform a matrix-vector multiplication and then handle everything else on
+the host. By performing more of the update work on the GPU, we could squeeze
+even more performance out of this approach.
 
 \section{Lessons Learned}
 We learned a lot about what can go wrong and what considerations need to be
