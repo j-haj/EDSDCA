@@ -108,8 +108,8 @@ void Sdca::Fit(const Eigen::MatrixXd &X, const Eigen::VectorXd &y) {
         training_hist_[log_index] = tmp_pair;
         ++log_index;
       }
-      DLOG("Epoch complete");
     }
+    DLOG("Epoch complete");
   }
 
   w_ = w_bar_;
@@ -163,10 +163,8 @@ void Sdca::RunUpdateOnMiniBatch(const std::vector<Eigen::VectorXd> &X,
       break;
     case SdcaModelType::Distributed:
 #ifndef GPU
-      DLOG("WARNING! Attempting to run GPU model without a GPU! Running CPU model instead.");
       Sdca::RunUpdateOnMiniBatch_cpu(X, y, indices);
 #else
-      DLOG("Running GPU mini-batch update");
       Sdca::RunUpdateOnMiniBatch_gpu(X, y, indices);
 #endif
       break;
@@ -197,15 +195,13 @@ void Sdca::RunUpdateOnMiniBatch_gpu(const std::vector<Eigen::VectorXd> &X,
 
   Eigen::VectorXd wx = MatrixVectorMultiply(X, w_);
 
-  DLOG("Computing delta_alphas");
-
   for (long i = 0; i < indices.size(); ++i) {
     double nmrtr = 1.0 - wx(i) * y[i];
     auto tmpX = X[i];
     double dnmntr = scl * tmpX.squaredNorm() / (lambda_ * n_);
     double d_alpha = y[i] * std::max(0.0, std::min(1.0,
 						   nmrtr / dnmntr + a_(indices[i]) * y[i])) - a_(indices[i]);
-    DLOG("Applying alpha update");
+
     ApplyAlphaUpdate(d_alpha, indices[i]);
     accumulated_v_.push_back(d_alpha * X[i]);
   }

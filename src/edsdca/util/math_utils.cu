@@ -95,7 +95,6 @@ Eigen::VectorXd MatrixVectorMultiply_gpu(const std::vector<Eigen::VectorXd> &X, 
   // Copy back from GPU
   Eigen::VectorXd result =
     edsdca::memory::MemSync::PullResFromGpu();
-  std::cout << "Leaving matrix/vector multiply\n";
   return result;
 }
 
