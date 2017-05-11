@@ -400,6 +400,145 @@ The distributed SDCA \cite{yang2013trading} is described in Algorithm \ref{distr
 	\end{algorithmic}
 \end{algorithm}
 \section{Experimental Results}
+Our results were not as promising as we anticipated. Table \ref{tab:res-scale}
+shows the results using a created data set in $\R^{100}$ that contained 10,000
+data points. We ran three algorithms: sequential CPU, sequential GPU, and
+distributed GPU. Sequential CPU is just the standard implementation of SDCA.
+Sequential GPU extends this implmentation by performing dot product operations
+on the GPU. The distributed GPU version is the implementation of distributed
+SDCA on the GPU (rather than a cluster).
+
+\begin{table}
+  \centering
+  \caption{Results of sequential CPU, sequential GPU, and distributed GPU
+    for a sample data set of 10,000 points each having 100 features. Times are
+    given in MM:SS.}
+  \label{tab:res-scale}
+  \begin{tabular}{l|cccc}
+      \textbf{Algorithm} & \textbf{mini-batch = 1} & \textbf{mini-batch = 32} &
+      \textbf{mini-batch = 64} & \textbf{mini-batch = 128}\\\hline
+      Sequential CPU & 7:36 & 0:23 & 0:16 & 0:13\\
+      Sequential GPU & 7:50 & 0:25 & 0:19 & 0:15\\
+      Distributed GPU & 33:33 & 1:10 & 0:40 & NA\\\hline
+  \end{tabular}
+\end{table}
+
+Sequential CPU outperformed both GPU implementations due to implementation
+issues. However, as expected, the distributed GPU version improved in terms of
+compute time as the size of the mini-batch increased. As the mini-batch size
+increases, the number of coordinate directions optimized in the distributed
+SDCA algorithm increases, and these optimizations are done in parallel on the
+GPU. Performing more of these updates simultaneously on the GPU reduces the
+number of communications with the GPU and thus improving  the overall runtime.
+Conversely, as the mini-batch size decreases we would expect GPU compute times
+to degrade, since a small mini-batch requires more data transfers back and
+forth between host RAM (on the computer) and device RAM (VRAM on the GPU).\\
+
+Figure [FIGURE HERE] shows a graph comparing sequential CPU versus sequential
+GPU. Again, the CPU version outperforms the GPU version for reasons we will
+discuss on the following section.
+
+\subsection{Discussion}
+As seen in the preceding table and figure, the CPU implementation outperformed
+the GPU implementations across the board. While this was not expected, the
+results are very interesting from an implementation point of view. There are a
+few key areas that hurt the GPU implementation -- unforutnately we did not have
+enough time to fix/implement these properly.
+\begin{itemize}
+    \item Memory allocation
+    \item Device-host communication
+    \item Optimized kernel implementations
+\end{itemize}
+
+\subsubsection{Memory Allocation}
+This was the first issue we ran into during our work on the sequential GPU
+algorithm (which we implmented prior to the distributed version). Our initial
+implementation made no optimizations in terms of memory allocation. Each time
+we performed any work on the GPU, we would allocate memory, transfer the data,
+perform the operation, transfer the data bac, and the release the allocated
+device memory. This resulted in over a million allocations on a small dataset
+and made up about 13s of compute time for the same run. After profiling our
+code using \texttt{nvprof} we realized the excessive allocations were really
+degrading performance and largely unnecessary.\\
+
+To fix this issue, we created static
+pointers to allocated memory on the device. These pointers were allocated once,
+reducing our device memory allocations from the millions down to just three
+allocations (two allocations for vectors, and a third allocation for the
+result). This was an immense savings, and reduce the compute time for the dot
+product kernel from 13s down to less than a second for the test data set
+(roughly 100 points in $\R^3$).\\
+
+For the distributed version, we added two additional static pointers for a
+matrix (which held the entire mini-batch) and a second result vector for the
+result of a matrix-vector multiplication. 
+
+\subsubsection{Device-Host Communication}
+This is the second issue we ran into, but did not have enough time to correct.
+Throughout our algorithm, we transfer data to and from the GPU each time we
+encounter an operation that can be efficiently computed on the GPU. This means
+there are situations where we transfer data to or from the GPU when we don't
+necessarily need to -- either the data already resides on the GPU or we don't
+actually need the result vector. Using \texttt{nvprof} we saw that
+communication was now dominating our GPU compute time, consisting of nearly
+50\% of total GPU compute time.\\
+
+However, fixing this issue is quite a bit more complicated than fixing the
+allocation issue mentioned in the previous section. There are two improvements
+that can improve the communication between host and device: memory pinning and
+warpping our data in a class that handles memory synchronization in the
+background.
+
+\paragraph{Memory Pinning} Memory pinning is declaring that the memory
+allocations on the host (that are the source for the transfer to device) will
+not be paged. This means the data stays in pinned memory so no transfer from
+paged out memory to pinned memory is necessary (or even checking if it's
+necessary). However, since we are using fairly modern hardware, the impact from
+using pinned memory is not as significant as being more efficient with when we
+transfer between host and device.
+
+\paragraph{Data Wrapper} Creating a data wrapper around the data types we used
+from Eigen would allow us to more intelligently handle transfers between host
+and device. Specifically, we would be able to determine where the data is
+currently located (device or host) and decide whether a transfer is needed or
+not. For example, if the weight vector is currently sitting on the GPU, no
+updates are made to the weights on the host, more data is transferred to the
+GPU, we could avoid both a transfer of the weight from device to host and then
+again from host to device by simply leaving the weight vector on the GPU.
+
+\subsubsection{CUDA Kernels}
+The last issue is the implementation of our CUDA kernels. The dot-product
+kernel was fairly straightforward, but the matrix-vector kernel leaves room for
+improvement. Overall, there are a large number of kernel optimizations that can
+be made to improve overall kernel throughput, but these optimizations can be
+very low-level. Using a library such as cuBLAS would have been a better
+approach in hind-sight. However, at the onset of the project we determined
+writing a wrapper class for our data that would allow us to interface with the
+cuBLAS kernels more easily would require more time than we had available for
+the project.
+
+\section{Lessons Learned}
+We learned a lot about what can go wrong and what considerations need to be
+made when carrying out low-level implementations of machine learning
+algorithms. It was surprising how big of a difference some of these
+optimizations made (for example, memory allocations). If we were to start over
+(which would probably be a good idea if this work were to continue), we would
+make two major changes. First, we would create a data wrapper class to handle
+all the synchronization work in a more intelligent fashion. Second, we would
+take advantage of cuBLAS, a library of highly optimized CUDA kernels for
+various linear algebra operations. Not only are the cuBLAS kernels better
+optimized in terms of implementation, they also can better handle making thread
+and block allocations on the GPU. It was a mistake not using this from the
+beginning, but it was a lesson well-learned.
+
+\section{Conclusion}
+While our results were not what we were hoping for, we firmly believe there is
+promise in this approach. The failure of our implementation is more due to lack
+of low-level optimizations and smart memory usage than it is a failure of the
+approach in general. This is seen by looking at the improvements in the GPU
+algorithm runtimes for both sequential and distributed implementations as we
+increased the size of the mini-batch. We believe further work on this topic is
+merrited, both from theoretical and implementation point-of-views.
 
 %\section{The Proposed Work}
 %We will approach this problem from both theoretical and implementation
@@ -413,71 +552,7 @@ The distributed SDCA \cite{yang2013trading} is described in Algorithm \ref{distr
 %proposed asynchronous distributed SDCA and analyze the tradeoff between
 %computation and asynchronous communication.
 %
-%\subsection{Implementation}
-%There are two key aspects to the implementation: taking advantage of the GPU and
-%handling the asynchronous communication.
-%
-%\subsubsection{GPU}
-%When available, GPU acceleration will be used via CUDA. We will start by using
-%CUDA libraries such as \texttt{cuBLAS} for efficient math operations.
-%Additionally, we will also add CUDA kernels for portions of our algorithms that
-%are easily parallelized in a SIMD fashion.
-%
-%\subsubsection{Asynchronous Communication}
-%Once the hardware acceleration is established, we will turn our focus to
-%building a distributed, asynchronous communication framework. Each comptuer 
-%in the cluster will work on a small subproblem whose solution will be used
-%in the parameter update. This result will be sent to a parameter server, which will
-%handle parameter updates and synchronoization across workers. The planned architecture
-%will be similar to that of~\cite{li2014scaling}, using a central parameter server that
-%communicates asynchronously with distributed workers. This asyncrhonous
-%communication framework will be built using MPI and C++ threading facilities.
-%Additional libraries may be used such as Eigen for linear algebra.
-%
-%\section{Plan}
-%We will work in parallel, making progress on both the theory and implementation
-%aspects of the project.
-%
-%\subsection{Theory}
-%We will first study the theories and analysis techniques in the existing
-%literature and then try to prove the correctness of naive asynchronous approach.
-%If it works, we will try to establish the convergence rate and analyze the
-%computation and communication cost respectively.  
-%
-%\subsection{Implementation}
-%The first part of the implementation approach will be adding CUDA support for
-%the core math operations. The focus is on correctness, rather than optimizing
-%runtime. This is also the simpler portion of the project and will require less
-%time that the asynchronous communciation frmaework.
-%
-%The second part of the implementation is building the asynchronous communication
-%framework. This will be the most complex part of the implementation and require
-%the most time and effort.
-%\subsection{Comparisions with Other Methods}
-%We plan to test our implementation using two suites of tests: a GPU test suite
-%and a communication test suite. The GPU test suite will compare a CPU-only build
-%with a GPU based build. The communication test suite will compare a single
-%machine model (with GPU acceleration) against a distributed, asynchronous model
-%on a large data set. While it would be ideal to compare the asynchronous
-%framework against a synchronous framework, the technical requirements of adding
-%a synchronous communication framework are beyond the scope of this work.
-%
-%\subsubsection{Proposed Datasets}
-%Our two test suites rely on very different types of data. When running the GPU
-%tests, the datasets must fit on a given computer (although not necessarily in
-%RAM). The asynchronous communication test data should be very large -- finding
-%this type of data is a bit more challenging than for the GPU data. We plan to
-%test a few datasets for the GPU tests, for example \texttt{covtype.binary} and
-%\texttt{kdd2010-raw}. These datasets range from 500,000 data points to
-%about 19M data points, respectively, and from about 50 features to nearly 1.1M
-%features, respectively. This gives a good spectrum of types of data. The
-%asynchronous communication test will only use a single data set. Currently, we
-%are considering two data sets -- the \textit{Common Crawl} corpus, which is
-%hosted on AWS and consists of a month's worth of web crawling across two billion
-%web pages, or possibly the YouTube 8M dataset, which contains frame-level
-%features and is roughly 1.7TB in size (which is still small enough to fit on a
-%single machine). However, at this point the datasets
-%for the asynchronous communication tests cannot be specified with any certainty.
+\section{Implementation}
 
 
 %\subsubsection*{Acknowledgments}
