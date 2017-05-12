@@ -419,7 +419,7 @@ $k$-th machine (process).
 	\RETURN $w^T$
 	\end{algorithmic}
 \end{algorithm}
-Essentially, we took the idea of parallelizing SDCA over a number of machines,
+We took the idea of parallelizing SDCA over a number of machines,
 and replaced the machines with threads on a GPU. Instead of network
 communication we have communication via the PCIE bus, which, while slower than
 RAM access, is considerably faster than ethernet. Additionally, rather than send
@@ -439,7 +439,11 @@ data points. We ran three algorithms: sequential CPU, sequential GPU, and
 distributed GPU. Sequential CPU is just the standard implementation of SDCA.
 Sequential GPU extends this implmentation by performing dot product operations
 on the GPU. The distributed GPU version is the implementation of distributed
-SDCA on the GPU (rather than a cluster).
+SDCA on the GPU (rather than a cluster). All algorithms were run for 5 epochs
+without any type of early termination. We are measuring, roughly speaking, how
+these algorithms compare in terms of the time it takes to complete a predefined
+workload. As we will see in a later discussion, our algorithms also converge to
+similar training losses.
 
 \begin{table}
   \centering
