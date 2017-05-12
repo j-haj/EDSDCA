@@ -481,7 +481,7 @@ To get a better sense of the CPU versus GPU comparison, we generated data that
 would allow us to control the number of features so we could better understand
 how more features impacted performace on the GPU and CPU implementations. Figure
 \ref{fig:10k} shows a comparison of sequential CPU versus sequential GPU for
-data with 10,000 features while figure \ref{fig:50k} shows the same comparison
+data with 10,000 features while Figure \ref{fig:50k} shows the same comparison
 but for data with 50,000 features.
 
 \begin{figure}
@@ -493,15 +493,15 @@ but for data with 50,000 features.
 \end{figure}
 
 \begin{figure}
+	  \label{fig:50k}
   \centering
   \includegraphics[scale=0.65]{dim50k_CPU_GPU}
   \caption{Comparison of training loss for generated data with 50,000
     features. the algorithms used are sequential CPU and sequential GPU.}
-  \label{fig:50k}
   \end{figure}
 
-As expected, as the dimension of the feature space increases (figure
-\ref{fig:50K}) we see an improvement in the sequential GPU version relative to
+As expected, as the dimension of the feature space increases (Figure
+\ref{fig:50k}), we see an improvement in the sequential GPU version relative to
 the sequential CPU version. This is because the GPU implementation can more
 efficiently handle vector dot product as the dimension of the vector
 increases. Unfortunately, as we will discuss in the following sections, there
