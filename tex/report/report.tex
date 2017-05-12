@@ -21,6 +21,7 @@
 \usepackage{nicefrac}       % compact symbols for 1/2, etc.
 \usepackage{microtype}      % microtypography
 \usepackage{amsmath}
+\usepackage{fancyvrb}
 \usepackage{algorithm}
 \usepackage{algorithmic}
 \usepackage{times}
@@ -374,23 +375,19 @@ there is no change to the SDCA algorithm, we simply perform some of our
 calculations on the GPU, rather than performing everything on the CPU.
 
 \subsection{Refined GPU Implementation}
-The refined GPU implementation (hereafter referred to as the distributed GPU
-algorithm) is based on the work of \cite{yang2013trading}. Essentially, we took
-the idea of parallelizing SDCA over a number of machines, and replaced the
-machines with threads on a GPU. Instead of network communication we have
-communication via the PCIE bus, which, while slower than RAM access, is
-considerably faster than ethernet. Additionally, rather than send a batch of
-data to each thread (to mimic sending data to a worker node), we send a single
-data point to $k$ threads, rather than $m$ data points to $k$ threads. This
-simplifies communication and computation, and results ing a matrix-vector
-calculation that is performed on the GPU. While we could further optimze this
-algorithm by performing additional calculations on the GPU, the low-level
-implementations and handling of shared and non-shared GPU memory as well as
-thread synchronization proved to be too much to tackle for this project given
-our time constraint. However, moving forward these are great areas to explore.
+The refined GPU implementation improves upon the naive implementation by
+optimizing memory allocations. This is done by using static pointers to hold the
+address of the allocated memory on the GPU. Once this memmory is allocated,
+there is no need to re-allocate, since we can access it via the pointers. The
+memory is re-allocated only in the event that the amount of memory needed
+changes.
 
 \section{GPU Acceleration for Distributed SDCA}
-The distributed SDCA \cite{yang2013trading} is described in Algorithm \ref{distributedSDCA}. We restrict our implementation over the case when $g(w)=\frac{1}{2}\|w\|_2^2$. The procedure \textbf{SDCA-mR} is the procedure on $k$-th machine (process).
+The distributed SDCA \cite{yang2013trading} is described in Algorithm
+\ref{distributedSDCA}. We restrict our implementation over the case when
+$g(w)=\frac{1}{2}\|w\|_2^2$. The procedure \textbf{SDCA-mR} is the procedure on
+$k$-th machine (process).
+
 \begin{algorithm}[H]
 	\caption{Distributed SDCA}
 	\label{distributedSDCA}
@@ -422,6 +419,19 @@ The distributed SDCA \cite{yang2013trading} is described in Algorithm \ref{distr
 	\RETURN $w^T$
 	\end{algorithmic}
 \end{algorithm}
+Essentially, we took the idea of parallelizing SDCA over a number of machines,
+and replaced the machines with threads on a GPU. Instead of network
+communication we have communication via the PCIE bus, which, while slower than
+RAM access, is considerably faster than ethernet. Additionally, rather than send
+a batch of data to each thread (to mimic sending data to a worker node), we send
+a single data point to $k$ threads, rather than $m$ data points to $k$ threads.
+This simplifies communication and computation, and results ing a matrix-vector
+calculation that is performed on the GPU. While we could further optimze this
+algorithm by performing additional calculations on the GPU, the low-level
+implementations and handling of shared and non-shared GPU memory as well as
+thread synchronization proved to be too much to tackle for this project given
+our time constraint. However, moving forward these are great areas to explore.
+
 \section{Experimental Results}
 Our results were not as promising as we anticipated. Table \ref{tab:res-scale}
 shows the results using a created data set in $\R^{100}$ that contained 10,000

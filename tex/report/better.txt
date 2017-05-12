@@ -1,0 +1,23 @@
+class MemSync {
+  // We can access this pointer from anywhere
+  // in our codebase via MemSync::d_x
+  static double *d_x;
+
+  // Stores the amount of allocated memory
+  static long mem_size_;
+};
+
+void MemSync::PushDataToGpu(const vector &x) {
+
+  // Rough idea of how we check if memory needs to be
+  // allocated. Actual code is slightly more complex
+  if (x.size() * sizeof(double) != MemSync::mem_size_) {
+    // This call will allocate memory using a
+    // static pointer
+    MemSync::AllocateMemoryOfSize(x.size());
+  } 
+
+  // Transfer the data from vector into the 
+  // recently allocated memory on the GPU
+  cudaMemcpy(d_x, &x[0], size_bytes, cudaMemcpyHostToDevice);
+}
