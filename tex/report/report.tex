@@ -508,7 +508,7 @@ updates are made to the weights on the host, more data is transferred to the
 GPU, we could avoid both a transfer of the weight from device to host and then
 again from host to device by simply leaving the weight vector on the GPU.
 
-\subsection{CUDA Kernels}
+\subsection{Optimized CUDA kernel implementations}
 The last issue is the implementation of our CUDA kernels. The dot-product
 kernel was fairly straightforward, but the matrix-vector kernel leaves room for
 improvement. Overall, there are a large number of kernel optimizations that can
