@@ -232,14 +232,16 @@
 %  line spaces precede the abstract. The abstract must be limited to
 %  one paragraph. This latex file is modified from the NIPS  2016 template. 
 We propose the design and analysis of an efficient, distributed, 
-SDCA algorithm that uses GPUs to improve compute efficiency an asynchronous
-communication for model updates. This work builds off the previous work of T.
-Yang \cite{yang2013trading}, M. Li \cite{li2014scaling}, and A. Agarwal
-\cite{agarwal2011distributed} creating a more scalable and efficient SDCA
+SDCA algorithm that uses GPUs to improve computational efficiency for parameter updates. This work builds off the previous work of T.
+Yang \cite{yang2013trading}, 
+%M. Li \cite{li2014scaling}, and A. Agarwal
+%\cite{agarwal2011distributed}
+ creating a more scalable and efficient SDCA
 algorithm. Specifically, we propose to use CUDA to improve the runtime
 efficiency of the gradient and parameter update calculations along with the use
-of MPI for network communication. The asynchronous nature of the communication
-will be handled using standard MPI facilities combined with threading in C++.
+of MPI for network communication. The implementation is written in pure C++.
+%The asynchronous nature of the communication
+%will be handled using standard MPI facilities combined with threading in C++.
 \end{abstract}
 
 \section{Introduction}
@@ -327,22 +329,26 @@ enjoy faster convergence than SGD and ADMM, and the distributed SDCA
 (DisDCA)~\cite{yang2013trading,yang2013analysis} was developed along with novel
 analysis of tradeoff between computation and communication. \cite{yang2013trading} serves as the starting point for our work.
 
-We will build off of work from T. Yang's work on distributed SDCA~\cite{yang2013trading}, first add GPU capabilities and then incorporating M.
-Li's work on parameter servers~\cite{li2014scaling} to handle communication
-updates in the distributed setting.  In~\cite{yang2013trading}, SDCA is
+%We will build off of work from T. Yang's work on distributed SDCA~\cite{yang2013trading}, first add GPU capabilities and then incorporating M.
+%Li's work on parameter servers~\cite{li2014scaling} to handle communication
+%updates in the distributed setting.  In~\cite{yang2013trading}, SDCA is
+%implemented in a distributed, synchronized fashion. While the achieved results
+%were quite promising, they did not take advantage of hardware acceleration or
+%asynchronous communication.  \cite{li2014scaling} builds an asynchronous
+%communication framework using the concept of parameter servers, which are
+%central data stores for model parameters, and distributed workers working in an
+%asynchronous fashion (i.e., communication and parameter updates are non-blocking
+%operations).  Additionally,
+%\cite{agarwal2011distributed} explores the
+%theoretical ramifications of delayed parameter updates in general distributed
+%stochastic optimization setting. By combining the work
+%of T. Yang, M. Li, and A. Agarwal, we hope to develop a robust,
+%distributed SDCA solution.
+
+In~\cite{yang2013trading}, SDCA is
 implemented in a distributed, synchronized fashion. While the achieved results
 were quite promising, they did not take advantage of hardware acceleration or
-asynchronous communication.  \cite{li2014scaling} builds an asynchronous
-communication framework using the concept of parameter servers, which are
-central data stores for model parameters, and distributed workers working in an
-asynchronous fashion (i.e., communication and parameter updates are non-blocking
-operations).  Additionally,
-\cite{agarwal2011distributed} explores the
-theoretical ramifications of delayed parameter updates in general distributed
-stochastic optimization setting. By combining the work
-of T. Yang, M. Li, and A. Agarwal, we hope to develop a robust,
-distributed SDCA solution.
-
+asynchronous communication.  We will build off of work from T. Yang's work on distributed SDCA~\cite{yang2013trading}, and add GPU capabilities. 
 \section{GPU Acceleration for Sequential SDCA}
 \begin{algorithm}[H]
 	\caption{Sequential SDCA}
@@ -369,7 +375,7 @@ The traditional SDCA algorithm \cite{shalev2013stochastic} is described in Algor
 In that procedure, the most expensive work is in line 4--6. We employ the GPU acceleration technique to make those lines run in a faster manner.
 \subsection{Naive GPU Implementation}
 The naive implementation (hereafter referred to as the sequential GPU algorithm)
-is simply the CPU based algorithm but we replace all linear algebra/vector
+is simply the CPU-based algorithm but we replace all linear algebra/vector
 operations with CUDA kernels and carrying them out on the GPU. In other words,
 there is no change to the SDCA algorithm, we simply perform some of our
 calculations on the GPU, rather than performing everything on the CPU.
@@ -438,7 +444,7 @@ In our experiments, we use $\phi(z,y)=\max(0,1-yz)$ and $\lambda=10$.
 The CPU implementation outperformed
 the GPU implementations across the board. While this was not expected, the
 results are very interesting from an implementation point of view. There are a
-few key areas that hurt the GPU implementation -- unforutnately we did not have
+few key areas that hurt the GPU implementation -- unfortunately we did not have
 enough time to fix/implement these properly.
 \begin{itemize}
 	\item Memory allocation
@@ -605,7 +611,8 @@ As expected, as the dimension of the feature space increases (Figure
 \ref{fig:50k}), we see an improvement in the sequential GPU version relative to
 the sequential CPU version. This is because the GPU implementation can more
 efficiently handle vector dot product as the dimension of the vector
-increases. Unfortunately, as we will discuss in the following sections, there
+increases.
+% Unfortunately, as we will discuss in the following sections, there
 are other limiting factors preventing us from achieving ideal performance.
   
 
