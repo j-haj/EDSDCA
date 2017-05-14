@@ -239,14 +239,10 @@ Yang \cite{yang2013trading},
  creating a more scalable and efficient SDCA
 algorithm. Specifically, we propose to use CUDA to improve the runtime
 efficiency of the gradient and parameter update calculations %along with the use
-%of MPI for network communication. 
 The implementation is completely written in pure C++.
-%The asynchronous nature of the communication
-%will be handled using standard MPI facilities combined with threading in C++.
 \end{abstract}
 
 \section{Introduction}
-%What is the research problem that you are trying to tackle? Describe the background and motivation. 
 In recent years, the amount and size of available data has grown at an
 incredible rate. As the size of the data grows, the challenge of applying
 standard machine learning algorithms to the data has become increasingly
@@ -282,8 +278,7 @@ the tradeoff between network communication between nodes and the difficulty of
 the performed computation (task). However, the problem of developing a more
 efficient distributed SDCA algorithm is still open. In this paper, we first
 provide a GPU implementation of the vanilla distributed
-SDCA~\cite{yang2013trading}, and then give an asynchronous distributed approach
-to SDCA to make full use of computational resources that scale well. 
+SDCA~\cite{yang2013trading}. 
 
 \section{Related Work}
 %\label{gen_inst}
@@ -308,15 +303,15 @@ distributed manner. It constitutes a huge gap between theory and practice, since
 nowadays the size of data increases at a rapid speed, which makes one-core
 processor or one computer very difficult to handle it properly. 
 
-Then we review several related work of distributed optimization algorithms. In
-the existing literature, many distributed algorithms have been developed on top of
-stochastic gradient descent (SGD), alternating direction method of multipliers
-(ADMM), and stochastic dual coordinate ascent (SDCA). The two main approaches
-used in developing parallel algorithsm for SGD are based on shared memory and
-distributed memory architectures. Some work~\cite{lian2015asynchronous}
-looks at both settings, in addition to removing the syncrhonization requirement
-in the distributed memory setting.
-A number of approaches~\cite{zinkevich2010parallelized,recht2011hogwild,agarwal2011distributed}
+In the existing literature, many distributed algorithms have been developed on
+top of stochastic gradient descent (SGD), alternating direction method of
+multipliers (ADMM), and stochastic dual coordinate ascent (SDCA). The two main
+approaches used in developing parallel algorithsm for SGD are based on shared
+memory and distributed memory architectures. Some
+work~\cite{lian2015asynchronous} looks at both settings, in addition to
+removing the syncrhonization requirement in the distributed memory setting.  A
+number of
+approaches~\cite{zinkevich2010parallelized,recht2011hogwild,agarwal2011distributed}
 consider the asynchronous or lock-free setting, making use of parameter servers
 \cite{li2014scaling}, sparsity \cite{recht2011hogwild}, as well as unique
 data-flow architectures for parameter updates \cite{agarwal2011distributed}.
@@ -328,28 +323,15 @@ SDCA algorithms~\cite{shalev2013stochastic} and its
 variant~\cite{shalev2013accelerated,shalev2014accelerated,lin2014accelerated}
 enjoy faster convergence than SGD and ADMM, and the distributed SDCA
 (DisDCA)~\cite{yang2013trading,yang2013analysis} was developed along with novel
-analysis of tradeoff between computation and communication. \cite{yang2013trading} serves as the starting point for our work.
+analysis of tradeoff between computation and communication.
+\cite{yang2013trading} serves as the starting point for our work.
 
-%We will build off of work from T. Yang's work on distributed SDCA~\cite{yang2013trading}, first add GPU capabilities and then incorporating M.
-%Li's work on parameter servers~\cite{li2014scaling} to handle communication
-%updates in the distributed setting.  In~\cite{yang2013trading}, SDCA is
-%implemented in a distributed, synchronized fashion. While the achieved results
-%were quite promising, they did not take advantage of hardware acceleration or
-%asynchronous communication.  \cite{li2014scaling} builds an asynchronous
-%communication framework using the concept of parameter servers, which are
-%central data stores for model parameters, and distributed workers working in an
-%asynchronous fashion (i.e., communication and parameter updates are non-blocking
-%operations).  Additionally,
-%\cite{agarwal2011distributed} explores the
-%theoretical ramifications of delayed parameter updates in general distributed
-%stochastic optimization setting. By combining the work
-%of T. Yang, M. Li, and A. Agarwal, we hope to develop a robust,
-%distributed SDCA solution.
+In~\cite{yang2013trading}, SDCA is implemented in a distributed, synchronized
+fashion. While the achieved results were quite promising, they did not take
+advantage of hardware acceleration or asynchronous communication.  We will
+build off of work from T. Yang's work on distributed
+SDCA~\cite{yang2013trading}, and add GPU capabilities. 
 
-In~\cite{yang2013trading}, SDCA is
-implemented in a distributed, synchronized fashion. While the achieved results
-were quite promising, they did not take advantage of hardware acceleration or
-asynchronous communication.  We will build off of work from T. Yang's work on distributed SDCA~\cite{yang2013trading}, and add GPU capabilities. 
 \section{GPU Acceleration for Sequential SDCA}
 \begin{algorithm}[H]
 	\caption{Sequential SDCA}
@@ -372,14 +354,17 @@ asynchronous communication.  We will build off of work from T. Yang's work on di
 		
 	\end{algorithmic}
 \end{algorithm}
-The traditional SDCA algorithm \cite{shalev2013stochastic} is described in Algorithm \ref{sequentialSDCA}, where $g(w)=\frac{1}{2}\|w\|_2^2$.
-In that procedure, the most expensive work is in line 4--6. We employ the GPU acceleration technique to make those lines run in a faster manner.
+The traditional SDCA algorithm \cite{shalev2013stochastic} is described in
+Algorithm \ref{sequentialSDCA}, where $g(w)=\frac{1}{2}\|w\|_2^2$.  In that
+procedure, the most expensive work is in line 4--6. We employ the GPU
+acceleration technique to make those lines run in a faster manner.
+
 \subsection{Naive GPU Implementation}
-The naive implementation (hereafter referred to as the sequential GPU algorithm)
-is simply the CPU-based algorithm but we replace all linear algebra/vector
-operations with CUDA kernels and carrying them out on the GPU. In other words,
-there is no change to the SDCA algorithm, we simply perform some of our
-calculations on the GPU, rather than performing everything on the CPU.
+The naive implementation is simply the CPU-based algorithm but we replace all
+linear algebra/vector operations with CUDA kernels and carrying them out on the
+GPU. In other words, there is no change to the SDCA algorithm, we simply
+perform some of our calculations on the GPU, rather than performing everything
+on the CPU.
 
 \subsection{Refined GPU Implementation}
 The refined GPU implementation improves upon the naive implementation by
@@ -575,7 +560,10 @@ these kernels (such as cuBLAS, implemented by NVIDIA).\\
 Figure \ref{fig:australian} shows a graph comparing sequential CPU versus
 sequential GPU for the Australian dataset (from the LibSVM data archives). This
 data set only contains 54 features and roughly 690 data points, making it a good
-data set for quick tests and analyses.
+data set for quick tests and analyses. Unfortunately, we encountered some issue
+while trying to verify the correctness of our distributed GPU version of SDCA
+and, as a result, do not include it in our results in figures
+\ref{fig:australian}, \ref{fig:10k}, \ref{fig:50k}.
 
 \begin{figure}
   \includegraphics[scale=0.5]{cpu_vs_gpu}
@@ -618,13 +606,35 @@ are other limiting factors preventing us from achieving ideal performance.
   
 \section{Discussion of Experimental Results}
 \subsection{Sequential GPU}
-In the sequential SDCA (Algorithm \ref{sequentialSDCA}), for the hinge loss with $\ell_2$ regularization, the line 4 has a closed-form solution, so does the line 7 for distributed SDCA (Algorithm \ref{distributedSDCA}). Specifically, the line 4 for Algorithm \ref{sequentialSDCA} can be written as
+In the sequential SDCA (Algorithm \ref{sequentialSDCA}), for the hinge loss
+with $\ell_2$ regularization, the line 4 has a closed-form solution, so does
+the line 7 for distributed SDCA (Algorithm \ref{distributedSDCA}).
+Specifically, the line 4 for Algorithm \ref{sequentialSDCA} can be written as
 \begin{equation*}
-    \Delta\alpha_i=y_i\max\left(0,\min\left(1,\frac{1-x_i^\top w^{(t-1)}y_i}{\|x_i\|_2^2/\lambda n}+\alpha_i^{(t-1)}y_i\right)\right)-\alpha_i^{(t-1)}.
+    \Delta\alpha_i=y_i\max\left(0,\min\left(1,\frac{1-x_i^\top
+    w^{(t-1)}y_i}{\|x_i\|_2^2/\lambda
+    n}+\alpha_i^{(t-1)}y_i\right)\right)-\alpha_i^{(t-1)}.
 \end{equation*}
-Suppose the dimension of $x_i$ is $n$, then the vector product $x_i^\top w^{(t-1)}$ spends $O(n)$ time. When $n$ gets larger, the GPU gets more dominating advantage over the CPU, so the experiment is consistent to our theory.
+Suppose the dimension of $x_i$ is $n$, then the vector product $x_i^\top
+w^{(t-1)}$ spends $O(n)$ time. When $n$ gets larger, the GPU gets more
+dominating advantage over the CPU, so the experiment is consistent to our
+theory.
+
 \subsection{Distributed GPU}
-We didn't provide experimental results for distributed GPU version of SDCA, so now we provide some discussion about it. Theoretically speaking, $m$ (the number of samples in a mini-batch) controls the tradeoff between the computation on each machine (process), while in our case refer to GPU thread, and the communication cost over machines (processes)~\cite{yang2013trading,yang2013analysis}. When $m$ is small, the communication cost decreases when $m$ increases. However, we only have one GPU available so we can only take $m$ to be 1, which makes the communication cost prohibitively high. 
+We didn't provide experimental results for distributed GPU version of SDCA, so
+now we provide some discussion about it. Theoretically speaking, $m$ (the
+number of samples in a mini-batch) controls the tradeoff between the
+computation on each machine (process) 
+and the communication cost over machines
+(processes)~\cite{yang2013trading,yang2013analysis}. In our case, we take $m =
+1$, so that each thread has a single data sample. This simplifies both
+implementation and communication. We replace the use of $k$
+machines from \cite{yang2013trading} with $k$ threads on the GPU. Thus we can
+scale our algorithm across a large number of threads, but will need to
+communicate somewhat more frequently as each thread is only working on a single
+data point. In the future it may be interesting to consider an approach where
+each thread processes a larger number of data points. This is a more
+complicated approach, but certainly possible.
 
 \section{Lessons Learned}
 We learned a lot about what can go wrong and what considerations need to be
@@ -649,54 +659,14 @@ algorithm runtimes for both sequential and distributed implementations as we
 increased the size of the mini-batch. We believe further work on this topic is
 merrited, both from theoretical and implementation point-of-views.
 
-%\section{The Proposed Work}
-%We will approach this problem from both theoretical and implementation
-%perspectives. On the theoretical side we hope to make guarantees on convergence
-%of our proposed approach, while on the implementation side we hope to build a
-%scalable system that can take advantage of its hardware as well as work in a
-%distributed setting.
-%
-%\subsection{Theory}
-%We will try to establish the convergence result of the
-%proposed asynchronous distributed SDCA and analyze the tradeoff between
-%computation and asynchronous communication.
-%
+
 \section{Future Work}
-We plan on continuing to complete the work to get more efficient implementation of GPU programming. In this report, we didn't successfully derive the theory of an asynchronous version of distributed SDCA, and we plan on doing it in the future work. 
+We plan on continuing to complete the work to get more efficient implementation
+of GPU programming. In this report, we didn't successfully derive the theory of
+an asynchronous version of distributed SDCA, and we plan on doing it in the
+future work. 
 
 
-%\subsubsection*{Acknowledgments}
-%
-%Use unnumbered third level headings for the acknowledgments. All
-%acknowledgments go at the end of the paper. Do not include
-%acknowledgments in the anonymized submission, only in the final paper.
-
-%\section*{References}
-
-%References follow the acknowledgments. Use unnumbered first-level
-%heading for the references. Any choice of citation style is acceptable
-%as long as you are consistent. It is permissible to reduce the font
-%size to \verb+small+ (9 point) when listing the references.
-%
-%\medskip
-%
-%\small
-%
-%[1] Alexander, J.A.\ \& Mozer, M.C.\ (1995) Template-based algorithms
-%for connectionist rule extraction. In G.\ Tesauro, D.S.\ Touretzky and
-%T.K.\ Leen (eds.), {\it Advances in Neural Information Processing
-%  Systems 7}, pp.\ 609--616. Cambridge, MA: MIT Press.
-%
-%[2] Bower, J.M.\ \& Beeman, D.\ (1995) {\it The Book of GENESIS:
-%  Exploring Realistic Neural Models with the GEneral NEural SImulation
-%  System.}  New York: TELOS/Springer--Verlag.
-%
-%[3] Hasselmo, M.E., Schnell, E.\ \& Barkai, E.\ (1995) Dynamics of
-%learning and recall at excitatory recurrent synapses and cholinergic
-%modulation in rat hippocampal region CA3. {\it Journal of
-%  Neuroscience} {\bf 15}(7):5249-5262.
-%123~\cite{Bolte:2006:LIN:1328019.1328299},\cite{banerjee2007generalized}\cite{zhangcs14}\cite{shalev2016sdca}\cite{yang2013trading}
-%123~\cite{Shalev-Shwartz2016a} is a good approach
 \bibliography{courseProject}
 \bibliographystyle{abbrv}
 \end{document}
